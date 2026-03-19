@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate app icons (web)
+        run: dart run flutter_launcher_icons
+
       - name: Build web
         # base-href must match the GitHub Pages sub-path (repo name)
         run: flutter build web --release --base-href /Running-trainer/
@@ -67,6 +70,26 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Generate app icons (android)
+        run: dart run flutter_launcher_icons
+
+      - name: Generate splash screen (android)
+        run: |
+          dart pub global activate flutter_native_splash
+          cat >> pubspec.yaml << 'EOF'
+
+          flutter_native_splash:
+            color: "#0A0A0F"
+            image: assets/icon/icon.png
+            android: true
+            ios: false
+            web: false
+            android_12:
+              image: assets/icon/icon.png
+              icon_background_color: "#0A0A0F"
+          EOF
+          dart run flutter_native_splash:create
 
       - name: Build APK
         run: flutter build apk --release

@@ -5,6 +5,7 @@ import '../../../core/constants/app_text_styles.dart';
 import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 import '../widgets/effort_badge.dart';
+import '../../stretching/screens/stretching_screen.dart';
 
 class WorkoutDetailScreen extends ConsumerWidget {
   final Workout workout;
@@ -135,11 +136,99 @@ class WorkoutDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 24),
                   ],
                   EffortBadge(effort: workout.effortLevel),
+                  // Stretching routines (not for rest days)
+                  if (workout.type != WorkoutType.rest) ...[
+                    const SizedBox(height: 32),
+                    Text('Stretching Routines', style: AppTextStyles.heading3),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Warm up before and cool down after your run.',
+                      style: AppTextStyles.bodyMuted,
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _StretchButton(
+                            label: 'Pre-Run\nWarm-Up',
+                            icon: Icons.local_fire_department,
+                            color: AppColors.primary,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const StretchingScreen(isPreRun: true),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _StretchButton(
+                            label: 'Post-Run\nCool-Down',
+                            icon: Icons.spa,
+                            color: AppColors.secondary,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const StretchingScreen(isPreRun: false),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _StretchButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _StretchButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 28),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: color,
+                height: 1.3,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
