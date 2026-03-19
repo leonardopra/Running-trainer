@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../models/enums.dart';
+import '../../../models/training_plan.dart';
+import '../../../models/workout.dart';
 import '../../../providers/progress_provider.dart';
 import '../../../providers/storage_provider.dart';
 import '../widgets/weekly_bar_chart.dart';
@@ -113,15 +115,14 @@ class ProgressDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecentActivity(dynamic plan) {
-    // Collect completed workouts sorted by completedAt desc
+  Widget _buildRecentActivity(TrainingPlan plan) {
     final completed = plan.weeks
-        .expand<dynamic>((w) => w.workouts)
+        .expand((week) => week.workouts)
         .where((w) => w.isCompleted && w.type != WorkoutType.rest)
         .toList()
       ..sort((a, b) {
-        final aDate = a.completedAt as DateTime?;
-        final bDate = b.completedAt as DateTime?;
+        final aDate = a.completedAt;
+        final bDate = b.completedAt;
         if (aDate == null && bDate == null) return 0;
         if (aDate == null) return 1;
         if (bDate == null) return -1;
@@ -147,7 +148,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
 
     final recent = completed.take(8).toList();
     return Column(
-      children: recent.map<Widget>((w) => _ActivityTile(workout: w)).toList(),
+      children: recent.map<Widget>((w) => _ActivityTile(workout: w as Workout)).toList(),
     );
   }
 }
@@ -216,14 +217,14 @@ class _StatCard extends StatelessWidget {
 
 // ── Recent activity tile ───────────────────────────────────────────────────
 class _ActivityTile extends StatelessWidget {
-  final dynamic workout;
+  final Workout workout;
   const _ActivityTile({required this.workout});
 
   @override
   Widget build(BuildContext context) {
     final km = workout.actualDistanceKm ?? workout.distanceKm;
     final dur = workout.actualDurationMinutes ?? workout.durationMinutes;
-    final date = workout.completedAt as DateTime?;
+    final date = workout.completedAt;
 
     String dateStr = '';
     if (date != null) {
@@ -256,9 +257,9 @@ class _ActivityTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(workout.title as String, style: AppTextStyles.label),
-                if (workout.notes != null && (workout.notes as String).isNotEmpty)
-                  Text(workout.notes as String, style: AppTextStyles.bodyMuted,
+                Text(workout.title, style: AppTextStyles.label),
+                if (workout.notes != null && workout.notes!.isNotEmpty)
+                  Text(workout.notes!, style: AppTextStyles.bodyMuted,
                       maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
             ),
