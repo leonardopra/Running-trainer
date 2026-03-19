@@ -27,13 +27,17 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
       description: fields[7] as String?,
       coachingTip: fields[8] as String?,
       isCompleted: fields[9] as bool? ?? false,
+      actualDistanceKm: fields[10] as double?,
+      actualDurationMinutes: fields[11] as int?,
+      completedAt: fields[12] as DateTime?,
+      notes: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Workout obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +57,15 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
       ..writeByte(8)
       ..write(obj.coachingTip)
       ..writeByte(9)
-      ..write(obj.isCompleted);
+      ..write(obj.isCompleted)
+      ..writeByte(10)
+      ..write(obj.actualDistanceKm)
+      ..writeByte(11)
+      ..write(obj.actualDurationMinutes)
+      ..writeByte(12)
+      ..write(obj.completedAt)
+      ..writeByte(13)
+      ..write(obj.notes);
   }
 
   @override

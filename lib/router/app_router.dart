@@ -11,6 +11,7 @@ import '../features/home/screens/home_screen.dart';
 import '../features/plan/screens/plan_overview_screen.dart';
 import '../features/plan/screens/workout_detail_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
+import '../features/progress/screens/progress_dashboard_screen.dart';
 import '../providers/settings_provider.dart';
 import '../models/workout.dart';
 
@@ -52,6 +53,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+      GoRoute(path: '/progress', builder: (_, __) => const ProgressDashboardScreen()),
     ],
   );
 });

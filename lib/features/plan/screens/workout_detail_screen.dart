@@ -7,25 +7,97 @@ import '../../../models/enums.dart';
 import '../widgets/effort_badge.dart';
 import '../../stretching/screens/stretching_screen.dart';
 
-class WorkoutDetailScreen extends ConsumerWidget {
+class WorkoutDetailScreen extends ConsumerStatefulWidget {
   final Workout workout;
 
   const WorkoutDetailScreen({super.key, required this.workout});
 
-  Color _getTypeColor(WorkoutType type) {
-    switch (type) {
-      case WorkoutType.easyRun: return AppColors.easyRun;
-      case WorkoutType.tempoRun: return AppColors.tempoRun;
-      case WorkoutType.intervalRun: return AppColors.intervalRun;
-      case WorkoutType.longRun: return AppColors.longRun;
-      case WorkoutType.crossTrain: return AppColors.crossTrain;
-      case WorkoutType.rest: return AppColors.rest;
+  @override
+  ConsumerState<WorkoutDetailScreen> createState() => _WorkoutDetailScreenState();
+}
+
+class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
+  final _distanceCtrl = TextEditingController();
+  final _durationCtrl = TextEditingController();
+  final _notesCtrl    = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final w = widget.workout;
+    if (w.actualDistanceKm != null) {
+      _distanceCtrl.text = w.actualDistanceKm!.toStringAsFixed(1);
+    }
+    if (w.actualDurationMinutes != null) {
+      _durationCtrl.text = w.actualDurationMinutes.toString();
+    }
+    if (w.notes != null) {
+      _notesCtrl.text = w.notes!;
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final typeColor = _getTypeColor(workout.type);
+  void dispose() {
+    _distanceCtrl.dispose();
+    _durationCtrl.dispose();
+    _notesCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveLog() async {
+    setState(() => _saving = true);
+    final w = widget.workout;
+    final dist = double.tryParse(_distanceCtrl.text.trim());
+    final dur  = int.tryParse(_durationCtrl.text.trim());
+    w.actualDistanceKm      = dist;
+    w.actualDurationMinutes = dur;
+    w.notes                 = _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim();
+    w.isCompleted           = true;
+    w.completedAt           ??= DateTime.now();
+    await w.save();
+    setState(() => _saving = false);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Workout logged!'),
+          backgroundColor: AppColors.secondary,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _unmarkComplete() async {
+    final w = widget.workout;
+    w.isCompleted           = false;
+    w.completedAt           = null;
+    w.actualDistanceKm      = null;
+    w.actualDurationMinutes = null;
+    w.notes                 = null;
+    _distanceCtrl.clear();
+    _durationCtrl.clear();
+    _notesCtrl.clear();
+    await w.save();
+    setState(() {});
+  }
+
+  Color _getTypeColor(WorkoutType type) {
+    switch (type) {
+      case WorkoutType.easyRun:    return AppColors.easyRun;
+      case WorkoutType.tempoRun:   return AppColors.tempoRun;
+      case WorkoutType.intervalRun: return AppColors.intervalRun;
+      case WorkoutType.longRun:    return AppColors.longRun;
+      case WorkoutType.crossTrain: return AppColors.crossTrain;
+      case WorkoutType.rest:       return AppColors.rest;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final w = widget.workout;
+    final typeColor = _getTypeColor(w.type);
+    final isRest = w.type == WorkoutType.rest;
 
     return Scaffold(
       body: CustomScrollView(
@@ -37,7 +109,15 @@ class WorkoutDetailScreen extends ConsumerWidget {
               icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text(workout.type.displayName, style: AppTextStyles.heading3),
+            title: Text(w.type.displayName, style: AppTextStyles.heading3),
+            actions: [
+              if (w.isCompleted)
+                IconButton(
+                  icon: const Icon(Icons.check_circle, color: AppColors.secondary),
+                  tooltip: 'Mark as not done',
+                  onPressed: _unmarkComplete,
+                ),
+            ],
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -48,32 +128,33 @@ class WorkoutDetailScreen extends ConsumerWidget {
                   // Hero stat row
                   Row(
                     children: [
-                      if (workout.distanceKm != null) ...[
+                      if (w.distanceKm != null) ...[
                         _StatCard(
                           label: 'Distance',
-                          value: '${workout.distanceKm!.toStringAsFixed(1)} km',
+                          value: '${w.distanceKm!.toStringAsFixed(1)} km',
                           color: typeColor,
                         ),
                         const SizedBox(width: 12),
                       ],
-                      if (workout.durationMinutes != null) ...[
+                      if (w.durationMinutes != null) ...[
                         _StatCard(
                           label: 'Duration',
-                          value: '${workout.durationMinutes} min',
+                          value: '${w.durationMinutes} min',
                           color: typeColor,
                         ),
                         const SizedBox(width: 12),
                       ],
                       _StatCard(
                         label: 'Effort',
-                        value: workout.effortLevel.displayName,
-                        color: Color(workout.effortLevel.colorValue),
+                        value: w.effortLevel.displayName,
+                        color: Color(w.effortLevel.colorValue),
                       ),
                     ],
                   ),
                   const SizedBox(height: 32),
+
                   // Description
-                  if (workout.description != null) ...[
+                  if (w.description != null) ...[
                     Text('Workout Overview', style: AppTextStyles.heading3),
                     const SizedBox(height: 12),
                     Container(
@@ -82,12 +163,13 @@ class WorkoutDetailScreen extends ConsumerWidget {
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Text(workout.description!, style: AppTextStyles.body),
+                      child: Text(w.description!, style: AppTextStyles.body),
                     ),
                     const SizedBox(height: 24),
                   ],
+
                   // Coaching tip
-                  if (workout.coachingTip != null) ...[
+                  if (w.coachingTip != null) ...[
                     Row(
                       children: [
                         const Icon(Icons.tips_and_updates,
@@ -106,12 +188,13 @@ class WorkoutDetailScreen extends ConsumerWidget {
                           color: AppColors.primary.withOpacity(0.3),
                         ),
                       ),
-                      child: Text(workout.coachingTip!, style: AppTextStyles.body),
+                      child: Text(w.coachingTip!, style: AppTextStyles.body),
                     ),
                     const SizedBox(height: 24),
                   ],
+
                   // No Claude data fallback
-                  if (workout.description == null && workout.coachingTip == null) ...[
+                  if (w.description == null && w.coachingTip == null) ...[
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -135,10 +218,116 @@ class WorkoutDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 24),
                   ],
-                  EffortBadge(effort: workout.effortLevel),
-                  // Stretching routines (not for rest days)
-                  if (workout.type != WorkoutType.rest) ...[
+
+                  EffortBadge(effort: w.effortLevel),
+
+                  // ── Log This Run ────────────────────────────────────────
+                  if (!isRest) ...[
                     const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        Text('Log This Run', style: AppTextStyles.heading3),
+                        const SizedBox(width: 8),
+                        if (w.isCompleted)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Text('Completed',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.secondary,
+                                )),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Record your actual distance, time, and notes.',
+                      style: AppTextStyles.bodyMuted,
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: w.isCompleted
+                              ? AppColors.secondary.withOpacity(0.35)
+                              : AppColors.surfaceVariant,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _LogField(
+                                  controller: _distanceCtrl,
+                                  label: 'Distance (km)',
+                                  hint: w.distanceKm != null
+                                      ? w.distanceKm!.toStringAsFixed(1)
+                                      : '0.0',
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _LogField(
+                                  controller: _durationCtrl,
+                                  label: 'Duration (min)',
+                                  hint: w.durationMinutes?.toString() ?? '0',
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          _LogField(
+                            controller: _notesCtrl,
+                            label: 'Notes (optional)',
+                            hint: 'How did it feel?',
+                            maxLines: 2,
+                          ),
+                          const SizedBox(height: 14),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _saving ? null : _saveLog,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.secondary,
+                                foregroundColor: AppColors.background,
+                                padding: const EdgeInsets.symmetric(vertical: 13),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                              ),
+                              child: _saving
+                                  ? const SizedBox(
+                                      height: 18, width: 18,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: AppColors.background))
+                                  : Text(
+                                      w.isCompleted ? 'Update Log' : 'Mark as Done',
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // ── Stretching Routines ─────────────────────────────────
+                  if (!isRest) ...[
+                    const SizedBox(height: 8),
                     Text('Stretching Routines', style: AppTextStyles.heading3),
                     const SizedBox(height: 4),
                     Text(
@@ -189,6 +378,95 @@ class WorkoutDetailScreen extends ConsumerWidget {
   }
 }
 
+// ── Widgets ────────────────────────────────────────────────────────────────
+
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _StatCard({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: const TextStyle(
+              fontSize: 11,
+              color: AppColors.onSurfaceMuted,
+              fontWeight: FontWeight.w500,
+            )),
+            const SizedBox(height: 4),
+            Text(value, style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: color,
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LogField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final TextInputType keyboardType;
+  final int maxLines;
+
+  const _LogField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    this.keyboardType = TextInputType.text,
+    this.maxLines = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: AppColors.onSurfaceMuted,
+        )),
+        const SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          style: AppTextStyles.body,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.onSurfaceMuted),
+            filled: true,
+            fillColor: AppColors.surfaceVariant,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _StretchButton extends StatelessWidget {
   final String label;
   final IconData icon;
@@ -227,48 +505,6 @@ class _StretchButton extends StatelessWidget {
                 height: 1.3,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: const TextStyle(
-              fontSize: 11,
-              color: AppColors.onSurfaceMuted,
-              fontWeight: FontWeight.w500,
-            )),
-            const SizedBox(height: 4),
-            Text(value, style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: color,
-            )),
           ],
         ),
       ),

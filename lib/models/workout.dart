@@ -35,6 +35,18 @@ class Workout extends HiveObject {
   @HiveField(9)
   bool isCompleted = false;
 
+  @HiveField(10)
+  double? actualDistanceKm;
+
+  @HiveField(11)
+  int? actualDurationMinutes;
+
+  @HiveField(12)
+  DateTime? completedAt;
+
+  @HiveField(13)
+  String? notes;
+
   Workout({
     required this.id,
     required this.type,
@@ -46,6 +58,10 @@ class Workout extends HiveObject {
     this.description,
     this.coachingTip,
     this.isCompleted = false,
+    this.actualDistanceKm,
+    this.actualDurationMinutes,
+    this.completedAt,
+    this.notes,
   });
 
   Map<String, dynamic> toJson() => {

@@ -127,22 +127,44 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           WeekSummaryStrip(workouts: currentWeek.workouts),
           const SizedBox(height: 32),
-          // View full plan
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton(
-              onPressed: () => context.push('/plan'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.background,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          // Action buttons
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () => context.push('/plan'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.background,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
+                    ),
+                    child: const Text('View Full Plan',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w700)),
+                  ),
+                ),
               ),
-              child: const Text('View Full Plan', style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              )),
-            ),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 52,
+                width: 52,
+                child: ElevatedButton(
+                  onPressed: () => context.push('/progress'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.surface,
+                    foregroundColor: AppColors.onSurface,
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
+                    side: const BorderSide(color: AppColors.surfaceVariant),
+                  ),
+                  child: const Icon(Icons.bar_chart, size: 22),
+                ),
+              ),
+            ],
           ),
         ],
       ),
