@@ -89,7 +89,7 @@ jobs:
               image: assets/icon/icon.png
               icon_background_color: "#0A0A0F"
           EOF
-          dart run flutter_native_splash:create
+          dart pub global run flutter_native_splash:create
 
       - name: Build APK
         run: flutter build apk --release
