@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate l10n
+        run: flutter gen-l10n
+
       - name: Generate app icons (web)
         run: dart run flutter_launcher_icons
 
@@ -73,6 +76,9 @@ jobs:
 
       - name: Patch Android manifest for flutter_local_notifications
         run: python3 tool/patch_android_manifest.py
+
+      - name: Generate l10n
+        run: flutter gen-l10n
 
       - name: Generate app icons (android)
         run: dart run flutter_launcher_icons
