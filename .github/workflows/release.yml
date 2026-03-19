@@ -71,6 +71,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Patch Android manifest for flutter_local_notifications
+        run: python3 tool/patch_android_manifest.py
+
       - name: Generate app icons (android)
         run: dart run flutter_launcher_icons
 

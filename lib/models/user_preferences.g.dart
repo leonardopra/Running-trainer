@@ -24,13 +24,16 @@ class UserPreferencesAdapter extends TypeAdapter<UserPreferences> {
       age: fields[4] as int?,
       weightKg: fields[5] as double?,
       heightCm: fields[6] as double?,
+      notificationsEnabled: fields[7] as bool? ?? false,
+      notificationHour: fields[8] as int? ?? 8,
+      notificationMinute: fields[9] as int? ?? 0,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserPreferences obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.claudeApiKey)
       ..writeByte(1)
@@ -44,7 +47,13 @@ class UserPreferencesAdapter extends TypeAdapter<UserPreferences> {
       ..writeByte(5)
       ..write(obj.weightKg)
       ..writeByte(6)
-      ..write(obj.heightCm);
+      ..write(obj.heightCm)
+      ..writeByte(7)
+      ..write(obj.notificationsEnabled)
+      ..writeByte(8)
+      ..write(obj.notificationHour)
+      ..writeByte(9)
+      ..write(obj.notificationMinute);
   }
 
   @override

@@ -25,6 +25,15 @@ class UserPreferences extends HiveObject {
   @HiveField(6)
   double? heightCm;
 
+  @HiveField(7)
+  bool notificationsEnabled = false;
+
+  @HiveField(8)
+  int notificationHour = 8;
+
+  @HiveField(9)
+  int notificationMinute = 0;
+
   UserPreferences({
     this.claudeApiKey,
     this.useKilometers = true,
@@ -33,5 +42,8 @@ class UserPreferences extends HiveObject {
     this.age,
     this.weightKg,
     this.heightCm,
+    this.notificationsEnabled = false,
+    this.notificationHour = 8,
+    this.notificationMinute = 0,
   });
 }

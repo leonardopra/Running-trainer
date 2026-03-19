@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../providers/settings_provider.dart';
+import '../../../services/notification_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -185,6 +187,114 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 32),
+          // Notifications section
+          Text('Notifications', style: AppTextStyles.heading3),
+          const SizedBox(height: 8),
+          if (kIsWeb)
+            Text(
+              'Workout reminders are available on the Android app.',
+              style: AppTextStyles.bodyMuted,
+            )
+          else ...[
+            Text(
+              'Get a reminder at your chosen time on each training day.',
+              style: AppTextStyles.bodyMuted,
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text('Workout Reminders',
+                            style: AppTextStyles.body),
+                      ),
+                      Switch(
+                        value: settings.notificationsEnabled,
+                        onChanged: (value) async {
+                          if (value) {
+                            await NotificationService.requestPermissions();
+                          }
+                          await ref
+                              .read(settingsProvider.notifier)
+                              .setNotifications(enabled: value);
+                        },
+                        activeColor: AppColors.primary,
+                      ),
+                    ],
+                  ),
+                  if (settings.notificationsEnabled) ...[
+                    const Divider(color: AppColors.surfaceVariant, height: 24),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text('Reminder time',
+                              style: AppTextStyles.body),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay(
+                                hour: settings.notificationHour,
+                                minute: settings.notificationMinute,
+                              ),
+                              builder: (context, child) => Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.dark(
+                                    primary: AppColors.primary,
+                                    surface: AppColors.surfaceVariant,
+                                  ),
+                                ),
+                                child: child!,
+                              ),
+                            );
+                            if (picked != null) {
+                              await ref
+                                  .read(settingsProvider.notifier)
+                                  .setNotifications(
+                                    enabled: true,
+                                    hour: picked.hour,
+                                    minute: picked.minute,
+                                  );
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: AppColors.primary.withOpacity(0.35)),
+                            ),
+                            child: Text(
+                              TimeOfDay(
+                                hour: settings.notificationHour,
+                                minute: settings.notificationMinute,
+                              ).format(context),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 32),
           // Data section
           Text('Data', style: AppTextStyles.heading3),

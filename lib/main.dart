@@ -8,6 +8,7 @@ import 'models/training_plan.dart';
 import 'models/user_preferences.dart';
 import 'core/constants/hive_boxes.dart';
 import 'services/encryption_service.dart';
+import 'services/notification_service.dart';
 import 'app.dart';
 
 void main() async {
@@ -37,6 +38,8 @@ void main() async {
     await Hive.deleteBoxFromDisk(HiveBoxes.userPreferences);
     await Hive.openBox<UserPreferences>(HiveBoxes.userPreferences, encryptionCipher: cipher);
   }
+
+  await NotificationService.initialize();
 
   runApp(const ProviderScope(child: RunningTrainerApp()));
 }

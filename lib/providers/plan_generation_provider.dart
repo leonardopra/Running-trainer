@@ -165,6 +165,10 @@ class GenerationNotifier extends Notifier<GenerationState> {
     // Mark onboarding complete
     await ref.read(settingsProvider.notifier).completeOnboarding();
 
+    // Schedule notifications if enabled
+    final latestSettings = ref.read(settingsProvider);
+    await scheduleNotificationsForPlan(plan, latestSettings);
+
     state = state.copyWith(step: GenerationStep.done, plan: plan);
     return plan;
   }
