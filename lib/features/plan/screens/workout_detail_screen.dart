@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/l10n_helpers.dart';
 import '../../../models/workout.dart';
 import '../../../models/enums.dart';
+import '../../../providers/settings_provider.dart';
+import '../../../providers/training_plan_provider.dart';
+import '../../../services/pace_calculator_service.dart';
 import '../widgets/effort_badge.dart';
 import '../../stretching/screens/stretching_screen.dart';
 
@@ -58,11 +63,12 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     await w.save();
     setState(() => _saving = false);
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Workout logged!'),
+        SnackBar(
+          content: Text(l10n.workoutLoggedSnackbar),
           backgroundColor: AppColors.secondary,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     }
@@ -98,6 +104,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     final w = widget.workout;
     final typeColor = _getTypeColor(w.type);
     final isRest = w.type == WorkoutType.rest;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: CustomScrollView(
@@ -109,12 +116,12 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
               icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text(w.type.displayName, style: AppTextStyles.heading3),
+            title: Text(w.type.localizedName(l10n), style: AppTextStyles.heading3),
             actions: [
               if (w.isCompleted)
                 IconButton(
                   icon: const Icon(Icons.check_circle, color: AppColors.secondary),
-                  tooltip: 'Mark as not done',
+                  tooltip: l10n.btnMarkNotDoneTooltip,
                   onPressed: _unmarkComplete,
                 ),
             ],
@@ -155,7 +162,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
 
                   // Description
                   if (w.description != null) ...[
-                    Text('Workout Overview', style: AppTextStyles.heading3),
+                    Text(l10n.workoutOverview, style: AppTextStyles.heading3),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -175,7 +182,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                         const Icon(Icons.tips_and_updates,
                             color: AppColors.primary, size: 20),
                         const SizedBox(width: 8),
-                        Text('Coach\'s Tip', style: AppTextStyles.heading3),
+                        Text(l10n.workoutCoachTip, style: AppTextStyles.heading3),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -208,16 +215,16 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                               color: AppColors.onSurfaceMuted, size: 20),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: Text(
-                              'Add your Claude API key in Settings to unlock AI coaching descriptions.',
-                              style: AppTextStyles.bodyMuted,
-                            ),
+                            child: Text(l10n.workoutNoAI, style: AppTextStyles.bodyMuted),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 24),
                   ],
+
+                  // ── Target Pace ─────────────────────────────────────────
+                  if (!isRest) _TargetPaceSection(workout: w),
 
                   EffortBadge(effort: w.effortLevel),
 
@@ -226,7 +233,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                     const SizedBox(height: 32),
                     Row(
                       children: [
-                        Text('Log This Run', style: AppTextStyles.heading3),
+                        Text(l10n.workoutLogTitle, style: AppTextStyles.heading3),
                         const SizedBox(width: 8),
                         if (w.isCompleted)
                           Container(
@@ -236,8 +243,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                               color: AppColors.secondary.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: const Text('Completed',
-                                style: TextStyle(
+                            child: Text(l10n.workoutLogCompleted,
+                                style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.secondary,
@@ -246,10 +253,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Record your actual distance, time, and notes.',
-                      style: AppTextStyles.bodyMuted,
-                    ),
+                    Text(l10n.workoutLogDesc, style: AppTextStyles.bodyMuted),
                     const SizedBox(height: 14),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -269,7 +273,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                               Expanded(
                                 child: _LogField(
                                   controller: _distanceCtrl,
-                                  label: 'Distance (km)',
+                                  label: l10n.workoutLogDistance,
                                   hint: w.distanceKm != null
                                       ? w.distanceKm!.toStringAsFixed(1)
                                       : '0.0',
@@ -280,7 +284,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                               Expanded(
                                 child: _LogField(
                                   controller: _durationCtrl,
-                                  label: 'Duration (min)',
+                                  label: l10n.workoutLogDuration,
                                   hint: w.durationMinutes?.toString() ?? '0',
                                   keyboardType: TextInputType.number,
                                 ),
@@ -290,8 +294,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                           const SizedBox(height: 12),
                           _LogField(
                             controller: _notesCtrl,
-                            label: 'Notes (optional)',
-                            hint: 'How did it feel?',
+                            label: l10n.workoutLogNotes,
+                            hint: l10n.workoutLogNotesHint,
                             maxLines: 2,
                           ),
                           const SizedBox(height: 14),
@@ -313,7 +317,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                                           strokeWidth: 2,
                                           color: AppColors.background))
                                   : Text(
-                                      w.isCompleted ? 'Update Log' : 'Mark as Done',
+                                      w.isCompleted ? l10n.btnUpdateLog : l10n.btnMarkDone,
                                       style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w700)),
@@ -328,18 +332,15 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                   // ── Stretching Routines ─────────────────────────────────
                   if (!isRest) ...[
                     const SizedBox(height: 8),
-                    Text('Stretching Routines', style: AppTextStyles.heading3),
+                    Text(l10n.workoutStretchingRoutines, style: AppTextStyles.heading3),
                     const SizedBox(height: 4),
-                    Text(
-                      'Warm up before and cool down after your run.',
-                      style: AppTextStyles.bodyMuted,
-                    ),
+                    Text(l10n.workoutStretchingDesc, style: AppTextStyles.bodyMuted),
                     const SizedBox(height: 14),
                     Row(
                       children: [
                         Expanded(
                           child: _StretchButton(
-                            label: 'Pre-Run\nWarm-Up',
+                            label: l10n.workoutPreRunBtn,
                             icon: Icons.local_fire_department,
                             color: AppColors.primary,
                             onTap: () => Navigator.of(context).push(
@@ -353,7 +354,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: _StretchButton(
-                            label: 'Post-Run\nCool-Down',
+                            label: l10n.workoutPostRunBtn,
                             icon: Icons.spa,
                             color: AppColors.secondary,
                             onTap: () => Navigator.of(context).push(
@@ -379,6 +380,112 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
 }
 
 // ── Widgets ────────────────────────────────────────────────────────────────
+
+class _TargetPaceSection extends ConsumerWidget {
+  final Workout workout;
+  const _TargetPaceSection({required this.workout});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goalTimeSecs = ref.watch(settingsProvider).goalTimeSeconds;
+    final plan = ref.watch(activePlanProvider);
+
+    if (goalTimeSecs == null || plan == null) return const SizedBox.shrink();
+
+    // Only show for workout types that have a pace zone
+    const paceTypes = {
+      WorkoutType.easyRun,
+      WorkoutType.longRun,
+      WorkoutType.tempoRun,
+      WorkoutType.intervalRun,
+    };
+    if (!paceTypes.contains(workout.type)) return const SizedBox.shrink();
+
+    final zones = PaceCalculatorService.calculate(
+      goal: plan.goalType,
+      goalTimeSeconds: goalTimeSecs,
+    );
+    if (zones.isEmpty) return const SizedBox.shrink();
+
+    final zone = zones.firstWhere(
+      (z) => z.type == workout.type,
+      orElse: () => zones.first,
+    );
+
+    final color = _typeColor(workout.type);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            const Icon(Icons.speed, color: AppColors.primary, size: 20),
+            const SizedBox(width: 8),
+            Text(l10n.workoutTargetPace, style: AppTextStyles.heading3),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: color.withOpacity(0.3)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 4,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      zone.paceRange,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: color,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.workoutTargetPaceSub(
+                        plan.goalType.localizedName(l10n),
+                        PaceCalculatorService.formatGoalTime(goalTimeSecs),
+                      ),
+                      style: AppTextStyles.bodyMuted,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Color _typeColor(WorkoutType type) {
+    switch (type) {
+      case WorkoutType.easyRun:     return AppColors.easyRun;
+      case WorkoutType.tempoRun:    return AppColors.tempoRun;
+      case WorkoutType.intervalRun: return AppColors.intervalRun;
+      case WorkoutType.longRun:     return AppColors.longRun;
+      default:                      return AppColors.primary;
+    }
+  }
+}
 
 class _StatCard extends StatelessWidget {
   final String label;

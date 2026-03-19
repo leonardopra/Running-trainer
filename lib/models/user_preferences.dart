@@ -34,6 +34,12 @@ class UserPreferences extends HiveObject {
   @HiveField(9)
   int notificationMinute = 0;
 
+  @HiveField(10)
+  int? goalTimeSeconds; // saved from pace calculator
+
+  @HiveField(11)
+  String localeCode = 'en'; // language preference: 'en', 'it', 'de'
+
   UserPreferences({
     this.claudeApiKey,
     this.useKilometers = true,
@@ -45,5 +51,7 @@ class UserPreferences extends HiveObject {
     this.notificationsEnabled = false,
     this.notificationHour = 8,
     this.notificationMinute = 0,
+    this.goalTimeSeconds,
+    this.localeCode = 'en',
   });
 }

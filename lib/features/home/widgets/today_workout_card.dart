@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../models/workout.dart';
@@ -19,28 +20,31 @@ class TodayWorkoutCard extends StatelessWidget {
   }
 
   Widget _buildRestCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.surfaceVariant),
-      ),
-      child: const Row(
-        children: [
-          _WorkoutIcon(color: AppColors.rest, icon: Icons.self_improvement),
-          SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Rest Day', style: AppTextStyles.heading3),
-              SizedBox(height: 4),
-              Text('Recovery is part of the plan', style: AppTextStyles.bodyMuted),
-            ],
-          ),
-        ],
-      ),
-    );
+    return Builder(builder: (context) {
+      final l10n = AppLocalizations.of(context)!;
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.surfaceVariant),
+        ),
+        child: Row(
+          children: [
+            const _WorkoutIcon(color: AppColors.rest, icon: Icons.self_improvement),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.workoutRestDay, style: AppTextStyles.heading3),
+                const SizedBox(height: 4),
+                Text(l10n.workoutRestDayDesc, style: AppTextStyles.bodyMuted),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildWorkoutCard() {

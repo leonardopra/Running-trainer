@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -17,12 +18,12 @@ import '../../../services/insights_service.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  String _greeting() {
+  String _greeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    if (hour < 21) return 'Good evening';
-    return 'Good night';
+    if (hour < 12) return l10n.greetingMorning;
+    if (hour < 17) return l10n.greetingAfternoon;
+    if (hour < 21) return l10n.greetingEvening;
+    return l10n.greetingNight;
   }
 
   int _currentWeekIndex(TrainingPlan plan) {
@@ -44,18 +45,19 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final plan = ref.watch(activePlanProvider);
     final settings = ref.watch(settingsProvider);
-    final greeting = '${_greeting()},\n${settings.name ?? 'Runner'}';
+    final l10n = AppLocalizations.of(context)!;
+    final greeting = '${_greeting(l10n)},\n${settings.name ?? 'Runner'}';
 
     return Scaffold(
       body: SafeArea(
         child: plan == null
-            ? _buildNoPlan(context, greeting)
-            : _buildWithPlan(context, plan, greeting),
+            ? _buildNoPlan(context, greeting, l10n)
+            : _buildWithPlan(context, plan, greeting, l10n),
       ),
     );
   }
 
-  Widget _buildNoPlan(BuildContext context, String greeting) {
+  Widget _buildNoPlan(BuildContext context, String greeting, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -63,15 +65,15 @@ class HomeScreen extends ConsumerWidget {
         children: [
           _buildHeader(context, greeting),
           const Spacer(),
-          const Center(
+          Center(
             child: Column(
               children: [
-                Icon(Icons.directions_run, color: AppColors.primary, size: 64),
-                SizedBox(height: 16),
-                Text('No active plan', style: AppTextStyles.heading2),
-                SizedBox(height: 8),
+                const Icon(Icons.directions_run, color: AppColors.primary, size: 64),
+                const SizedBox(height: 16),
+                Text(l10n.homeNoPlan, style: AppTextStyles.heading2),
+                const SizedBox(height: 8),
                 Text(
-                  'Your plan will appear here once generated.',
+                  l10n.homeNoPlanDesc,
                   style: AppTextStyles.bodyMuted,
                   textAlign: TextAlign.center,
                 ),
@@ -84,7 +86,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildWithPlan(BuildContext context, TrainingPlan plan, String greeting) {
+  Widget _buildWithPlan(BuildContext context, TrainingPlan plan, String greeting, AppLocalizations l10n) {
     final weekIndex = _currentWeekIndex(plan);
     final currentWeek = plan.weeks[weekIndex];
     final todayWorkout = _todayWorkout(currentWeek);
@@ -110,7 +112,7 @@ class HomeScreen extends ConsumerWidget {
                 border: Border.all(color: AppColors.primary.withOpacity(0.35)),
               ),
               child: Text(
-                'Week ${weekIndex + 1} of ${plan.totalWeeks} — ${currentWeek.weekTheme}',
+                l10n.homeWeekChip(weekIndex + 1, plan.totalWeeks, currentWeek.weekTheme),
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -128,7 +130,7 @@ class HomeScreen extends ConsumerWidget {
           // Today
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text('Today', style: AppTextStyles.heading3),
+            child: Text(l10n.homeToday, style: AppTextStyles.heading3),
           ),
           const SizedBox(height: 12),
           Padding(
@@ -144,7 +146,7 @@ class HomeScreen extends ConsumerWidget {
           // Week strip
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text('This Week', style: AppTextStyles.heading3),
+            child: Text(l10n.homeThisWeek, style: AppTextStyles.heading3),
           ),
           const SizedBox(height: 12),
           Padding(
@@ -168,7 +170,7 @@ class HomeScreen extends ConsumerWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14)),
                       ),
-                      child: const Text('View Full Plan',
+                      child: Text(l10n.btnViewFullPlan,
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w700)),
                     ),

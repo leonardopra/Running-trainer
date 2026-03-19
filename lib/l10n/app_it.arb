@@ -1,0 +1,245 @@
+{
+  "@@locale": "it",
+
+  "appTitle": "Allenatore di Corsa",
+
+  "greetingMorning": "Buongiorno",
+  "greetingAfternoon": "Buon pomeriggio",
+  "greetingEvening": "Buona sera",
+  "greetingNight": "Buona notte",
+
+  "btnContinue": "Continua",
+  "btnBuildPlan": "Crea il mio piano",
+  "btnViewFullPlan": "Vedi piano completo",
+  "btnCancel": "Annulla",
+  "btnReset": "Reimposta",
+  "btnMarkDone": "Segna come completato",
+  "btnUpdateLog": "Aggiorna registro",
+  "btnMarkNotDoneTooltip": "Segna come non completato",
+
+  "onboardingGoalTitle": "Qual è il tuo\nobbiettivo di corsa?",
+  "onboardingGoalSubtitle": "Creeremo un piano su misura per il tuo obiettivo.",
+
+  "onboardingRaceDateTitle": "Quando è la\ntua gara?",
+  "onboardingRaceDateSubtitle": "Scegli una data di gara o una durata di allenamento.",
+  "onboardingToggleRaceDate": "Data gara",
+  "onboardingToggleDuration": "Durata",
+  "onboardingSelectRaceDate": "Seleziona la data della gara",
+  "onboardingWeeks": "{n} settimane",
+  "@onboardingWeeks": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "onboardingFitnessTitle": "Qual è il tuo\nlivello di forma?",
+  "onboardingFitnessSubtitle": "Sii onesto — creeremo il piano giusto per te.",
+
+  "onboardingDaysTitle": "In quali giorni\npuoi allenarti?",
+  "onboardingDaysSubtitle": "Seleziona almeno 3 giorni per un piano efficace.",
+  "onboardingDaysSelected": "{count} giorni selezionati",
+  "@onboardingDaysSelected": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "dayMon": "Lun",
+  "dayTue": "Mar",
+  "dayWed": "Mer",
+  "dayThu": "Gio",
+  "dayFri": "Ven",
+  "daySat": "Sab",
+  "daySun": "Dom",
+
+  "onboardingProfileTitle": "Parlaci di\nte",
+  "onboardingProfileSubtitle": "Il nome è obbligatorio. I dati fisici aiutano a personalizzare il piano.",
+  "onboardingProfilePrivacy": "Tutti i dati sono crittografati e memorizzati solo su questo dispositivo.",
+  "formYourName": "Il tuo nome",
+  "formNameHint": "es. Alex",
+  "formAgeOptional": "Età (opzionale)",
+  "formAgeHint": "es. 32",
+  "formWeightOptional": "Peso kg (opzionale)",
+  "formWeightHint": "es. 70",
+  "formHeightOptional": "Altezza cm (opzionale)",
+  "formHeightHint": "es. 175",
+
+  "generatingTitle": "Creando il tuo piano...",
+  "generatingSubtitle": "Calcolando il programma di allenamento",
+  "generatingAITitle": "Aggiungendo coaching AI...",
+  "generatingAISubtitle": "Claude sta scrivendo le descrizioni degli allenamenti",
+  "generatingDoneTitle": "Piano pronto!",
+  "generatingDoneSubtitle": "Reindirizzamento al tuo piano...",
+  "generatingErrorTitle": "Qualcosa è andato storto",
+  "generatingErrorFallback": "Riprova",
+  "generatingIdleTitle": "Preparazione...",
+  "generatingIdleSubtitle": "Preparando tutto",
+  "generatingWeekOf": "Settimana {current} di {total}",
+  "@generatingWeekOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "homeNoPlan": "Nessun piano attivo",
+  "homeNoPlanDesc": "Il tuo piano apparirà qui una volta generato.",
+  "homeToday": "Oggi",
+  "homeThisWeek": "Questa settimana",
+  "homeWeekChip": "Settimana {current} di {total} — {theme}",
+  "@homeWeekChip": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" },
+      "theme": { "type": "String" }
+    }
+  },
+
+  "workoutRestDay": "Giorno di riposo",
+  "workoutRestDayDesc": "Il recupero fa parte del piano",
+  "workoutOverview": "Panoramica allenamento",
+  "workoutCoachTip": "Consiglio dell'allenatore",
+  "workoutNoAI": "Aggiungi la tua chiave API Claude nelle Impostazioni per sbloccare le descrizioni AI.",
+  "workoutTargetPace": "Passo obiettivo",
+  "workoutTargetPaceSub": "Basato sul tuo obiettivo {goal} · {time}",
+  "@workoutTargetPaceSub": {
+    "placeholders": {
+      "goal": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "workoutLogTitle": "Registra la corsa",
+  "workoutLogCompleted": "Completato",
+  "workoutLogDesc": "Registra la distanza effettiva, il tempo e le note.",
+  "workoutLogDistance": "Distanza (km)",
+  "workoutLogDuration": "Durata (min)",
+  "workoutLogNotes": "Note (opzionale)",
+  "workoutLogNotesHint": "Come ti sei sentito?",
+  "workoutLoggedSnackbar": "Allenamento registrato!",
+  "workoutStretchingRoutines": "Routine di stretching",
+  "workoutStretchingDesc": "Riscaldati prima e defatica dopo la corsa.",
+  "workoutPreRunBtn": "Riscaldamento\npre-corsa",
+  "workoutPostRunBtn": "Defaticamento\npost-corsa",
+
+  "settingsTitle": "Impostazioni",
+  "settingsProfileSection": "Profilo",
+  "settingsProfileDesc": "Il tuo nome e i dati fisici aiutano a personalizzare il piano.",
+  "settingsFormName": "Nome",
+  "settingsFormNameHint": "es. Alex",
+  "settingsFormAge": "Età",
+  "settingsFormAgeHint": "es. 32",
+  "settingsFormWeight": "Peso (kg)",
+  "settingsFormWeightHint": "es. 70",
+  "settingsFormHeight": "Altezza (cm)",
+  "settingsFormHeightHint": "es. 175",
+  "settingsPrivacy": "Tutti i dati del profilo sono crittografati e memorizzati solo su questo dispositivo.",
+  "settingsAISection": "Coaching AI",
+  "settingsAIDesc": "Inserisci la tua chiave API Claude per sbloccare le descrizioni degli allenamenti.",
+  "settingsAIKeyHint": "sk-ant-...",
+  "settingsUnitsSection": "Unità",
+  "settingsUseKm": "Usa chilometri",
+  "settingsNotificationsSection": "Notifiche",
+  "settingsNotificationsWebMsg": "I promemoria per gli allenamenti sono disponibili sull'app Android.",
+  "settingsNotificationsDesc": "Ricevi un promemoria all'orario scelto nei giorni di allenamento.",
+  "settingsWorkoutReminders": "Promemoria allenamento",
+  "settingsReminderTime": "Orario promemoria",
+  "settingsLanguageSection": "Lingua",
+  "settingsDataSection": "Dati",
+  "settingsResetAll": "Reimposta tutti i dati",
+  "settingsResetDialogTitle": "Reimposta tutti i dati",
+  "settingsResetDialogBody": "Questo eliminerà il piano di allenamento, il profilo e tutti i progressi. Questa azione non può essere annullata.",
+
+  "progressTitle": "Progressi",
+  "progressNoPlan": "Nessun piano di allenamento ancora.",
+  "progressCompletion": "Completamento",
+  "progressCompletionSub": "{completed} / {total} allenamenti",
+  "@progressCompletionSub": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "progressKmLogged": "Km registrati",
+  "progressKmLoggedSub": "di {n} km pianificati",
+  "@progressKmLoggedSub": {
+    "placeholders": { "n": { "type": "String" } }
+  },
+  "progressStreak": "Serie di corse",
+  "progressDay": "giorno",
+  "progressDays": "giorni",
+  "progressWeeksDone": "Settimane completate",
+  "progressWeeksDoneSub": "di {n} settimane",
+  "@progressWeeksDoneSub": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "progressWeeklyMileage": "Chilometraggio settimanale",
+  "progressWeeklyMileageDesc": "Chilometri pianificati vs registrati per settimana.",
+  "progressPlanned": "Pianificato",
+  "progressLogged": "Registrato",
+  "progressRecentActivity": "Attività recente",
+  "progressNoWorkouts": "Nessun allenamento registrato ancora.",
+  "progressToday": "Oggi",
+  "progressYesterday": "Ieri",
+  "progressDaysAgo": "{n}g fa",
+  "@progressDaysAgo": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "progressMin": "{n} min",
+  "@progressMin": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "paceTitle": "Zone di passo",
+  "paceRaceDistance": "Distanza gara",
+  "paceGoalTime": "Tempo obiettivo",
+  "paceGoalTimeDesc": "Inserisci il tuo tempo finale obiettivo per {distance}.",
+  "@paceGoalTimeDesc": {
+    "placeholders": { "distance": { "type": "String" } }
+  },
+  "paceNoTime": "Inserisci il tuo tempo obiettivo per vedere le zone di passo.",
+  "paceTrainingZones": "Zone di allenamento",
+  "paceTrainingZonesSub": "Basato su obiettivo {goal} · {distance}",
+  "@paceTrainingZonesSub": {
+    "placeholders": {
+      "goal": { "type": "String" },
+      "distance": { "type": "String" }
+    }
+  },
+  "paceHours": "h",
+  "paceMinutes": "min",
+  "paceSeconds": "sec",
+
+  "stretchPreRunTitle": "Riscaldamento pre-corsa",
+  "stretchPostRunTitle": "Defaticamento post-corsa",
+  "stretchDynamicHeading": "Riscaldamento dinamico",
+  "stretchStaticHeading": "Stretching statico",
+  "stretchPreRunBanner": "~8 min  •  Attiva i muscoli e previene gli infortuni",
+  "stretchPostRunBanner": "~12 min  •  Accelera il recupero e riduce i dolori",
+  "stretchTip": "Tocca un esercizio per vedere istruzioni e tutorial.",
+  "stretchWatchTutorial": "Guarda il tutorial su YouTube",
+
+  "goalTypeFiveK": "5 km",
+  "goalTypeTenK": "10 km",
+  "goalTypeHalfMarathon": "Mezza maratona",
+  "goalTypeMarathon": "Maratona",
+  "goalTypeGeneralFitness": "Forma fisica generale",
+
+  "fitnessLevelBeginner": "Principiante",
+  "fitnessLevelBeginnerDesc": "Meno di 15 km/settimana o alle prime armi",
+  "fitnessLevelIntermediate": "Intermedio",
+  "fitnessLevelIntermediateDesc": "20–40 km/settimana in modo costante da 6+ mesi",
+  "fitnessLevelAdvanced": "Avanzato",
+  "fitnessLevelAdvancedDesc": "50+ km/settimana con storia di allenamento strutturato",
+
+  "workoutTypeEasyRun": "Corsa facile",
+  "workoutTypeLongRun": "Corsa lunga",
+  "workoutTypeTempoRun": "Corsa in progressione",
+  "workoutTypeIntervalRun": "Allenamento intervallato",
+  "workoutTypeCrossTrain": "Allenamento crociato",
+  "workoutTypeRest": "Giorno di riposo",
+
+  "effortVeryEasy": "Molto facile",
+  "effortEasy": "Facile",
+  "effortModerate": "Moderato",
+  "effortHard": "Intenso",
+  "effortVeryHard": "Molto intenso",
+
+  "langEnglish": "English",
+  "langItalian": "Italiano",
+  "langGerman": "Deutsch"
+}

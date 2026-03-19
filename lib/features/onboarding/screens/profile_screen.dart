@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -61,6 +62,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -81,17 +84,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ],
               ),
               const SizedBox(height: 40),
-              Text('Tell us about\nyourself', style: AppTextStyles.heading1),
+              Text(l10n.onboardingProfileTitle, style: AppTextStyles.heading1),
               const SizedBox(height: 8),
-              Text(
-                'Your name is required. Physical details help personalise your plan.',
-                style: AppTextStyles.bodyMuted,
-              ),
+              Text(l10n.onboardingProfileSubtitle, style: AppTextStyles.bodyMuted),
               const SizedBox(height: 32),
               _buildField(
                 controller: _nameController,
-                label: 'Your name',
-                hint: 'e.g. Alex',
+                label: l10n.formYourName,
+                hint: l10n.formNameHint,
                 isRequired: true,
               ),
               const SizedBox(height: 16),
@@ -100,8 +100,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Expanded(
                     child: _buildField(
                       controller: _ageController,
-                      label: 'Age (optional)',
-                      hint: 'e.g. 32',
+                      label: l10n.formAgeOptional,
+                      hint: l10n.formAgeHint,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
@@ -110,8 +110,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Expanded(
                     child: _buildField(
                       controller: _weightController,
-                      label: 'Weight kg (optional)',
-                      hint: 'e.g. 70',
+                      label: l10n.formWeightOptional,
+                      hint: l10n.formWeightHint,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     ),
                   ),
@@ -120,15 +120,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 16),
               _buildField(
                 controller: _heightController,
-                label: 'Height cm (optional)',
-                hint: 'e.g. 175',
+                label: l10n.formHeightOptional,
+                hint: l10n.formHeightHint,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
               const SizedBox(height: 12),
-              Text(
-                'All data is encrypted and stored only on this device.',
-                style: AppTextStyles.caption,
-              ),
+              Text(l10n.onboardingProfilePrivacy, style: AppTextStyles.caption),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
@@ -142,7 +139,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Build My Plan', style: TextStyle(
+                  child: Text(l10n.btnBuildPlan, style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   )),

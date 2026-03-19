@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../data/stretch_data.dart';
@@ -11,12 +12,11 @@ class StretchingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final exercises = isPreRun ? preRunRoutine : postRunRoutine;
-    final title = isPreRun ? 'Pre-Run Warm-Up' : 'Post-Run Cool-Down';
+    final title = isPreRun ? l10n.stretchPreRunTitle : l10n.stretchPostRunTitle;
     final accentColor = isPreRun ? AppColors.primary : AppColors.secondary;
-    final summaryText = isPreRun
-        ? '~8 min  •  Activates muscles & prevents injury'
-        : '~12 min  •  Speeds recovery & reduces soreness';
+    final summaryText = isPreRun ? l10n.stretchPreRunBanner : l10n.stretchPostRunBanner;
     final summaryIcon = isPreRun ? Icons.local_fire_department : Icons.spa;
 
     return Scaffold(
@@ -57,7 +57,7 @@ class StretchingScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                isPreRun ? 'Dynamic Warm-Up' : 'Static Cool-Down',
+                                isPreRun ? l10n.stretchDynamicHeading : l10n.stretchStaticHeading,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
@@ -76,10 +76,7 @@ class StretchingScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.only(left: 4, bottom: 12, top: 8),
-                    child: Text(
-                      'Tap any exercise to see instructions and a tutorial.',
-                      style: AppTextStyles.caption,
-                    ),
+                    child: Text(l10n.stretchTip, style: AppTextStyles.caption),
                   ),
                   // Exercise list
                   ...exercises.map(

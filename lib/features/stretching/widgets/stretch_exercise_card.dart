@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -109,7 +110,7 @@ class _StretchExerciseCardState extends State<StretchExerciseCard> {
                   child: OutlinedButton.icon(
                     onPressed: _openTutorial,
                     icon: const Icon(Icons.play_circle_outline, size: 18),
-                    label: const Text('Watch Tutorial on YouTube'),
+                    label: Text(AppLocalizations.of(context)!.stretchWatchTutorial),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: _accentColor,
                       side: BorderSide(color: _accentColor.withOpacity(0.5)),

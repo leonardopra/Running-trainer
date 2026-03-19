@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../models/progress_stats.dart';
 
@@ -27,13 +28,16 @@ class WeeklyBarChart extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Legend
-        Row(
-          children: [
-            _LegendDot(color: AppColors.primary.withOpacity(0.3), label: 'Planned'),
-            const SizedBox(width: 16),
-            _LegendDot(color: AppColors.primary, label: 'Logged'),
-          ],
-        ),
+        Builder(builder: (context) {
+          final l10n = AppLocalizations.of(context)!;
+          return Row(
+            children: [
+              _LegendDot(color: AppColors.primary.withOpacity(0.3), label: l10n.progressPlanned),
+              const SizedBox(width: 16),
+              _LegendDot(color: AppColors.primary, label: l10n.progressLogged),
+            ],
+          );
+        }),
         const SizedBox(height: 12),
         SizedBox(
           height: 160,

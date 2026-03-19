@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -49,6 +50,7 @@ class _PlanGeneratingScreenState extends ConsumerState<PlanGeneratingScreen>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(generationProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Center(
@@ -76,13 +78,13 @@ class _PlanGeneratingScreenState extends ConsumerState<PlanGeneratingScreen>
               ),
               const SizedBox(height: 40),
               Text(
-                _getStatusText(state),
+                _getStatusText(state, l10n),
                 style: AppTextStyles.heading2,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                _getSubtitleText(state),
+                _getSubtitleText(state, l10n),
                 style: AppTextStyles.bodyMuted,
                 textAlign: TextAlign.center,
               ),
@@ -99,7 +101,7 @@ class _PlanGeneratingScreenState extends ConsumerState<PlanGeneratingScreen>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Week ${state.enrichedWeeks} of ${state.totalWeeks}',
+                  l10n.generatingWeekOf(state.enrichedWeeks, state.totalWeeks),
                   style: AppTextStyles.caption,
                 ),
               ],
@@ -110,33 +112,23 @@ class _PlanGeneratingScreenState extends ConsumerState<PlanGeneratingScreen>
     );
   }
 
-  String _getStatusText(GenerationState state) {
+  String _getStatusText(GenerationState state, AppLocalizations l10n) {
     switch (state.step) {
-      case GenerationStep.generating:
-        return 'Building your plan...';
-      case GenerationStep.enriching:
-        return 'Adding AI coaching...';
-      case GenerationStep.done:
-        return 'Plan ready!';
-      case GenerationStep.error:
-        return 'Something went wrong';
-      case GenerationStep.idle:
-        return 'Preparing...';
+      case GenerationStep.generating: return l10n.generatingTitle;
+      case GenerationStep.enriching:  return l10n.generatingAITitle;
+      case GenerationStep.done:       return l10n.generatingDoneTitle;
+      case GenerationStep.error:      return l10n.generatingErrorTitle;
+      case GenerationStep.idle:       return l10n.generatingIdleTitle;
     }
   }
 
-  String _getSubtitleText(GenerationState state) {
+  String _getSubtitleText(GenerationState state, AppLocalizations l10n) {
     switch (state.step) {
-      case GenerationStep.generating:
-        return 'Calculating your training schedule';
-      case GenerationStep.enriching:
-        return 'Claude is writing your workout descriptions';
-      case GenerationStep.done:
-        return 'Redirecting to your plan...';
-      case GenerationStep.error:
-        return state.errorMessage ?? 'Please try again';
-      case GenerationStep.idle:
-        return 'Getting things ready';
+      case GenerationStep.generating: return l10n.generatingSubtitle;
+      case GenerationStep.enriching:  return l10n.generatingAISubtitle;
+      case GenerationStep.done:       return l10n.generatingDoneSubtitle;
+      case GenerationStep.error:      return state.errorMessage ?? l10n.generatingErrorFallback;
+      case GenerationStep.idle:       return l10n.generatingIdleSubtitle;
     }
   }
 }

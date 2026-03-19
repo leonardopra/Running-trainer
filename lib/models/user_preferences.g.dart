@@ -27,13 +27,15 @@ class UserPreferencesAdapter extends TypeAdapter<UserPreferences> {
       notificationsEnabled: fields[7] as bool? ?? false,
       notificationHour: fields[8] as int? ?? 8,
       notificationMinute: fields[9] as int? ?? 0,
+      goalTimeSeconds: fields[10] as int?,
+      localeCode: fields[11] as String? ?? 'en',
     );
   }
 
   @override
   void write(BinaryWriter writer, UserPreferences obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.claudeApiKey)
       ..writeByte(1)
@@ -53,7 +55,11 @@ class UserPreferencesAdapter extends TypeAdapter<UserPreferences> {
       ..writeByte(8)
       ..write(obj.notificationHour)
       ..writeByte(9)
-      ..write(obj.notificationMinute);
+      ..write(obj.notificationMinute)
+      ..writeByte(10)
+      ..write(obj.goalTimeSeconds)
+      ..writeByte(11)
+      ..write(obj.localeCode);
   }
 
   @override

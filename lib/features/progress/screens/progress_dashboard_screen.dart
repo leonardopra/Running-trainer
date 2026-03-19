@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../models/enums.dart';
@@ -16,6 +17,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(progressStatsProvider);
     final plan = ref.read(storageServiceProvider).getActivePlan();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -28,12 +30,12 @@ class ProgressDashboardScreen extends ConsumerWidget {
               icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text('Progress', style: AppTextStyles.heading3),
+            title: Text(l10n.progressTitle, style: AppTextStyles.heading3),
           ),
           if (stats == null || plan == null)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               child: Center(
-                child: Text('No training plan yet.', style: AppTextStyles.bodyMuted),
+                child: Text(l10n.progressNoPlan, style: AppTextStyles.bodyMuted),
               ),
             )
           else
@@ -53,30 +55,30 @@ class ProgressDashboardScreen extends ConsumerWidget {
                       childAspectRatio: 1.6,
                       children: [
                         _StatCard(
-                          label: 'Completion',
+                          label: l10n.progressCompletion,
                           value: '${(stats.completionRate * 100).toStringAsFixed(0)}%',
-                          sub: '${stats.completedWorkouts} / ${stats.totalNonRestWorkouts} workouts',
+                          sub: l10n.progressCompletionSub(stats.completedWorkouts, stats.totalNonRestWorkouts),
                           color: AppColors.primary,
                           icon: Icons.check_circle_outline,
                         ),
                         _StatCard(
-                          label: 'Km Logged',
+                          label: l10n.progressKmLogged,
                           value: stats.totalLoggedKm.toStringAsFixed(1),
-                          sub: 'of ${stats.totalPlannedKm.toStringAsFixed(0)} km planned',
+                          sub: l10n.progressKmLoggedSub(stats.totalPlannedKm.toStringAsFixed(0)),
                           color: AppColors.secondary,
                           icon: Icons.route,
                         ),
                         _StatCard(
-                          label: 'Run Streak',
+                          label: l10n.progressStreak,
                           value: '${stats.currentStreak}',
-                          sub: stats.currentStreak == 1 ? 'day' : 'days',
+                          sub: stats.currentStreak == 1 ? l10n.progressDay : l10n.progressDays,
                           color: const Color(0xFFFF9800),
                           icon: Icons.local_fire_department,
                         ),
                         _StatCard(
-                          label: 'Weeks Done',
+                          label: l10n.progressWeeksDone,
                           value: '${stats.weeklyProgress.where((w) => w.completedWorkouts > 0).length}',
-                          sub: 'of ${plan.totalWeeks} weeks',
+                          sub: l10n.progressWeeksDoneSub(plan.totalWeeks),
                           color: const Color(0xFF9C27B0),
                           icon: Icons.calendar_month,
                         ),
@@ -85,12 +87,9 @@ class ProgressDashboardScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
 
                     // ── Weekly bar chart ──────────────────────────────────
-                    Text('Weekly Mileage', style: AppTextStyles.heading3),
+                    Text(l10n.progressWeeklyMileage, style: AppTextStyles.heading3),
                     const SizedBox(height: 4),
-                    Text(
-                      'Planned vs logged kilometres per week.',
-                      style: AppTextStyles.bodyMuted,
-                    ),
+                    Text(l10n.progressWeeklyMileageDesc, style: AppTextStyles.bodyMuted),
                     const SizedBox(height: 16),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -103,9 +102,9 @@ class ProgressDashboardScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
 
                     // ── Recent activity ───────────────────────────────────
-                    Text('Recent Activity', style: AppTextStyles.heading3),
+                    Text(l10n.progressRecentActivity, style: AppTextStyles.heading3),
                     const SizedBox(height: 12),
-                    _buildRecentActivity(plan),
+                    _buildRecentActivity(plan, l10n),
                   ],
                 ),
               ),
@@ -115,7 +114,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecentActivity(TrainingPlan plan) {
+  Widget _buildRecentActivity(TrainingPlan plan, AppLocalizations l10n) {
     final completed = plan.weeks
         .expand((week) => week.workouts)
         .where((w) => w.isCompleted && w.type != WorkoutType.rest)
@@ -136,11 +135,11 @@ class ProgressDashboardScreen extends ConsumerWidget {
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.hourglass_empty, color: AppColors.onSurfaceMuted, size: 20),
-            SizedBox(width: 12),
-            Text('No workouts logged yet.', style: AppTextStyles.bodyMuted),
+            const Icon(Icons.hourglass_empty, color: AppColors.onSurfaceMuted, size: 20),
+            const SizedBox(width: 12),
+            Text(l10n.progressNoWorkouts, style: AppTextStyles.bodyMuted),
           ],
         ),
       );
@@ -222,6 +221,7 @@ class _ActivityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final km = workout.actualDistanceKm ?? workout.distanceKm;
     final dur = workout.actualDurationMinutes ?? workout.durationMinutes;
     final date = workout.completedAt;
@@ -229,9 +229,9 @@ class _ActivityTile extends StatelessWidget {
     String dateStr = '';
     if (date != null) {
       final diff = DateTime.now().difference(date).inDays;
-      if (diff == 0) dateStr = 'Today';
-      else if (diff == 1) dateStr = 'Yesterday';
-      else dateStr = '${diff}d ago';
+      if (diff == 0) dateStr = l10n.progressToday;
+      else if (diff == 1) dateStr = l10n.progressYesterday;
+      else dateStr = l10n.progressDaysAgo(diff);
     }
 
     return Container(
@@ -274,7 +274,7 @@ class _ActivityTile extends StatelessWidget {
                       color: AppColors.onSurface,
                     )),
               if (dur != null)
-                Text('${dur} min', style: AppTextStyles.bodyMuted),
+                Text(l10n.progressMin(dur), style: AppTextStyles.bodyMuted),
               if (dateStr.isNotEmpty)
                 Text(dateStr, style: const TextStyle(
                   fontSize: 11, color: AppColors.onSurfaceMuted,

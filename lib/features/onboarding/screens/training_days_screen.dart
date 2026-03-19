@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -16,10 +17,14 @@ class TrainingDaysScreen extends ConsumerStatefulWidget {
 class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
   final Set<int> _selectedDays = {};
 
-  static const _dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  List<String> _dayLabels(AppLocalizations l10n) =>
+      [l10n.dayMon, l10n.dayTue, l10n.dayWed, l10n.dayThu, l10n.dayFri, l10n.daySat, l10n.daySun];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final dayLabels = _dayLabels(l10n);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -40,10 +45,9 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                 ],
               ),
               const SizedBox(height: 40),
-              Text('Which days can\nyou train?', style: AppTextStyles.heading1),
+              Text(l10n.onboardingDaysTitle, style: AppTextStyles.heading1),
               const SizedBox(height: 8),
-              Text('Select at least 3 days for an effective plan.',
-                  style: AppTextStyles.bodyMuted),
+              Text(l10n.onboardingDaysSubtitle, style: AppTextStyles.bodyMuted),
               const SizedBox(height: 32),
               Wrap(
                 spacing: 12,
@@ -76,7 +80,7 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          _dayLabels[i],
+                          dayLabels[i],
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -90,7 +94,7 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                '${_selectedDays.length} days selected',
+                l10n.onboardingDaysSelected(_selectedDays.length),
                 style: AppTextStyles.caption,
               ),
               const Spacer(),
@@ -112,7 +116,7 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Build My Plan', style: TextStyle(
+                  child: Text(l10n.btnBuildPlan, style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   )),

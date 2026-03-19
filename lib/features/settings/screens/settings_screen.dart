@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../providers/settings_provider.dart';
@@ -63,6 +64,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -71,23 +73,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Settings', style: AppTextStyles.heading3),
+        title: Text(l10n.settingsTitle, style: AppTextStyles.heading3),
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          // Profile section
-          Text('Profile', style: AppTextStyles.heading3),
+          // ── Profile ──────────────────────────────────────────────────────
+          Text(l10n.settingsProfileSection, style: AppTextStyles.heading3),
           const SizedBox(height: 8),
-          Text(
-            'Your name and physical data help personalise your plan.',
-            style: AppTextStyles.bodyMuted,
-          ),
+          Text(l10n.settingsProfileDesc, style: AppTextStyles.bodyMuted),
           const SizedBox(height: 16),
           _buildTextField(
             controller: _nameController,
-            label: 'Name',
-            hint: 'e.g. Alex',
+            label: l10n.settingsFormName,
+            hint: l10n.settingsFormNameHint,
             onChanged: (_) => _saveProfile(),
           ),
           const SizedBox(height: 12),
@@ -96,8 +95,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               Expanded(
                 child: _buildTextField(
                   controller: _ageController,
-                  label: 'Age',
-                  hint: 'e.g. 32',
+                  label: l10n.settingsFormAge,
+                  hint: l10n.settingsFormAgeHint,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (_) => _saveProfile(),
@@ -107,8 +106,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               Expanded(
                 child: _buildTextField(
                   controller: _weightController,
-                  label: 'Weight (kg)',
-                  hint: 'e.g. 70',
+                  label: l10n.settingsFormWeight,
+                  hint: l10n.settingsFormWeightHint,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (_) => _saveProfile(),
                 ),
@@ -118,31 +117,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 12),
           _buildTextField(
             controller: _heightController,
-            label: 'Height (cm)',
-            hint: 'e.g. 175',
+            label: l10n.settingsFormHeight,
+            hint: l10n.settingsFormHeightHint,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (_) => _saveProfile(),
           ),
           const SizedBox(height: 8),
-          Text(
-            'All profile data is encrypted and stored only on this device.',
-            style: AppTextStyles.caption,
-          ),
+          Text(l10n.settingsPrivacy, style: AppTextStyles.caption),
           const SizedBox(height: 32),
-          // AI Coaching section
-          Text('AI Coaching', style: AppTextStyles.heading3),
+
+          // ── AI Coaching ───────────────────────────────────────────────────
+          Text(l10n.settingsAISection, style: AppTextStyles.heading3),
           const SizedBox(height: 8),
-          Text(
-            'Enter your Claude API key to unlock AI-generated workout descriptions.',
-            style: AppTextStyles.bodyMuted,
-          ),
+          Text(l10n.settingsAIDesc, style: AppTextStyles.bodyMuted),
           const SizedBox(height: 16),
           TextField(
             controller: _apiKeyController,
             obscureText: _obscureKey,
             style: AppTextStyles.body,
             decoration: InputDecoration(
-              hintText: 'sk-ant-...',
+              hintText: l10n.settingsAIKeyHint,
               hintStyle: AppTextStyles.bodyMuted,
               filled: true,
               fillColor: AppColors.surface,
@@ -163,8 +157,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             },
           ),
           const SizedBox(height: 32),
-          // Units section
-          Text('Units', style: AppTextStyles.heading3),
+
+          // ── Units ─────────────────────────────────────────────────────────
+          Text(l10n.settingsUnitsSection, style: AppTextStyles.heading3),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(16),
@@ -174,9 +169,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             child: Row(
               children: [
-                const Expanded(
-                  child: Text('Use Kilometers', style: AppTextStyles.body),
-                ),
+                Expanded(child: Text(l10n.settingsUseKm, style: AppTextStyles.body)),
                 Switch(
                   value: settings.useKilometers,
                   onChanged: (value) {
@@ -188,19 +181,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 32),
-          // Notifications section
-          Text('Notifications', style: AppTextStyles.heading3),
+
+          // ── Notifications ─────────────────────────────────────────────────
+          Text(l10n.settingsNotificationsSection, style: AppTextStyles.heading3),
           const SizedBox(height: 8),
           if (kIsWeb)
-            Text(
-              'Workout reminders are available on the Android app.',
-              style: AppTextStyles.bodyMuted,
-            )
+            Text(l10n.settingsNotificationsWebMsg, style: AppTextStyles.bodyMuted)
           else ...[
-            Text(
-              'Get a reminder at your chosen time on each training day.',
-              style: AppTextStyles.bodyMuted,
-            ),
+            Text(l10n.settingsNotificationsDesc, style: AppTextStyles.bodyMuted),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(16),
@@ -212,9 +200,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 children: [
                   Row(
                     children: [
-                      const Expanded(
-                        child: Text('Workout Reminders',
-                            style: AppTextStyles.body),
+                      Expanded(
+                        child: Text(l10n.settingsWorkoutReminders, style: AppTextStyles.body),
                       ),
                       Switch(
                         value: settings.notificationsEnabled,
@@ -234,9 +221,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     const Divider(color: AppColors.surfaceVariant, height: 24),
                     Row(
                       children: [
-                        const Expanded(
-                          child: Text('Reminder time',
-                              style: AppTextStyles.body),
+                        Expanded(
+                          child: Text(l10n.settingsReminderTime, style: AppTextStyles.body),
                         ),
                         GestureDetector(
                           onTap: () async {
@@ -296,14 +282,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ],
           const SizedBox(height: 32),
-          // Data section
-          Text('Data', style: AppTextStyles.heading3),
+
+          // ── Language ──────────────────────────────────────────────────────
+          Text(l10n.settingsLanguageSection, style: AppTextStyles.heading3),
+          const SizedBox(height: 16),
+          _LanguagePicker(
+            currentCode: settings.localeCode,
+            onChanged: (code) =>
+                ref.read(settingsProvider.notifier).setLocale(code),
+          ),
+          const SizedBox(height: 32),
+
+          // ── Data ──────────────────────────────────────────────────────────
+          Text(l10n.settingsDataSection, style: AppTextStyles.heading3),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 52,
             child: OutlinedButton(
-              onPressed: () => _showResetDialog(context),
+              onPressed: () => _showResetDialog(context, l10n),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.error,
                 side: const BorderSide(color: AppColors.error),
@@ -311,7 +308,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text('Reset All Data'),
+              child: Text(l10n.settingsResetAll),
             ),
           ),
         ],
@@ -357,20 +354,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _showResetDialog(BuildContext context) {
+  void _showResetDialog(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Reset All Data', style: AppTextStyles.heading3),
-        content: const Text(
-          'This will delete your training plan, profile, and all progress. This cannot be undone.',
-          style: AppTextStyles.body,
-        ),
+        title: Text(l10n.settingsResetDialogTitle, style: AppTextStyles.heading3),
+        content: Text(l10n.settingsResetDialogBody, style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.btnCancel),
           ),
           TextButton(
             onPressed: () async {
@@ -379,9 +373,87 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               if (mounted) context.go('/onboarding/goal');
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Reset'),
+            child: Text(l10n.btnReset),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Language picker ────────────────────────────────────────────────────────
+
+class _LanguagePicker extends StatelessWidget {
+  final String currentCode;
+  final ValueChanged<String> onChanged;
+
+  const _LanguagePicker({
+    required this.currentCode,
+    required this.onChanged,
+  });
+
+  static const _languages = [
+    ('en', '🇬🇧', 'English'),
+    ('it', '🇮🇹', 'Italiano'),
+    ('de', '🇩🇪', 'Deutsch'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: _languages.map((lang) {
+          final (code, flag, name) = lang;
+          final isSelected = code == currentCode;
+          final isLast = lang == _languages.last;
+
+          return Column(
+            children: [
+              InkWell(
+                onTap: () => onChanged(code),
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 14),
+                  child: Row(
+                    children: [
+                      Text(flag, style: const TextStyle(fontSize: 22)),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w400,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.onSurface,
+                          ),
+                        ),
+                      ),
+                      if (isSelected)
+                        const Icon(Icons.check_circle,
+                            color: AppColors.primary, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+              if (!isLast)
+                const Divider(
+                  height: 1,
+                  color: AppColors.surfaceVariant,
+                  indent: 16,
+                  endIndent: 16,
+                ),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

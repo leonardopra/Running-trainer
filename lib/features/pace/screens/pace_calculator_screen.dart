@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/l10n_helpers.dart';
 import '../../../models/enums.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../providers/storage_provider.dart';
 import '../../../services/pace_calculator_service.dart';
 
@@ -47,16 +50,20 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
     final m = int.tryParse(_mCtrl.text) ?? 0;
     final s = int.tryParse(_sCtrl.text) ?? 0;
     final total = h * 3600 + m * 60 + s;
-    setState(() {
-      _zones = PaceCalculatorService.calculate(
-        goal: _goalType,
-        goalTimeSeconds: total,
-      );
-    });
+    final zones = PaceCalculatorService.calculate(
+      goal: _goalType,
+      goalTimeSeconds: total,
+    );
+    setState(() => _zones = zones);
+    // Auto-save valid goal time to preferences
+    if (zones.isNotEmpty) {
+      ref.read(settingsProvider.notifier).setGoalTime(total);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final distKm = PaceCalculatorService.distanceKm(_goalType);
     final distLabel = distKm == distKm.truncateToDouble()
         ? '${distKm.toInt()} km'
@@ -70,11 +77,10 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
             pinned: true,
             backgroundColor: AppColors.background,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios,
-                  color: AppColors.onSurface),
+              icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text('Pace Zones', style: AppTextStyles.heading3),
+            title: Text(l10n.paceTitle, style: AppTextStyles.heading3),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -83,7 +89,7 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ── Goal distance selector ──────────────────────────────
-                  Text('Race Distance', style: AppTextStyles.heading3),
+                  Text(l10n.paceRaceDistance, style: AppTextStyles.heading3),
                   const SizedBox(height: 12),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -113,7 +119,7 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
                                 ),
                               ),
                               child: Text(
-                                g.displayName,
+                                g.localizedName(l10n),
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -131,23 +137,17 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
                   const SizedBox(height: 28),
 
                   // ── Goal time input ─────────────────────────────────────
-                  Text('Goal Time', style: AppTextStyles.heading3),
+                  Text(l10n.paceGoalTime, style: AppTextStyles.heading3),
                   const SizedBox(height: 4),
-                  Text(
-                    'Enter your target finish time for $distLabel.',
-                    style: AppTextStyles.bodyMuted,
-                  ),
+                  Text(l10n.paceGoalTimeDesc(distLabel), style: AppTextStyles.bodyMuted),
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      _TimeField(
-                          ctrl: _hCtrl, label: 'h', maxVal: 9),
+                      _TimeField(ctrl: _hCtrl, label: l10n.paceHours, maxVal: 9),
                       const _TimeSep(),
-                      _TimeField(
-                          ctrl: _mCtrl, label: 'min', maxVal: 59),
+                      _TimeField(ctrl: _mCtrl, label: l10n.paceMinutes, maxVal: 59),
                       const _TimeSep(),
-                      _TimeField(
-                          ctrl: _sCtrl, label: 'sec', maxVal: 59),
+                      _TimeField(ctrl: _sCtrl, label: l10n.paceSeconds, maxVal: 59),
                     ],
                   ),
                   const SizedBox(height: 32),
@@ -160,25 +160,22 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.timer_outlined,
+                          const Icon(Icons.timer_outlined,
                               color: AppColors.onSurfaceMuted, size: 22),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
-                            child: Text(
-                              'Enter your goal time above to see your training pace zones.',
-                              style: AppTextStyles.bodyMuted,
-                            ),
+                            child: Text(l10n.paceNoTime, style: AppTextStyles.bodyMuted),
                           ),
                         ],
                       ),
                     ),
                   ] else ...[
-                    Text('Training Zones', style: AppTextStyles.heading3),
+                    Text(l10n.paceTrainingZones, style: AppTextStyles.heading3),
                     const SizedBox(height: 4),
                     Text(
-                      'Based on ${_goalType.displayName} goal · $distLabel',
+                      l10n.paceTrainingZonesSub(_goalType.localizedName(l10n), distLabel),
                       style: AppTextStyles.bodyMuted,
                     ),
                     const SizedBox(height: 14),

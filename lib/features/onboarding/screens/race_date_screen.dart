@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -25,6 +26,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
   Widget build(BuildContext context) {
     final onboarding = ref.watch(onboardingProvider);
     final isGeneralFitness = onboarding.goalType == GoalType.generalFitness;
+    final l10n = AppLocalizations.of(context)!;
 
     if (isGeneralFitness) {
       _useRaceDate = false;
@@ -50,19 +52,18 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
                 ],
               ),
               const SizedBox(height: 40),
-              Text('When is your\nrace?', style: AppTextStyles.heading1),
+              Text(l10n.onboardingRaceDateTitle, style: AppTextStyles.heading1),
               const SizedBox(height: 8),
-              Text('Set a race date or choose a training duration.',
-                  style: AppTextStyles.bodyMuted),
+              Text(l10n.onboardingRaceDateSubtitle, style: AppTextStyles.bodyMuted),
               const SizedBox(height: 32),
               if (!isGeneralFitness) ...[
-                _buildToggle(),
+                _buildToggle(l10n),
                 const SizedBox(height: 24),
               ],
               if (_useRaceDate && !isGeneralFitness)
-                _buildDatePicker()
+                _buildDatePicker(l10n)
               else
-                _buildWeekSelector(),
+                _buildWeekSelector(l10n),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
@@ -85,7 +86,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Continue', style: TextStyle(
+                  child: Text(l10n.btnContinue, style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   )),
@@ -103,12 +104,12 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
     return true;
   }
 
-  Widget _buildToggle() {
+  Widget _buildToggle(AppLocalizations l10n) {
     return Row(
       children: [
-        _toggleButton('Race Date', _useRaceDate, () => setState(() => _useRaceDate = true)),
+        _toggleButton(l10n.onboardingToggleRaceDate, _useRaceDate, () => setState(() => _useRaceDate = true)),
         const SizedBox(width: 12),
-        _toggleButton('Duration', !_useRaceDate, () => setState(() => _useRaceDate = false)),
+        _toggleButton(l10n.onboardingToggleDuration, !_useRaceDate, () => setState(() => _useRaceDate = false)),
       ],
     );
   }
@@ -136,7 +137,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
     );
   }
 
-  Widget _buildDatePicker() {
+  Widget _buildDatePicker(AppLocalizations l10n) {
     return GestureDetector(
       onTap: () async {
         final picked = await showDatePicker(
@@ -171,7 +172,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
             Text(
               _selectedDate != null
                   ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                  : 'Select race date',
+                  : l10n.onboardingSelectRaceDate,
               style: AppTextStyles.body,
             ),
           ],
@@ -180,7 +181,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
     );
   }
 
-  Widget _buildWeekSelector() {
+  Widget _buildWeekSelector(AppLocalizations l10n) {
     return Column(
       children: _weekOptions.map((weeks) {
         final isSelected = _selectedWeeks == weeks;
@@ -200,7 +201,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
             ),
             child: Row(
               children: [
-                Text('$weeks weeks', style: AppTextStyles.heading3),
+                Text(l10n.onboardingWeeks(weeks), style: AppTextStyles.heading3),
                 const Spacer(),
                 if (isSelected)
                   const Icon(Icons.check_circle, color: AppColors.primary),

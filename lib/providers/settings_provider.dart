@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/training_plan.dart';
 import '../models/user_preferences.dart';
@@ -22,6 +23,8 @@ class SettingsNotifier extends Notifier<UserPreferences> {
     bool? notificationsEnabled,
     int? notificationHour,
     int? notificationMinute,
+    Object? goalTimeSeconds = _keep,
+    String? localeCode,
   }) {
     return UserPreferences(
       claudeApiKey: claudeApiKey == _keep
@@ -38,6 +41,10 @@ class SettingsNotifier extends Notifier<UserPreferences> {
           notificationsEnabled ?? state.notificationsEnabled,
       notificationHour: notificationHour ?? state.notificationHour,
       notificationMinute: notificationMinute ?? state.notificationMinute,
+      goalTimeSeconds: goalTimeSeconds == _keep
+          ? state.goalTimeSeconds
+          : goalTimeSeconds as int?,
+      localeCode: localeCode ?? state.localeCode,
     );
   }
 
@@ -99,6 +106,14 @@ class SettingsNotifier extends Notifier<UserPreferences> {
     }
   }
 
+  Future<void> setGoalTime(int? seconds) async {
+    await _save(_copy(goalTimeSeconds: seconds));
+  }
+
+  Future<void> setLocale(String code) async {
+    await _save(_copy(localeCode: code));
+  }
+
   Future<void> resetAll() async {
     await NotificationService.cancelAll();
     await ref.read(storageServiceProvider).deleteAllData();
@@ -124,4 +139,9 @@ Future<void> scheduleNotificationsForPlan(
 
 final settingsProvider = NotifierProvider<SettingsNotifier, UserPreferences>(() {
   return SettingsNotifier();
+});
+
+final localeProvider = Provider<Locale>((ref) {
+  final code = ref.watch(settingsProvider).localeCode;
+  return Locale(code);
 });

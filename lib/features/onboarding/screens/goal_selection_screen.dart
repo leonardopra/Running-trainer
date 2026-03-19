@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/l10n_helpers.dart';
 import '../../../models/enums.dart';
 import '../../../providers/plan_generation_provider.dart';
 import '../widgets/selection_card.dart';
@@ -14,6 +16,7 @@ class GoalSelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(onboardingProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -24,16 +27,15 @@ class GoalSelectionScreen extends ConsumerWidget {
             children: [
               const OnboardingProgress(currentStep: 0, totalSteps: 5),
               const SizedBox(height: 40),
-              Text('What\'s your\nrunning goal?', style: AppTextStyles.heading1),
+              Text(l10n.onboardingGoalTitle, style: AppTextStyles.heading1),
               const SizedBox(height: 8),
-              Text('We\'ll build a plan tailored to your target.',
-                  style: AppTextStyles.bodyMuted),
+              Text(l10n.onboardingGoalSubtitle, style: AppTextStyles.bodyMuted),
               const SizedBox(height: 32),
               Expanded(
                 child: ListView(
                   children: GoalType.values.map((goal) {
                     return SelectionCard(
-                      title: goal.displayName,
+                      title: goal.localizedName(l10n),
                       emoji: goal.emoji,
                       isSelected: state.goalType == goal,
                       onTap: () => ref.read(onboardingProvider.notifier).setGoal(goal),
@@ -56,7 +58,7 @@ class GoalSelectionScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Continue', style: TextStyle(
+                  child: Text(l10n.btnContinue, style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   )),
