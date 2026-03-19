@@ -32,6 +32,7 @@ dev_dependencies:
   json_serializable: ^6.7.1
   riverpod_lint: ^2.3.10
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
 
 flutter_icons:
   android: true
@@ -42,6 +43,16 @@ flutter_icons:
     background_color: "#0A0A0F"
     theme_color: "#00E5FF"
   image_path: "assets/icon/icon.png"
+
+flutter_native_splash:
+  color: "#0A0A0F"
+  image: assets/icon/icon.png
+  android: true
+  ios: false
+  web: false
+  android_12:
+    image: assets/icon/icon.png
+    icon_background_color: "#0A0A0F"
 
 flutter:
   uses-material-design: true

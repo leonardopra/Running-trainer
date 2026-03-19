@@ -75,21 +75,7 @@ jobs:
         run: dart run flutter_launcher_icons
 
       - name: Generate splash screen (android)
-        run: |
-          dart pub global activate flutter_native_splash
-          cat >> pubspec.yaml << 'EOF'
-
-          flutter_native_splash:
-            color: "#0A0A0F"
-            image: assets/icon/icon.png
-            android: true
-            ios: false
-            web: false
-            android_12:
-              image: assets/icon/icon.png
-              icon_background_color: "#0A0A0F"
-          EOF
-          dart pub global run flutter_native_splash:create
+        run: flutter pub run flutter_native_splash:create
 
       - name: Build APK
         run: flutter build apk --release
