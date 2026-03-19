@@ -11,6 +11,8 @@ import '../../../providers/training_plan_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../widgets/today_workout_card.dart';
 import '../widgets/week_summary_strip.dart';
+import '../widgets/insights_strip.dart';
+import '../../../services/insights_service.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -86,102 +88,128 @@ class HomeScreen extends ConsumerWidget {
     final weekIndex = _currentWeekIndex(plan);
     final currentWeek = plan.weeks[weekIndex];
     final todayWorkout = _todayWorkout(currentWeek);
+    final insights = InsightsService.generate(plan);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context, greeting),
-          const SizedBox(height: 32),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            child: _buildHeader(context, greeting),
+          ),
+          const SizedBox(height: 28),
           // Week chip
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary.withOpacity(0.35)),
-            ),
-            child: Text(
-              'Week ${weekIndex + 1} of ${plan.totalWeeks} — ${currentWeek.weekTheme}',
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primary.withOpacity(0.35)),
+              ),
+              child: Text(
+                'Week ${weekIndex + 1} of ${plan.totalWeeks} — ${currentWeek.weekTheme}',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 28),
+          // Insights strip
+          if (insights.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            InsightsStrip(insights: insights),
+          ],
+          const SizedBox(height: 24),
           // Today
-          Text('Today', style: AppTextStyles.heading3),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text('Today', style: AppTextStyles.heading3),
+          ),
           const SizedBox(height: 12),
-          TodayWorkoutCard(
-            workout: todayWorkout,
-            onTap: todayWorkout != null && todayWorkout.type != WorkoutType.rest
-                ? () => context.push('/plan/workout/${todayWorkout.id}', extra: todayWorkout)
-                : null,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: TodayWorkoutCard(
+              workout: todayWorkout,
+              onTap: todayWorkout != null && todayWorkout.type != WorkoutType.rest
+                  ? () => context.push('/plan/workout/${todayWorkout.id}', extra: todayWorkout)
+                  : null,
+            ),
           ),
           const SizedBox(height: 28),
           // Week strip
-          Text('This Week', style: AppTextStyles.heading3),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text('This Week', style: AppTextStyles.heading3),
+          ),
           const SizedBox(height: 12),
-          WeekSummaryStrip(workouts: currentWeek.workouts),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: WeekSummaryStrip(workouts: currentWeek.workouts),
+          ),
           const SizedBox(height: 32),
           // Action buttons
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () => context.push('/plan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.background,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
+                      ),
+                      child: const Text('View Full Plan',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w700)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                SizedBox(
                   height: 52,
+                  width: 52,
                   child: ElevatedButton(
-                    onPressed: () => context.push('/plan'),
+                    onPressed: () => context.push('/progress'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.background,
+                      backgroundColor: AppColors.surface,
+                      foregroundColor: AppColors.onSurface,
+                      padding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
+                      side: const BorderSide(color: AppColors.surfaceVariant),
                     ),
-                    child: const Text('View Full Plan',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w700)),
+                    child: const Icon(Icons.bar_chart, size: 22),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                height: 52,
-                width: 52,
-                child: ElevatedButton(
-                  onPressed: () => context.push('/progress'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.surface,
-                    foregroundColor: AppColors.onSurface,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
-                    side: const BorderSide(color: AppColors.surfaceVariant),
+                const SizedBox(width: 12),
+                SizedBox(
+                  height: 52,
+                  width: 52,
+                  child: ElevatedButton(
+                    onPressed: () => context.push('/pace'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.surface,
+                      foregroundColor: AppColors.onSurface,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
+                      side: const BorderSide(color: AppColors.surfaceVariant),
+                    ),
+                    child: const Icon(Icons.speed, size: 22),
                   ),
-                  child: const Icon(Icons.bar_chart, size: 22),
                 ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                height: 52,
-                width: 52,
-                child: ElevatedButton(
-                  onPressed: () => context.push('/pace'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.surface,
-                    foregroundColor: AppColors.onSurface,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
-                    side: const BorderSide(color: AppColors.surfaceVariant),
-                  ),
-                  child: const Icon(Icons.speed, size: 22),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
