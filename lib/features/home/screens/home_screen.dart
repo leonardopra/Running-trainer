@@ -164,6 +164,23 @@ class HomeScreen extends ConsumerWidget {
                   child: const Icon(Icons.bar_chart, size: 22),
                 ),
               ),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 52,
+                width: 52,
+                child: ElevatedButton(
+                  onPressed: () => context.push('/pace'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.surface,
+                    foregroundColor: AppColors.onSurface,
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
+                    side: const BorderSide(color: AppColors.surfaceVariant),
+                  ),
+                  child: const Icon(Icons.speed, size: 22),
+                ),
+              ),
             ],
           ),
         ],
