@@ -25,9 +25,9 @@ jobs:
         with:
           channel: stable
 
-      # Scaffold missing web platform files without touching lib/
-      - name: Scaffold web platform
-        run: flutter create . --platforms web
+      # Scaffold platform files (android needed for flutter_launcher_icons even in web builds)
+      - name: Scaffold platforms
+        run: flutter create . --platforms web,android
 
       - name: Install dependencies
         run: flutter pub get
