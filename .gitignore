@@ -2,7 +2,7 @@
 .dart_tool/
 .packages
 build/
-*.g.dart
+# *.g.dart — excluded from rule: lib/models/*.g.dart are hand-written Hive adapters, not generated
 pubspec.lock
 
 # iOS
