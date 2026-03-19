@@ -6,6 +6,17 @@ Built with Flutter. All data stays on-device — no account, no backend, no subs
 
 ---
 
+## Try it now
+
+| Platform | Link |
+|---|---|
+| **Web** | [leonardopra.github.io/Running-trainer](https://leonardopra.github.io/Running-trainer/) |
+| **Android APK** | [Latest release](https://github.com/leonardopra/Running-trainer/releases/latest) → download `app-release.apk` |
+
+> **Android install note:** Since the APK is not distributed via the Play Store, you'll need to enable "Install from unknown sources" on your device. Go to **Settings → Apps → Special app access → Install unknown apps**, then allow your browser or file manager to install it.
+
+---
+
 ## How it works
 
 **Onboarding (4 screens):** Pick a goal (5K → Marathon or General Fitness), set a race date or choose a duration, select your fitness level, and toggle which days of the week you can train.
