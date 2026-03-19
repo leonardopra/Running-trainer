@@ -108,13 +108,14 @@ class GenerationNotifier extends Notifier<GenerationState> {
 
     state = state.copyWith(step: GenerationStep.generating);
 
-    // Step 1: Rule-based generation
+    // Read profile data saved during onboarding profile step
+    final settings = ref.read(settingsProvider);
+
+    // Step 1: Rule-based generation (age-aware)
     final generator = PlanGeneratorService();
     DateTime? raceDate;
     if (onboarding.raceDate != null) {
       raceDate = onboarding.raceDate;
-    } else if (onboarding.durationWeeks != null) {
-      raceDate = null; // will use default weeks
     }
 
     final plan = generator.generatePlan(
@@ -122,6 +123,7 @@ class GenerationNotifier extends Notifier<GenerationState> {
       fitnessLevel: onboarding.fitnessLevel!,
       trainingDaysPerWeek: onboarding.trainingDays.length.clamp(3, 6),
       raceDate: raceDate,
+      age: settings.age,
     );
 
     // Step 2: Save skeleton plan immediately
@@ -135,8 +137,7 @@ class GenerationNotifier extends Notifier<GenerationState> {
       enrichedWeeks: 0,
     );
 
-    // Step 3: Claude enrichment (optional)
-    final settings = ref.read(settingsProvider);
+    // Step 3: Claude enrichment (optional, profile-aware)
     if (settings.claudeApiKey != null && settings.claudeApiKey!.isNotEmpty) {
       final claudeService = ClaudeService();
       for (int i = 0; i < plan.weeks.length; i++) {
@@ -146,6 +147,9 @@ class GenerationNotifier extends Notifier<GenerationState> {
             apiKey: settings.claudeApiKey!,
             goalType: onboarding.goalType!.displayName,
             fitnessLevel: onboarding.fitnessLevel!.displayName,
+            age: settings.age,
+            weightKg: settings.weightKg,
+            heightCm: settings.heightCm,
           );
           plan.weeks[i] = enriched;
           await storage.savePlan(plan);

@@ -20,19 +20,31 @@ class UserPreferencesAdapter extends TypeAdapter<UserPreferences> {
       claudeApiKey: fields[0] as String?,
       useKilometers: fields[1] as bool? ?? true,
       hasCompletedOnboarding: fields[2] as bool? ?? false,
+      name: fields[3] as String?,
+      age: fields[4] as int?,
+      weightKg: fields[5] as double?,
+      heightCm: fields[6] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserPreferences obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.claudeApiKey)
       ..writeByte(1)
       ..write(obj.useKilometers)
       ..writeByte(2)
-      ..write(obj.hasCompletedOnboarding);
+      ..write(obj.hasCompletedOnboarding)
+      ..writeByte(3)
+      ..write(obj.name)
+      ..writeByte(4)
+      ..write(obj.age)
+      ..writeByte(5)
+      ..write(obj.weightKg)
+      ..writeByte(6)
+      ..write(obj.heightCm);
   }
 
   @override

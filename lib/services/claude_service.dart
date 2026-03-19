@@ -20,15 +20,27 @@ class ClaudeService {
     required String apiKey,
     required String goalType,
     required String fitnessLevel,
+    int? age,
+    double? weightKg,
+    double? heightCm,
   }) async {
     final workoutsJson = week.workouts
         .where((w) => w.type.name != 'rest')
         .map((w) => w.toJson())
         .toList();
 
+    String profileContext = '';
+    if (age != null) {
+      final maxHr = 220 - age;
+      profileContext = '\nRunner profile: age $age'
+          '${weightKg != null ? ', ${weightKg.toStringAsFixed(0)}kg' : ''}'
+          '${heightCm != null ? ', ${heightCm.toStringAsFixed(0)}cm' : ''}.'
+          '\nMax HR ≈ $maxHr bpm. Include age-appropriate recovery cues and HR zone guidance.';
+    }
+
     final prompt = '''Week ${week.weekNumber}: ${week.weekTheme}
 Target: ${week.targetWeeklyKm}km
-Goal: $goalType | Level: $fitnessLevel
+Goal: $goalType | Level: $fitnessLevel$profileContext
 
 Workouts to enrich:
 ${jsonEncode(workoutsJson)}
@@ -87,7 +99,6 @@ Rules: max 60 words per description, direct/practical tone, no markdown.''';
   }
 
   List<Map<String, dynamic>> _parseEnrichments(String response) {
-    // Strip markdown code fences if present
     var cleaned = response.trim();
     if (cleaned.startsWith('```')) {
       cleaned = cleaned.replaceAll(RegExp(r'```[a-z]*\n?'), '').trim();

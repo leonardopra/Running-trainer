@@ -45,7 +45,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
-                    child: OnboardingProgress(currentStep: 1, totalSteps: 4),
+                    child: OnboardingProgress(currentStep: 1, totalSteps: 5),
                   ),
                 ],
               ),

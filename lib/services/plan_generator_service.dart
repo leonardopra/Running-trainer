@@ -29,6 +29,7 @@ class PlanGeneratorService {
     required int trainingDaysPerWeek,
     DateTime? raceDate,
     DateTime? startDate,
+    int? age,
   }) {
     final start = startDate ?? DateTime.now();
     final totalWeeks = _calculateTotalWeeks(goalType, raceDate, start);
@@ -37,6 +38,7 @@ class PlanGeneratorService {
       fitnessLevel: fitnessLevel,
       trainingDaysPerWeek: trainingDaysPerWeek,
       totalWeeks: totalWeeks,
+      age: age,
     );
 
     return TrainingPlan(
@@ -67,22 +69,27 @@ class PlanGeneratorService {
     required FitnessLevel fitnessLevel,
     required int trainingDaysPerWeek,
     required int totalWeeks,
+    int? age,
   }) {
     final baseMileage = _baseMileage[fitnessLevel]!;
+    // Runners 50+ get more frequent recovery weeks (every 3rd instead of 4th)
+    final recoveryInterval = (age != null && age >= 50) ? 3 : 4;
+
     final mileageProgression = _calculateMileageProgression(
       baseMileage: baseMileage,
       totalWeeks: totalWeeks,
       isRaceGoal: goalType != GoalType.generalFitness,
+      recoveryInterval: recoveryInterval,
     );
 
     return List.generate(totalWeeks, (i) {
       final weekNum = i + 1;
       final weeklyKm = mileageProgression[i];
-      final isRecovery = weekNum % 4 == 0 && weekNum < totalWeeks - 2;
+      final isRecovery = weekNum % recoveryInterval == 0 && weekNum < totalWeeks - 2;
       final isTaper = goalType != GoalType.generalFitness &&
           weekNum > totalWeeks - 3;
 
-      final theme = _getWeekTheme(weekNum, totalWeeks, isRecovery, isTaper, goalType);
+      final theme = _getWeekTheme(weekNum, totalWeeks, isRecovery, isTaper, goalType, age: age);
       final workouts = _generateWorkoutsForWeek(
         weekNum: weekNum,
         trainingDaysPerWeek: trainingDaysPerWeek,
@@ -104,16 +111,19 @@ class PlanGeneratorService {
     required double baseMileage,
     required int totalWeeks,
     required bool isRaceGoal,
+    int recoveryInterval = 4,
   }) {
     final progression = <double>[];
     double current = baseMileage;
     double peak = baseMileage;
 
-    // Build up phase
+    // Runners 50+ use a slower 7%/week progression; others use 9%
+    final progressionRate = recoveryInterval == 3 ? 1.07 : 1.09;
+
     for (int i = 0; i < totalWeeks; i++) {
       final weekNum = i + 1;
       final isTaper = isRaceGoal && weekNum > totalWeeks - 3;
-      final isRecovery = weekNum % 4 == 0 && weekNum < totalWeeks - 2;
+      final isRecovery = weekNum % recoveryInterval == 0 && weekNum < totalWeeks - 2;
 
       if (isTaper) {
         final taperWeek = weekNum - (totalWeeks - 3);
@@ -132,7 +142,7 @@ class PlanGeneratorService {
         current = current * 0.80;
       } else {
         if (i > 0 && progression.isNotEmpty) {
-          current = progression.last * 1.09; // ~9% increase
+          current = progression.last * progressionRate;
         }
         if (current > peak) peak = current;
       }
@@ -143,7 +153,14 @@ class PlanGeneratorService {
     return progression;
   }
 
-  String _getWeekTheme(int weekNum, int totalWeeks, bool isRecovery, bool isTaper, GoalType goalType) {
+  String _getWeekTheme(
+    int weekNum,
+    int totalWeeks,
+    bool isRecovery,
+    bool isTaper,
+    GoalType goalType, {
+    int? age,
+  }) {
     if (weekNum == 1) return 'Foundation Week';
     if (isTaper) {
       final taperWeek = weekNum - (totalWeeks - 3);
@@ -154,7 +171,9 @@ class PlanGeneratorService {
         default: return 'Taper';
       }
     }
-    if (isRecovery) return 'Recovery Week';
+    if (isRecovery) {
+      return (age != null && age >= 50) ? 'Recovery Week (50+ protocol)' : 'Recovery Week';
+    }
     if (weekNum <= totalWeeks * 0.4) return 'Base Building';
     if (weekNum <= totalWeeks * 0.7) return 'Strength Phase';
     return 'Peak Training';
@@ -166,15 +185,9 @@ class PlanGeneratorService {
     required double weeklyKm,
     required bool isRecovery,
   }) {
-    // Define workout type distribution by training days
     final distribution = _getWorkoutDistribution(trainingDaysPerWeek);
-
-    // Scale distances
     final scaledWorkouts = _scaleWorkoutDistances(distribution, weeklyKm);
-
-    // Create 7-day schedule (Mon=1 through Sun=7)
     final schedule = _assignDaysOfWeek(scaledWorkouts, trainingDaysPerWeek);
-
     return schedule;
   }
 
@@ -194,7 +207,6 @@ class PlanGeneratorService {
   }
 
   List<(WorkoutType, double)> _scaleWorkoutDistances(List<WorkoutType> types, double weeklyKm) {
-    // Distribution percentages per workout type
     final typeWeights = <WorkoutType, double>{
       WorkoutType.easyRun: 1.0,
       WorkoutType.tempoRun: 0.8,
@@ -215,19 +227,16 @@ class PlanGeneratorService {
   }
 
   List<Workout> _assignDaysOfWeek(List<(WorkoutType, double)> workouts, int trainingDays) {
-    // Spread training days across the week, always put long run on Sunday (7)
-    // Standard spread: Mon(1), Wed(3), Fri(5), Sat(6), Sun(7) etc.
     const daysByCount = {
-      3: [1, 3, 7],       // Mon, Wed, Sun
-      4: [1, 3, 5, 7],    // Mon, Wed, Fri, Sun
-      5: [1, 2, 4, 5, 7], // Mon, Tue, Thu, Fri, Sun
-      6: [1, 2, 3, 5, 6, 7], // Mon, Tue, Wed, Fri, Sat, Sun
+      3: [1, 3, 7],
+      4: [1, 3, 5, 7],
+      5: [1, 2, 4, 5, 7],
+      6: [1, 2, 3, 5, 6, 7],
     };
 
     final days = daysByCount[trainingDays] ?? daysByCount[3]!;
     final allWorkouts = <Workout>[];
 
-    // Create all 7 days
     for (int day = 1; day <= 7; day++) {
       final dayIndex = days.indexOf(day);
       if (dayIndex >= 0 && dayIndex < workouts.length) {
@@ -241,7 +250,6 @@ class PlanGeneratorService {
           title: _getWorkoutTitle(type, distance),
         ));
       } else {
-        // Rest day
         allWorkouts.add(Workout(
           id: _uuid.v4(),
           type: WorkoutType.rest,

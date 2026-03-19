@@ -22,7 +22,7 @@ class GoalSelectionScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const OnboardingProgress(currentStep: 0, totalSteps: 4),
+              const OnboardingProgress(currentStep: 0, totalSteps: 5),
               const SizedBox(height: 40),
               Text('What\'s your\nrunning goal?', style: AppTextStyles.heading1),
               const SizedBox(height: 8),

@@ -13,9 +13,25 @@ class UserPreferences extends HiveObject {
   @HiveField(2)
   bool hasCompletedOnboarding = false;
 
+  @HiveField(3)
+  String? name;
+
+  @HiveField(4)
+  int? age;
+
+  @HiveField(5)
+  double? weightKg;
+
+  @HiveField(6)
+  double? heightCm;
+
   UserPreferences({
     this.claudeApiKey,
     this.useKilometers = true,
     this.hasCompletedOnboarding = false,
+    this.name,
+    this.age,
+    this.weightKg,
+    this.heightCm,
   });
 }

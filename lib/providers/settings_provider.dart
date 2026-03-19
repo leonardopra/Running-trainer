@@ -13,6 +13,10 @@ class SettingsNotifier extends Notifier<UserPreferences> {
       claudeApiKey: key.isEmpty ? null : key,
       useKilometers: state.useKilometers,
       hasCompletedOnboarding: state.hasCompletedOnboarding,
+      name: state.name,
+      age: state.age,
+      weightKg: state.weightKg,
+      heightCm: state.heightCm,
     );
     await ref.read(storageServiceProvider).savePreferences(state);
   }
@@ -22,6 +26,10 @@ class SettingsNotifier extends Notifier<UserPreferences> {
       claudeApiKey: state.claudeApiKey,
       useKilometers: value,
       hasCompletedOnboarding: state.hasCompletedOnboarding,
+      name: state.name,
+      age: state.age,
+      weightKg: state.weightKg,
+      heightCm: state.heightCm,
     );
     await ref.read(storageServiceProvider).savePreferences(state);
   }
@@ -31,6 +39,28 @@ class SettingsNotifier extends Notifier<UserPreferences> {
       claudeApiKey: state.claudeApiKey,
       useKilometers: state.useKilometers,
       hasCompletedOnboarding: true,
+      name: state.name,
+      age: state.age,
+      weightKg: state.weightKg,
+      heightCm: state.heightCm,
+    );
+    await ref.read(storageServiceProvider).savePreferences(state);
+  }
+
+  Future<void> updateProfile({
+    required String name,
+    int? age,
+    double? weightKg,
+    double? heightCm,
+  }) async {
+    state = UserPreferences(
+      claudeApiKey: state.claudeApiKey,
+      useKilometers: state.useKilometers,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
+      name: name.trim().isEmpty ? null : name.trim(),
+      age: age,
+      weightKg: weightKg,
+      heightCm: heightCm,
     );
     await ref.read(storageServiceProvider).savePreferences(state);
   }

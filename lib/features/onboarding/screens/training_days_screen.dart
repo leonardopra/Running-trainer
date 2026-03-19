@@ -35,7 +35,7 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
-                    child: OnboardingProgress(currentStep: 3, totalSteps: 4),
+                    child: OnboardingProgress(currentStep: 3, totalSteps: 5),
                   ),
                 ],
               ),
@@ -102,7 +102,7 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                       ? () {
                           ref.read(onboardingProvider.notifier)
                               .setTrainingDays(_selectedDays.toList()..sort());
-                          context.push('/onboarding/generating');
+                          context.push('/onboarding/profile');
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

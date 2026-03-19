@@ -36,7 +36,7 @@ class _PlanGeneratingScreenState extends ConsumerState<PlanGeneratingScreen>
   Future<void> _startGeneration() async {
     final plan = await ref.read(generationProvider.notifier).generatePlan();
     if (mounted && plan != null) {
-      context.go('/plan');
+      context.go('/home');
     }
   }
 

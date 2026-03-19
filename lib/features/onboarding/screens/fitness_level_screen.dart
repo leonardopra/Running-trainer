@@ -30,7 +30,7 @@ class FitnessLevelScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
-                    child: OnboardingProgress(currentStep: 2, totalSteps: 4),
+                    child: OnboardingProgress(currentStep: 2, totalSteps: 5),
                   ),
                 ],
               ),
