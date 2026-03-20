@@ -42,6 +42,15 @@ enum WorkoutType {
   crossTrain,
 }
 
+@HiveType(typeId: 14)
+enum WorkoutFeeling {
+  @HiveField(0) great,
+  @HiveField(1) good,
+  @HiveField(2) ok,
+  @HiveField(3) tired,
+  @HiveField(4) injured,
+}
+
 @HiveType(typeId: 13)
 enum EffortLevel {
   @HiveField(0)

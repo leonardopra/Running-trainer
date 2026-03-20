@@ -6,6 +6,60 @@ part of 'enums.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
+class WorkoutFeelingAdapter extends TypeAdapter<WorkoutFeeling> {
+  @override
+  final int typeId = 14;
+
+  @override
+  WorkoutFeeling read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return WorkoutFeeling.great;
+      case 1:
+        return WorkoutFeeling.good;
+      case 2:
+        return WorkoutFeeling.ok;
+      case 3:
+        return WorkoutFeeling.tired;
+      case 4:
+        return WorkoutFeeling.injured;
+      default:
+        return WorkoutFeeling.ok;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, WorkoutFeeling obj) {
+    switch (obj) {
+      case WorkoutFeeling.great:
+        writer.writeByte(0);
+        break;
+      case WorkoutFeeling.good:
+        writer.writeByte(1);
+        break;
+      case WorkoutFeeling.ok:
+        writer.writeByte(2);
+        break;
+      case WorkoutFeeling.tired:
+        writer.writeByte(3);
+        break;
+      case WorkoutFeeling.injured:
+        writer.writeByte(4);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WorkoutFeelingAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class GoalTypeAdapter extends TypeAdapter<GoalType> {
   @override
   final int typeId = 10;

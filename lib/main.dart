@@ -16,6 +16,7 @@ void main() async {
   await Hive.initFlutter();
 
   // Register adapters
+  Hive.registerAdapter(WorkoutFeelingAdapter());
   Hive.registerAdapter(GoalTypeAdapter());
   Hive.registerAdapter(FitnessLevelAdapter());
   Hive.registerAdapter(WorkoutTypeAdapter());

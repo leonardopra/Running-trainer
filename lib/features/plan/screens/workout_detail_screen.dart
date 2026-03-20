@@ -26,6 +26,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
   final _durationCtrl = TextEditingController();
   final _notesCtrl    = TextEditingController();
   bool _saving = false;
+  int? _rpe;
+  WorkoutFeeling? _feeling;
 
   @override
   void initState() {
@@ -40,6 +42,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     if (w.notes != null) {
       _notesCtrl.text = w.notes!;
     }
+    _rpe = w.rpe;
+    _feeling = w.feeling;
   }
 
   @override
@@ -58,6 +62,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     w.actualDistanceKm      = dist;
     w.actualDurationMinutes = dur;
     w.notes                 = _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim();
+    w.rpe                   = _rpe;
+    w.feeling               = _feeling;
     w.isCompleted           = true;
     w.completedAt           ??= DateTime.now();
     await w.save();
@@ -82,12 +88,37 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     w.actualDistanceKm      = null;
     w.actualDurationMinutes = null;
     w.notes                 = null;
+    w.rpe                   = null;
+    w.feeling               = null;
     _distanceCtrl.clear();
     _durationCtrl.clear();
     _notesCtrl.clear();
     await w.save();
     ref.invalidate(activePlanProvider);
-    setState(() {});
+    setState(() {
+      _rpe = null;
+      _feeling = null;
+    });
+  }
+
+  String _feelingEmoji(WorkoutFeeling f) {
+    switch (f) {
+      case WorkoutFeeling.great:   return '😄';
+      case WorkoutFeeling.good:    return '🙂';
+      case WorkoutFeeling.ok:      return '😐';
+      case WorkoutFeeling.tired:   return '😴';
+      case WorkoutFeeling.injured: return '🤕';
+    }
+  }
+
+  String _feelingLabel(WorkoutFeeling f, AppLocalizations l10n) {
+    switch (f) {
+      case WorkoutFeeling.great:   return l10n.feelingGreat;
+      case WorkoutFeeling.good:    return l10n.feelingGood;
+      case WorkoutFeeling.ok:      return l10n.feelingOk;
+      case WorkoutFeeling.tired:   return l10n.feelingTired;
+      case WorkoutFeeling.injured: return l10n.feelingInjured;
+    }
   }
 
   Color _getTypeColor(WorkoutType type) {
@@ -299,6 +330,114 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                             label: l10n.workoutLogNotes,
                             hint: l10n.workoutLogNotesHint,
                             maxLines: 2,
+                          ),
+                          const SizedBox(height: 16),
+                          // RPE Slider
+                          Row(
+                            children: [
+                              Text(l10n.rpeLabel,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.onSurfaceMuted,
+                                  )),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  _rpe != null ? '${_rpe}' : '—',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Slider(
+                            min: 1,
+                            max: 10,
+                            divisions: 9,
+                            value: (_rpe ?? 5).toDouble(),
+                            activeColor: AppColors.primary,
+                            onChanged: (v) =>
+                                setState(() => _rpe = v.round()),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(l10n.rpeEasy,
+                                    style: const TextStyle(
+                                        fontSize: 11,
+                                        color: AppColors.onSurfaceMuted)),
+                                Text(l10n.rpeMax,
+                                    style: const TextStyle(
+                                        fontSize: 11,
+                                        color: AppColors.onSurfaceMuted)),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Feeling Picker
+                          Text(l10n.feelingLabel,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.onSurfaceMuted,
+                              )),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: WorkoutFeeling.values.map((f) {
+                              final selected = _feeling == f;
+                              return GestureDetector(
+                                onTap: () =>
+                                    setState(() => _feeling = selected ? null : f),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: selected
+                                        ? AppColors.secondary.withOpacity(0.2)
+                                        : AppColors.surfaceVariant,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: selected
+                                          ? AppColors.secondary
+                                          : Colors.transparent,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        _feelingEmoji(f),
+                                        style: const TextStyle(fontSize: 20),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        _feelingLabel(f, l10n),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w500,
+                                          color: selected
+                                              ? AppColors.secondary
+                                              : AppColors.onSurfaceMuted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
                           const SizedBox(height: 14),
                           SizedBox(

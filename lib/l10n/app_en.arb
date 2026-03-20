@@ -374,5 +374,20 @@
       "weeks": { "type": "int" },
       "race": { "type": "String" }
     }
-  }
+  },
+
+  "rpeLabel": "Perceived effort (RPE)",
+  "rpeEasy": "Easy",
+  "rpeMax": "Maximum",
+  "feelingLabel": "How did you feel?",
+  "feelingGreat": "Great",
+  "feelingGood": "Good",
+  "feelingOk": "Ok",
+  "feelingTired": "Tired",
+  "feelingInjured": "Injured",
+
+  "insightHighRpeEasyTitle": "Easy runs feel too hard",
+  "insightHighRpeEasyBody": "Your recent easy runs have a high RPE. Slow down to maximise aerobic benefits.",
+  "insightNegativeFeelingTitle": "Signs of fatigue",
+  "insightNegativeFeelingBody": "You've reported tiredness or discomfort in multiple consecutive sessions. Consider adding an extra rest day."
 }

@@ -47,6 +47,12 @@ class Workout extends HiveObject {
   @HiveField(13)
   String? notes;
 
+  @HiveField(14)
+  int? rpe; // 1–10, Rating of Perceived Exertion
+
+  @HiveField(15)
+  WorkoutFeeling? feeling;
+
   Workout({
     required this.id,
     required this.type,
@@ -62,6 +68,8 @@ class Workout extends HiveObject {
     this.actualDurationMinutes,
     this.completedAt,
     this.notes,
+    this.rpe,
+    this.feeling,
   });
 
   Map<String, dynamic> toJson() => {

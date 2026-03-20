@@ -196,6 +196,61 @@ class InsightsService {
       }
     }
 
+    // ── 12. Easy runs RPE too high ───────────────────────────────────────
+    final recentEasyWithRpe = plan.weeks
+        .expand((w) => w.workouts)
+        .where((w) =>
+            w.type == WorkoutType.easyRun &&
+            w.isCompleted &&
+            w.rpe != null &&
+            w.completedAt != null &&
+            today.difference(w.completedAt!).inDays <= 14)
+        .toList();
+    if (recentEasyWithRpe.length >= 3) {
+      final highRpeCount =
+          recentEasyWithRpe.where((w) => w.rpe! >= 7).length;
+      if (highRpeCount >= 3) {
+        insights.add(CoachingInsight(
+          title: l10n.insightHighRpeEasyTitle,
+          body: l10n.insightHighRpeEasyBody,
+          icon: Icons.monitor_heart,
+          type: InsightType.warning,
+          priority: 11,
+        ));
+      }
+    }
+
+    // ── 13. Consecutive negative feeling ────────────────────────────────
+    final completedByDate = plan.weeks
+        .expand((w) => w.workouts)
+        .where((w) =>
+            w.isCompleted &&
+            w.feeling != null &&
+            w.type != WorkoutType.rest &&
+            w.completedAt != null)
+        .toList()
+      ..sort((a, b) => b.completedAt!.compareTo(a.completedAt!));
+    if (completedByDate.length >= 2) {
+      int consecutiveNeg = 0;
+      for (final w in completedByDate) {
+        if (w.feeling == WorkoutFeeling.tired ||
+            w.feeling == WorkoutFeeling.injured) {
+          consecutiveNeg++;
+        } else {
+          break;
+        }
+      }
+      if (consecutiveNeg >= 2) {
+        insights.add(CoachingInsight(
+          title: l10n.insightNegativeFeelingTitle,
+          body: l10n.insightNegativeFeelingBody,
+          icon: Icons.bedtime,
+          type: InsightType.warning,
+          priority: 9,
+        ));
+      }
+    }
+
     // ── 9. Long run skipped last week ─────────────────────────────────────
     if (currentWeekIndex > 0) {
       final prevWeek = plan.weeks[currentWeekIndex - 1];

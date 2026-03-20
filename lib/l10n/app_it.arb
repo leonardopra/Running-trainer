@@ -374,5 +374,20 @@
       "weeks": { "type": "int" },
       "race": { "type": "String" }
     }
-  }
+  },
+
+  "rpeLabel": "Sforzo percepito (RPE)",
+  "rpeEasy": "Facile",
+  "rpeMax": "Massimo",
+  "feelingLabel": "Come ti sei sentito?",
+  "feelingGreat": "Ottimo",
+  "feelingGood": "Bene",
+  "feelingOk": "Così così",
+  "feelingTired": "Stanco",
+  "feelingInjured": "Infortunato",
+
+  "insightHighRpeEasyTitle": "Le uscite easy sono troppo dure",
+  "insightHighRpeEasyBody": "Le tue recenti uscite easy hanno un RPE elevato. Rallenta per massimizzare i benefici aerobici.",
+  "insightNegativeFeelingTitle": "Segnali di affaticamento",
+  "insightNegativeFeelingBody": "Hai segnalato stanchezza o disagio in più sessioni consecutive. Considera un giorno di riposo extra."
 }

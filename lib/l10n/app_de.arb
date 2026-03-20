@@ -374,5 +374,20 @@
       "weeks": { "type": "int" },
       "race": { "type": "String" }
     }
-  }
+  },
+
+  "rpeLabel": "Wahrgenommene Anstrengung",
+  "rpeEasy": "Leicht",
+  "rpeMax": "Maximum",
+  "feelingLabel": "Wie hast du dich gefühlt?",
+  "feelingGreat": "Sehr gut",
+  "feelingGood": "Gut",
+  "feelingOk": "Ok",
+  "feelingTired": "Müde",
+  "feelingInjured": "Verletzt",
+
+  "insightHighRpeEasyTitle": "Leichte Läufe fühlen sich zu schwer an",
+  "insightHighRpeEasyBody": "Deine letzten leichten Läufe hatten ein hohes RPE. Verlangsame dich, um die aeroben Vorteile zu maximieren.",
+  "insightNegativeFeelingTitle": "Anzeichen von Erschöpfung",
+  "insightNegativeFeelingBody": "Du hast in mehreren aufeinanderfolgenden Einheiten Müdigkeit oder Beschwerden gemeldet. Erwäge einen zusätzlichen Ruhetag."
 }
