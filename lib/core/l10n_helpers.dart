@@ -1,4 +1,4 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../models/enums.dart';
 
 extension LocalizedGoalType on GoalType {
