@@ -1,68 +1,72 @@
 #!/usr/bin/env python3
 """
-Patches android/app/build.gradle after `flutter create` to enable
+Patches android/app/build.gradle(.kts) after `flutter create` to enable
 core library desugaring required by flutter_local_notifications.
-Handles both old (apply plugin) and new (plugins {}) Flutter templates.
+Handles both Groovy DSL (build.gradle) and Kotlin DSL (build.gradle.kts).
 """
-import re, sys
+import re, sys, os
 
-BUILD_GRADLE = 'android/app/build.gradle'
+GROOVY = 'android/app/build.gradle'
+KOTLIN = 'android/app/build.gradle.kts'
 
-try:
-    with open(BUILD_GRADLE) as f:
-        content = f.read()
-except FileNotFoundError:
-    print(f'ERROR: {BUILD_GRADLE} not found. Run flutter create first.', file=sys.stderr)
+# Determine which file exists
+if os.path.exists(KOTLIN):
+    path = KOTLIN
+    is_kts = True
+elif os.path.exists(GROOVY):
+    path = GROOVY
+    is_kts = False
+else:
+    print(f'ERROR: neither {GROOVY} nor {KOTLIN} found. Run flutter create first.', file=sys.stderr)
     sys.exit(1)
 
+print(f'Found: {path}')
+
+with open(path) as f:
+    content = f.read()
+
+print("=== build.gradle content ===")
+print(content)
+print("=== end ===")
+
 # Guard: skip if already patched
-if 'coreLibraryDesugaringEnabled' in content:
-    print('build.gradle already patched — skipping.')
+if 'coreLibraryDesugaring' in content:
+    print('Already patched — skipping.')
     sys.exit(0)
 
-print("=== Original build.gradle ===")
-print(content)
-print("=== End ===")
+if is_kts:
+    # Kotlin DSL syntax
+    DESUGARING_FLAG = 'isCoreLibraryDesugaringEnabled = true'
+    DESUGARING_DEP  = '    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")'
+else:
+    # Groovy DSL syntax
+    DESUGARING_FLAG = 'coreLibraryDesugaringEnabled true'
+    DESUGARING_DEP  = "    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'"
 
-# ── 1. Enable coreLibraryDesugaringEnabled in compileOptions ──────────────────
+# ── 1. Add flag inside compileOptions ────────────────────────────────────────
 if 'compileOptions' in content:
     content = re.sub(
         r'(compileOptions\s*\{)',
-        r'\1\n        coreLibraryDesugaringEnabled true',
+        r'\1\n        ' + DESUGARING_FLAG,
         content,
         count=1,
     )
 else:
-    # No compileOptions block: inject one before the closing brace of android {}
-    content = re.sub(
-        r'(android\s*\{(?:[^{}]|\{[^{}]*\})*)\}',
-        lambda m: m.group(0)[:-1] + (
-            '\n    compileOptions {\n'
-            '        coreLibraryDesugaringEnabled true\n'
-            '        sourceCompatibility JavaVersion.VERSION_1_8\n'
-            '        targetCompatibility JavaVersion.VERSION_1_8\n'
-            '    }\n}'
-        ),
-        content,
-        count=1,
-        flags=re.DOTALL,
-    )
+    print('WARNING: compileOptions block not found — build may still fail.')
 
 # ── 2. Add desugar dependency ─────────────────────────────────────────────────
-DESUGAR = "    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'"
-
 if re.search(r'dependencies\s*\{', content):
     content = re.sub(
         r'(dependencies\s*\{)',
-        r'\1\n' + DESUGAR,
+        r'\1\n' + DESUGARING_DEP,
         content,
         count=1,
     )
 else:
-    # No dependencies block at all: append one
-    content = content.rstrip() + f'\n\ndependencies {{\n{DESUGAR}\n}}\n'
+    # No dependencies block: append one at the end
+    content = content.rstrip() + f'\n\ndependencies {{\n{DESUGARING_DEP}\n}}\n'
 
-with open(BUILD_GRADLE, 'w') as f:
+with open(path, 'w') as f:
     f.write(content)
 
-print('build.gradle patched successfully.')
+print(f'{path} patched successfully.')
