@@ -26,6 +26,7 @@ class WeekSummaryStrip extends StatelessWidget {
         );
 
         final color = _workoutColor(workout.type);
+        final isCompleted = workout.isCompleted && workout.type != WorkoutType.rest;
 
         return Column(
           children: [
@@ -33,10 +34,16 @@ class WeekSummaryStrip extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: isCompleted
+                    ? AppColors.secondary.withOpacity(0.15)
+                    : color.withOpacity(0.15),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isToday ? AppColors.primary : color.withOpacity(0.5),
+                  color: isToday
+                      ? AppColors.primary
+                      : isCompleted
+                          ? AppColors.secondary.withOpacity(0.6)
+                          : color.withOpacity(0.5),
                   width: isToday ? 2.0 : 1.0,
                 ),
               ),
@@ -44,8 +51,14 @@ class WeekSummaryStrip extends StatelessWidget {
                 child: Icon(
                   workout.type == WorkoutType.rest
                       ? Icons.horizontal_rule
-                      : Icons.directions_run,
-                  color: isToday ? AppColors.primary : color,
+                      : isCompleted
+                          ? Icons.check
+                          : Icons.directions_run,
+                  color: isToday
+                      ? AppColors.primary
+                      : isCompleted
+                          ? AppColors.secondary
+                          : color,
                   size: 15,
                 ),
               ),

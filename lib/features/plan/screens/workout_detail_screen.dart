@@ -61,6 +61,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     w.isCompleted           = true;
     w.completedAt           ??= DateTime.now();
     await w.save();
+    ref.invalidate(activePlanProvider);
     setState(() => _saving = false);
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
@@ -85,6 +86,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     _durationCtrl.clear();
     _notesCtrl.clear();
     await w.save();
+    ref.invalidate(activePlanProvider);
     setState(() {});
   }
 
@@ -137,7 +139,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                     children: [
                       if (w.distanceKm != null) ...[
                         _StatCard(
-                          label: 'Distance',
+                          label: l10n.workoutStatDistance,
                           value: '${w.distanceKm!.toStringAsFixed(1)} km',
                           color: typeColor,
                         ),
@@ -145,14 +147,14 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       ],
                       if (w.durationMinutes != null) ...[
                         _StatCard(
-                          label: 'Duration',
+                          label: l10n.workoutStatDuration,
                           value: '${w.durationMinutes} min',
                           color: typeColor,
                         ),
                         const SizedBox(width: 12),
                       ],
                       _StatCard(
-                        label: 'Effort',
+                        label: l10n.workoutStatEffort,
                         value: w.effortLevel.displayName,
                         color: Color(w.effortLevel.colorValue),
                       ),

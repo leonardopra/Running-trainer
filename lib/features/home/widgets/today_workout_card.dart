@@ -51,42 +51,71 @@ class TodayWorkoutCard extends StatelessWidget {
     final w = workout!;
     final color = _workoutColor(w.type);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.4)),
-        ),
-        child: Row(
-          children: [
-            _WorkoutIcon(color: color, icon: _workoutIcon(w.type)),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(w.title, style: AppTextStyles.heading3),
-                  if (w.description != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      w.description!,
-                      style: AppTextStyles.bodyMuted,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+    return Builder(builder: (context) {
+      final l10n = AppLocalizations.of(context)!;
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: color.withOpacity(0.4)),
+          ),
+          child: Row(
+            children: [
+              _WorkoutIcon(color: color, icon: _workoutIcon(w.type)),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(child: Text(w.title, style: AppTextStyles.heading3)),
+                        if (w.isCompleted) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(children: [
+                              const Icon(Icons.check_circle,
+                                  color: AppColors.secondary, size: 12),
+                              const SizedBox(width: 4),
+                              Text(l10n.workoutLogCompleted,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.secondary,
+                                  )),
+                            ]),
+                          ),
+                        ],
+                      ],
                     ),
+                    if (w.description != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        w.description!,
+                        style: AppTextStyles.bodyMuted,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            if (onTap != null)
-              const Icon(Icons.chevron_right, color: AppColors.onSurfaceMuted),
-          ],
+              if (onTap != null)
+                const Icon(Icons.chevron_right, color: AppColors.onSurfaceMuted),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Color _workoutColor(WorkoutType type) {

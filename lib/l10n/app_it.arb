@@ -103,6 +103,10 @@
       "time": { "type": "String" }
     }
   },
+  "workoutStatDistance": "Distanza",
+  "workoutStatDuration": "Durata",
+  "workoutStatEffort": "Sforzo",
+
   "workoutLogTitle": "Registra la corsa",
   "workoutLogCompleted": "Completato",
   "workoutLogDesc": "Registra la distanza effettiva, il tempo e le note.",

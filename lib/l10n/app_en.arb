@@ -103,6 +103,10 @@
       "time": { "type": "String" }
     }
   },
+  "workoutStatDistance": "Distance",
+  "workoutStatDuration": "Duration",
+  "workoutStatEffort": "Effort",
+
   "workoutLogTitle": "Log This Run",
   "workoutLogCompleted": "Completed",
   "workoutLogDesc": "Record your actual distance, time, and notes.",
