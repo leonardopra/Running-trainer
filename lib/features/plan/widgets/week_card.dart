@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../models/training_week.dart';
 import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 import 'workout_tile.dart';
+import '../../../core/l10n_helpers.dart';
 
 class WeekCard extends StatefulWidget {
   final TrainingWeek week;
@@ -31,10 +33,22 @@ class _WeekCardState extends State<WeekCard> {
     _expanded = widget.isExpanded;
   }
 
-  static const _dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  String _dayLabel(int dayOfWeek, AppLocalizations l10n) {
+    switch (dayOfWeek) {
+      case 1: return l10n.dayMon;
+      case 2: return l10n.dayTue;
+      case 3: return l10n.dayWed;
+      case 4: return l10n.dayThu;
+      case 5: return l10n.dayFri;
+      case 6: return l10n.daySat;
+      case 7: return l10n.daySun;
+      default: return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final completedCount = widget.week.workouts
         .where((w) => w.isCompleted && w.type != WorkoutType.rest)
         .length;
@@ -61,13 +75,17 @@ class _WeekCardState extends State<WeekCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Week ${widget.week.weekNumber}',
+                        Text(l10n.weekCardWeek(widget.week.weekNumber),
                             style: AppTextStyles.caption),
                         const SizedBox(height: 2),
-                        Text(widget.week.weekTheme, style: AppTextStyles.heading3),
+                        Text(localizedWeekTheme(widget.week.weekTheme, l10n), style: AppTextStyles.heading3),
                         const SizedBox(height: 4),
                         Text(
-                          '${widget.week.targetWeeklyKm.toStringAsFixed(0)}km · $completedCount/$totalCount workouts',
+                          l10n.weekCardStats(
+                            widget.week.targetWeeklyKm.toStringAsFixed(0),
+                            completedCount,
+                            totalCount,
+                          ),
                           style: AppTextStyles.caption,
                         ),
                       ],
@@ -88,7 +106,7 @@ class _WeekCardState extends State<WeekCard> {
               padding: const EdgeInsets.all(12),
               child: Column(
                 children: widget.week.workouts.map((workout) {
-                  final dayName = _dayNames[workout.dayOfWeek - 1];
+                  final dayName = _dayLabel(workout.dayOfWeek, l10n);
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

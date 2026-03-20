@@ -3,9 +3,11 @@ import '../models/coaching_insight.dart';
 import '../models/enums.dart';
 import '../models/training_plan.dart';
 import '../models/workout.dart';
+import '../core/l10n_helpers.dart';
+import 'package:running_trainer_app/l10n/app_localizations.dart';
 
 class InsightsService {
-  static List<CoachingInsight> generate(TrainingPlan plan) {
+  static List<CoachingInsight> generate(TrainingPlan plan, AppLocalizations l10n) {
     final insights = <CoachingInsight>[];
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -25,14 +27,14 @@ class InsightsService {
     // ── 1. Race countdown ───────────────────────────────────────────────────
     if (plan.raceDate != null) {
       final daysToRace = plan.raceDate!.difference(today).inDays;
-      if (daysToRace >= 0) insights.add(_raceCountdown(daysToRace, plan.goalType));
+      if (daysToRace >= 0) insights.add(_raceCountdown(daysToRace, plan.goalType, l10n));
     }
 
     // ── 2. Taper week ───────────────────────────────────────────────────────
     if (currentWeek.isTaperWeek) {
-      insights.add(const CoachingInsight(
-        title: 'Taper Week',
-        body: 'Lower volume is intentional — your body is absorbing the training and storing energy for race day. Trust the process.',
+      insights.add(CoachingInsight(
+        title: l10n.insightTaperWeekTitle,
+        body: l10n.insightTaperWeekBody,
         icon: Icons.battery_charging_full,
         type: InsightType.info,
         priority: 5,
@@ -44,9 +46,9 @@ class InsightsService {
       final prevKm = plan.weeks[currentWeekIndex - 1].targetWeeklyKm;
       final thisKm = currentWeek.targetWeeklyKm;
       if (prevKm > 0 && thisKm / prevKm < 0.88) {
-        insights.add(const CoachingInsight(
-          title: 'Recovery Week',
-          body: "This week's volume is intentionally lower. Recovery weeks are where fitness is consolidated — don't be tempted to add extra miles.",
+        insights.add(CoachingInsight(
+          title: l10n.insightRecoveryWeekTitle,
+          body: l10n.insightRecoveryWeekBody,
           icon: Icons.self_improvement,
           type: InsightType.info,
           priority: 6,
@@ -56,9 +58,9 @@ class InsightsService {
 
     // ── 4. First week welcome ───────────────────────────────────────────────
     if (currentWeekIndex == 0 && daysSinceStart < 7) {
-      insights.add(const CoachingInsight(
-        title: 'Week 1 — Welcome!',
-        body: 'Focus on building the habit, not the pace. Completing every run, however slowly, is what matters right now.',
+      insights.add(CoachingInsight(
+        title: l10n.insightWeek1Title,
+        body: l10n.insightWeek1Body,
         icon: Icons.waving_hand,
         type: InsightType.motivation,
         priority: 4,
@@ -76,16 +78,16 @@ class InsightsService {
       final rate = done / pastWorkouts.length;
       if (rate >= 0.85) {
         insights.add(CoachingInsight(
-          title: 'Excellent Consistency',
-          body: '${(rate * 100).toStringAsFixed(0)}% of planned sessions completed. That level of consistency is what separates finishers from DNFs.',
+          title: l10n.insightHighConsistencyTitle,
+          body: l10n.insightHighConsistencyBody((rate * 100).toStringAsFixed(0)),
           icon: Icons.emoji_events,
           type: InsightType.positive,
           priority: 10,
         ));
       } else if (rate < 0.55 && currentWeekIndex >= 2) {
         insights.add(CoachingInsight(
-          title: 'Consistency Needs Work',
-          body: "You've completed ${(rate * 100).toStringAsFixed(0)}% of planned sessions. Even shorter, slower runs count — aim for 70%+ to see real fitness gains.",
+          title: l10n.insightLowConsistencyTitle,
+          body: l10n.insightLowConsistencyBody((rate * 100).toStringAsFixed(0)),
           icon: Icons.warning_amber_rounded,
           type: InsightType.warning,
           priority: 8,
@@ -115,8 +117,8 @@ class InsightsService {
     }
     if (recentMissed >= 3) {
       insights.add(CoachingInsight(
-        title: 'Getting Back on Track',
-        body: "You've missed $recentMissed sessions in the last 7 days. Life happens — don't try to make up missed runs. Just pick up where you are.",
+        title: l10n.insightBackOnTrackTitle,
+        body: l10n.insightBackOnTrackBody(recentMissed),
         icon: Icons.refresh,
         type: InsightType.warning,
         priority: 7,
@@ -138,8 +140,11 @@ class InsightsService {
       final weekCompletionRate = weekLoggedKm / plannedSoFar;
       if (weekCompletionRate >= 1.0 && todayDow >= 3) {
         insights.add(CoachingInsight(
-          title: 'On Track This Week',
-          body: "You've already logged ${weekLoggedKm.toStringAsFixed(1)} km of your ${weekTargetKm.toStringAsFixed(0)} km target. Keep it up!",
+          title: l10n.insightOnTrackTitle,
+          body: l10n.insightOnTrackBody(
+            weekLoggedKm.toStringAsFixed(1),
+            weekTargetKm.toStringAsFixed(0),
+          ),
           icon: Icons.trending_up,
           type: InsightType.positive,
           priority: 12,
@@ -147,8 +152,8 @@ class InsightsService {
       } else if (weekCompletionRate < 0.4 && todayDow >= 4) {
         final remaining = (weekTargetKm - weekLoggedKm).clamp(0, 999);
         insights.add(CoachingInsight(
-          title: 'Behind This Week',
-          body: 'You still have ${remaining.toStringAsFixed(1)} km to go to hit your weekly target. There\'s still time — make it count.',
+          title: l10n.insightBehindTitle,
+          body: l10n.insightBehindBody(remaining.toStringAsFixed(1)),
           icon: Icons.directions_run,
           type: InsightType.warning,
           priority: 9,
@@ -181,9 +186,9 @@ class InsightsService {
       }
       final ratio = tooFastCount / loggedEasyRuns.length;
       if (ratio >= 0.6) {
-        insights.add(const CoachingInsight(
-          title: 'Easy Runs Too Fast',
-          body: 'Your easy runs are consistently faster than target pace. Running easy too hard blunts adaptation. Slow down — if you can\'t hold a conversation, it\'s too fast.',
+        insights.add(CoachingInsight(
+          title: l10n.insightEasyRunsFastTitle,
+          body: l10n.insightEasyRunsFastBody,
           icon: Icons.speed,
           type: InsightType.warning,
           priority: 11,
@@ -198,9 +203,9 @@ class InsightsService {
           .where((w) => w.type == WorkoutType.longRun)
           .firstOrNull;
       if (longRun != null && !longRun.isCompleted) {
-        insights.add(const CoachingInsight(
-          title: 'Missed Long Run',
-          body: 'You skipped last week\'s long run. The long run is the cornerstone of endurance training — try to prioritise it above other sessions.',
+        insights.add(CoachingInsight(
+          title: l10n.insightMissedLongRunTitle,
+          body: l10n.insightMissedLongRunBody,
           icon: Icons.flag,
           type: InsightType.warning,
           priority: 8,
@@ -232,8 +237,8 @@ class InsightsService {
     }
     if (streak >= 5) {
       insights.add(CoachingInsight(
-        title: '$streak-Session Streak 🔥',
-        body: "You haven't missed a scheduled run in $streak sessions. That consistency compounds into serious fitness.",
+        title: l10n.insightStreakTitle(streak),
+        body: l10n.insightStreakBody(streak),
         icon: Icons.local_fire_department,
         type: InsightType.positive,
         priority: 13,
@@ -260,13 +265,13 @@ class InsightsService {
             (tomorrowWorkout.type == WorkoutType.longRun ||
                 tomorrowWorkout.type == WorkoutType.intervalRun ||
                 tomorrowWorkout.type == WorkoutType.tempoRun)) {
-          final typeLabel = tomorrowWorkout.type.displayName;
+          final typeLabel = tomorrowWorkout.type.localizedName(l10n);
           final km = tomorrowWorkout.distanceKm != null
-              ? ' (${tomorrowWorkout.distanceKm!.toStringAsFixed(1)} km)'
-              : '';
+              ? tomorrowWorkout.distanceKm!.toStringAsFixed(1)
+              : '—';
           insights.add(CoachingInsight(
-            title: 'Key Session Tomorrow',
-            body: '$typeLabel$km tomorrow. Sleep well tonight, eat well, and plan your route in advance.',
+            title: l10n.insightKeyTomorrowTitle,
+            body: l10n.insightKeyTomorrowBody(typeLabel, km),
             icon: Icons.event,
             type: InsightType.motivation,
             priority: 14,
@@ -279,20 +284,20 @@ class InsightsService {
   }
 
   // ── helpers ─────────────────────────────────────────────────────────────
-  static CoachingInsight _raceCountdown(int daysToRace, GoalType goal) {
-    final race = goal.displayName;
+  static CoachingInsight _raceCountdown(int daysToRace, GoalType goal, AppLocalizations l10n) {
+    final race = goal.localizedName(l10n);
     if (daysToRace == 0) {
       return CoachingInsight(
-        title: 'Race Day! 🏁',
-        body: "Today is your $race. You've done the work — trust your training and enjoy every kilometre.",
+        title: l10n.insightRaceDayTitle,
+        body: l10n.insightRaceDayBody(race),
         icon: Icons.emoji_events,
         type: InsightType.motivation,
         priority: 1,
       );
     } else if (daysToRace <= 7) {
       return CoachingInsight(
-        title: '$daysToRace Days to Race',
-        body: 'Race week for your $race. Prioritise rest, sleep, hydration, and a final easy shakeout run.',
+        title: l10n.insightRaceWeekTitle(daysToRace),
+        body: l10n.insightRaceWeekBody(race),
         icon: Icons.flag,
         type: InsightType.motivation,
         priority: 2,
@@ -300,8 +305,8 @@ class InsightsService {
     } else if (daysToRace <= 21) {
       final weeks = (daysToRace / 7).ceil();
       return CoachingInsight(
-        title: '$weeks Weeks to Go',
-        body: "Your $race is almost here. The hay is in the barn — trust your training and avoid heroic sessions.",
+        title: l10n.insightAlmostThereTitle(weeks),
+        body: l10n.insightAlmostThereBody(race),
         icon: Icons.directions_run,
         type: InsightType.info,
         priority: 3,
@@ -309,8 +314,8 @@ class InsightsService {
     } else {
       final weeks = (daysToRace / 7).ceil();
       return CoachingInsight(
-        title: '$weeks Weeks to Race Day',
-        body: "You have $weeks weeks to build fitness for your $race. Stay consistent — small daily habits create big race results.",
+        title: l10n.insightWeeksToGoTitle(weeks),
+        body: l10n.insightWeeksToGoBody(weeks, race),
         icon: Icons.calendar_month,
         type: InsightType.info,
         priority: 15,

@@ -90,6 +90,28 @@
     }
   },
 
+  "navHome": "Home",
+  "navPlan": "Plan",
+  "navProgress": "Progress",
+  "navPace": "Pace",
+  "navSettings": "Settings",
+
+  "weekCardWeek": "Week {n}",
+  "@weekCardWeek": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "weekCardStats": "{km}km · {completed}/{total} workouts",
+  "@weekCardStats": {
+    "placeholders": {
+      "km": { "type": "String" },
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "planNoPlan": "No plan found",
+  "chartNoData": "No data yet",
+
   "workoutRestDay": "Rest Day",
   "workoutRestDayDesc": "Recovery is part of the plan",
   "workoutOverview": "Workout Overview",
@@ -254,5 +276,103 @@
 
   "langEnglish": "English",
   "langItalian": "Italiano",
-  "langGerman": "Deutsch"
+  "langGerman": "Deutsch",
+
+  "weekThemeFoundation": "Foundation Week",
+  "weekThemeTaperBegins": "Taper Begins",
+  "weekThemeRacePrep": "Race Prep",
+  "weekThemeRaceWeek": "Race Week",
+  "weekThemeTaper": "Taper",
+  "weekThemeRecovery": "Recovery Week",
+  "weekThemeRecovery50": "Recovery Week (50+ protocol)",
+  "weekThemeBaseBuilding": "Base Building",
+  "weekThemeStrengthPhase": "Strength Phase",
+  "weekThemePeakTraining": "Peak Training",
+
+  "insightTaperWeekTitle": "Taper Week",
+  "insightTaperWeekBody": "Lower volume is intentional — your body is absorbing the training and storing energy for race day. Trust the process.",
+  "insightRecoveryWeekTitle": "Recovery Week",
+  "insightRecoveryWeekBody": "This week's volume is intentionally lower. Recovery weeks are where fitness is consolidated — don't be tempted to add extra miles.",
+  "insightWeek1Title": "Week 1 — Welcome!",
+  "insightWeek1Body": "Focus on building the habit, not the pace. Completing every run, however slowly, is what matters right now.",
+  "insightHighConsistencyTitle": "Excellent Consistency",
+  "insightHighConsistencyBody": "{rate}% of planned sessions completed. That level of consistency is what separates finishers from DNFs.",
+  "@insightHighConsistencyBody": {
+    "placeholders": { "rate": { "type": "String" } }
+  },
+  "insightLowConsistencyTitle": "Consistency Needs Work",
+  "insightLowConsistencyBody": "You've completed {rate}% of planned sessions. Even shorter, slower runs count — aim for 70%+ to see real fitness gains.",
+  "@insightLowConsistencyBody": {
+    "placeholders": { "rate": { "type": "String" } }
+  },
+  "insightBackOnTrackTitle": "Getting Back on Track",
+  "insightBackOnTrackBody": "You've missed {missed} sessions in the last 7 days. Life happens — don't try to make up missed runs. Just pick up where you are.",
+  "@insightBackOnTrackBody": {
+    "placeholders": { "missed": { "type": "int" } }
+  },
+  "insightOnTrackTitle": "On Track This Week",
+  "insightOnTrackBody": "You've already logged {logged} km of your {target} km target. Keep it up!",
+  "@insightOnTrackBody": {
+    "placeholders": {
+      "logged": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "insightBehindTitle": "Behind This Week",
+  "insightBehindBody": "You still have {remaining} km to go to hit your weekly target. There's still time — make it count.",
+  "@insightBehindBody": {
+    "placeholders": { "remaining": { "type": "String" } }
+  },
+  "insightEasyRunsFastTitle": "Easy Runs Too Fast",
+  "insightEasyRunsFastBody": "Your easy runs are consistently faster than target pace. Running easy too hard blunts adaptation. Slow down — if you can't hold a conversation, it's too fast.",
+  "insightMissedLongRunTitle": "Missed Long Run",
+  "insightMissedLongRunBody": "You skipped last week's long run. The long run is the cornerstone of endurance training — try to prioritise it above other sessions.",
+  "insightStreakTitle": "{streak}-Session Streak 🔥",
+  "@insightStreakTitle": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "insightStreakBody": "You haven't missed a scheduled run in {streak} sessions. That consistency compounds into serious fitness.",
+  "@insightStreakBody": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "insightKeyTomorrowTitle": "Key Session Tomorrow",
+  "insightKeyTomorrowBody": "{type} · {km} km tomorrow. Sleep well tonight, eat well, and plan your route in advance.",
+  "@insightKeyTomorrowBody": {
+    "placeholders": {
+      "type": { "type": "String" },
+      "km": { "type": "String" }
+    }
+  },
+  "insightRaceDayTitle": "Race Day! 🏁",
+  "insightRaceDayBody": "Today is your {race}. You've done the work — trust your training and enjoy every kilometre.",
+  "@insightRaceDayBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightRaceWeekTitle": "{days} Days to Race",
+  "@insightRaceWeekTitle": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "insightRaceWeekBody": "Race week for your {race}. Prioritise rest, sleep, hydration, and a final easy shakeout run.",
+  "@insightRaceWeekBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightAlmostThereTitle": "{weeks} Weeks to Go",
+  "@insightAlmostThereTitle": {
+    "placeholders": { "weeks": { "type": "int" } }
+  },
+  "insightAlmostThereBody": "Your {race} is almost here. The hay is in the barn — trust your training and avoid heroic sessions.",
+  "@insightAlmostThereBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightWeeksToGoTitle": "{weeks} Weeks to Race Day",
+  "@insightWeeksToGoTitle": {
+    "placeholders": { "weeks": { "type": "int" } }
+  },
+  "insightWeeksToGoBody": "You have {weeks} weeks to build fitness for your {race}. Stay consistent — small daily habits create big race results.",
+  "@insightWeeksToGoBody": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "race": { "type": "String" }
+    }
+  }
 }

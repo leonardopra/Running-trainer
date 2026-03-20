@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/l10n_helpers.dart';
 import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 import 'effort_badge.dart';
@@ -24,6 +26,7 @@ class WorkoutTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isRest = workout.type == WorkoutType.rest;
     final typeColor = _getTypeColor(workout.type);
 
@@ -54,7 +57,7 @@ class WorkoutTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(workout.title, style: AppTextStyles.label),
+                  Text(workout.type.localizedName(l10n), style: AppTextStyles.label),
                   if (workout.distanceKm != null) ...[
                     const SizedBox(height: 2),
                     Text(

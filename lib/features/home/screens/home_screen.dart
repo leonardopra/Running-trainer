@@ -14,6 +14,7 @@ import '../widgets/today_workout_card.dart';
 import '../widgets/week_summary_strip.dart';
 import '../widgets/insights_strip.dart';
 import '../../../services/insights_service.dart';
+import '../../../core/l10n_helpers.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -90,7 +91,7 @@ class HomeScreen extends ConsumerWidget {
     final weekIndex = _currentWeekIndex(plan);
     final currentWeek = plan.weeks[weekIndex];
     final todayWorkout = _todayWorkout(currentWeek);
-    final insights = InsightsService.generate(plan);
+    final insights = InsightsService.generate(plan, l10n);
 
     return SingleChildScrollView(
       child: Column(
@@ -112,7 +113,7 @@ class HomeScreen extends ConsumerWidget {
                 border: Border.all(color: AppColors.primary.withOpacity(0.35)),
               ),
               child: Text(
-                l10n.homeWeekChip(weekIndex + 1, plan.totalWeeks, currentWeek.weekTheme),
+                l10n.homeWeekChip(weekIndex + 1, plan.totalWeeks, localizedWeekTheme(currentWeek.weekTheme, l10n)),
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

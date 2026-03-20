@@ -90,6 +90,28 @@
     }
   },
 
+  "navHome": "Home",
+  "navPlan": "Plan",
+  "navProgress": "Fortschritt",
+  "navPace": "Tempo",
+  "navSettings": "Einstellungen",
+
+  "weekCardWeek": "Woche {n}",
+  "@weekCardWeek": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "weekCardStats": "{km}km · {completed}/{total} Workouts",
+  "@weekCardStats": {
+    "placeholders": {
+      "km": { "type": "String" },
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "planNoPlan": "Kein Plan gefunden",
+  "chartNoData": "Noch keine Daten",
+
   "workoutRestDay": "Ruhetag",
   "workoutRestDayDesc": "Erholung ist Teil des Plans",
   "workoutOverview": "Training-Übersicht",
@@ -254,5 +276,103 @@
 
   "langEnglish": "English",
   "langItalian": "Italiano",
-  "langGerman": "Deutsch"
+  "langGerman": "Deutsch",
+
+  "weekThemeFoundation": "Grundlagenwoche",
+  "weekThemeTaperBegins": "Tapering beginnt",
+  "weekThemeRacePrep": "Rennvorbereitung",
+  "weekThemeRaceWeek": "Rennwoche",
+  "weekThemeTaper": "Tapering",
+  "weekThemeRecovery": "Erholungswoche",
+  "weekThemeRecovery50": "Erholung (50+ Protokoll)",
+  "weekThemeBaseBuilding": "Grundlagenaufbau",
+  "weekThemeStrengthPhase": "Kraftphase",
+  "weekThemePeakTraining": "Spitzentraining",
+
+  "insightTaperWeekTitle": "Taper-Woche",
+  "insightTaperWeekBody": "Das reduzierte Volumen ist beabsichtigt — dein Körper verarbeitet das Training und speichert Energie für den Wettkampftag. Vertraue dem Prozess.",
+  "insightRecoveryWeekTitle": "Erholungswoche",
+  "insightRecoveryWeekBody": "Das Volumen dieser Woche ist bewusst niedriger. Erholungswochen festigen die Fitness — lass dich nicht verleiten, zusätzliche Kilometer hinzuzufügen.",
+  "insightWeek1Title": "Woche 1 — Willkommen!",
+  "insightWeek1Body": "Konzentriere dich auf das Aufbauen der Gewohnheit, nicht auf das Tempo. Jeden Lauf zu absolvieren, wie auch immer langsam, ist jetzt das Wichtigste.",
+  "insightHighConsistencyTitle": "Ausgezeichnete Beständigkeit",
+  "insightHighConsistencyBody": "{rate}% der geplanten Einheiten abgeschlossen. Diese Beständigkeit unterscheidet Finisher von DNFs.",
+  "@insightHighConsistencyBody": {
+    "placeholders": { "rate": { "type": "String" } }
+  },
+  "insightLowConsistencyTitle": "Beständigkeit braucht Arbeit",
+  "insightLowConsistencyBody": "Du hast {rate}% der geplanten Einheiten abgeschlossen. Auch kürzere, langsamere Läufe zählen — strebe 70%+ an, um echte Fortschritte zu sehen.",
+  "@insightLowConsistencyBody": {
+    "placeholders": { "rate": { "type": "String" } }
+  },
+  "insightBackOnTrackTitle": "Wieder auf Kurs",
+  "insightBackOnTrackBody": "Du hast {missed} Einheiten in den letzten 7 Tagen verpasst. Das Leben passiert — versuche nicht, verpasste Läufe nachzuholen. Mach einfach weiter.",
+  "@insightBackOnTrackBody": {
+    "placeholders": { "missed": { "type": "int" } }
+  },
+  "insightOnTrackTitle": "Diese Woche auf Kurs",
+  "insightOnTrackBody": "Du hast bereits {logged} km deines {target}-km-Ziels protokolliert. Weiter so!",
+  "@insightOnTrackBody": {
+    "placeholders": {
+      "logged": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "insightBehindTitle": "Diese Woche im Rückstand",
+  "insightBehindBody": "Du hast noch {remaining} km vor dir, um dein Wochenziel zu erreichen. Es ist noch Zeit — mach das Beste draus.",
+  "@insightBehindBody": {
+    "placeholders": { "remaining": { "type": "String" } }
+  },
+  "insightEasyRunsFastTitle": "Lockere Läufe zu schnell",
+  "insightEasyRunsFastBody": "Deine lockeren Läufe sind regelmäßig schneller als das Zieltempo. Zu hartes Laufen im lockeren Bereich hemmt die Anpassung. Langsamer — wenn du kein Gespräch führen kannst, ist es zu schnell.",
+  "insightMissedLongRunTitle": "Langer Lauf verpasst",
+  "insightMissedLongRunBody": "Du hast den langen Lauf der letzten Woche ausgelassen. Der lange Lauf ist der Grundstein des Ausdauertrainings — versuche, ihm Vorrang vor anderen Einheiten zu geben.",
+  "insightStreakTitle": "{streak}-Einheiten-Serie 🔥",
+  "@insightStreakTitle": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "insightStreakBody": "Du hast in {streak} Einheiten keinen geplanten Lauf verpasst. Diese Beständigkeit summiert sich zu ernsthafter Fitness.",
+  "@insightStreakBody": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "insightKeyTomorrowTitle": "Schlüsseleinheit morgen",
+  "insightKeyTomorrowBody": "{type} · {km} km morgen. Schlaf gut heute Nacht, iss gut und plane deine Route im Voraus.",
+  "@insightKeyTomorrowBody": {
+    "placeholders": {
+      "type": { "type": "String" },
+      "km": { "type": "String" }
+    }
+  },
+  "insightRaceDayTitle": "Wettkampftag! 🏁",
+  "insightRaceDayBody": "Heute ist dein {race}. Du hast die Arbeit gemacht — vertraue deinem Training und genieße jeden Kilometer.",
+  "@insightRaceDayBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightRaceWeekTitle": "{days} Tage bis zum Wettkampf",
+  "@insightRaceWeekTitle": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "insightRaceWeekBody": "Wettkampfwoche für deinen {race}. Priorisiere Ruhe, Schlaf, Hydration und einen letzten leichten Shakeout-Lauf.",
+  "@insightRaceWeekBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightAlmostThereTitle": "Noch {weeks} Wochen",
+  "@insightAlmostThereTitle": {
+    "placeholders": { "weeks": { "type": "int" } }
+  },
+  "insightAlmostThereBody": "Dein {race} rückt näher. Das Heu ist im Stall — vertraue deinem Training und vermeide heroische Einheiten.",
+  "@insightAlmostThereBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightWeeksToGoTitle": "Noch {weeks} Wochen bis zum Wettkampftag",
+  "@insightWeeksToGoTitle": {
+    "placeholders": { "weeks": { "type": "int" } }
+  },
+  "insightWeeksToGoBody": "Du hast {weeks} Wochen, um Fitness für deinen {race} aufzubauen. Bleib konsequent — kleine tägliche Gewohnheiten schaffen große Wettkampfergebnisse.",
+  "@insightWeeksToGoBody": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "race": { "type": "String" }
+    }
+  }
 }

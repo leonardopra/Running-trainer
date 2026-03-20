@@ -3,6 +3,7 @@ import 'package:running_trainer_app/models/enums.dart';
 import 'package:running_trainer_app/models/workout.dart';
 import 'package:running_trainer_app/services/insights_service.dart';
 import 'package:running_trainer_app/services/plan_generator_service.dart';
+import 'package:running_trainer_app/l10n/app_localizations_en.dart';
 
 void main() {
   late PlanGeneratorService generator;
@@ -18,7 +19,7 @@ void main() {
         fitnessLevel: FitnessLevel.beginner,
         trainingDaysPerWeek: 3,
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(insights, isA<List>());
     });
 
@@ -29,7 +30,7 @@ void main() {
         trainingDaysPerWeek: 5,
         raceDate: DateTime.now().add(const Duration(days: 90)),
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       for (int i = 1; i < insights.length; i++) {
         expect(
           insights[i].priority >= insights[i - 1].priority,
@@ -47,7 +48,7 @@ void main() {
         fitnessLevel: FitnessLevel.beginner,
         trainingDaysPerWeek: 3,
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(
         insights.any((i) => i.title.contains('Week 1')),
         isTrue,
@@ -62,7 +63,7 @@ void main() {
         trainingDaysPerWeek: 4,
         raceDate: DateTime.now().add(const Duration(days: 60)),
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(
         insights.any((i) =>
             i.title.contains('Weeks to Race Day') ||
@@ -81,7 +82,7 @@ void main() {
         trainingDaysPerWeek: 3,
         raceDate: DateTime.now(),
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(
         insights.any((i) => i.title.contains('Race Day')),
         isTrue,
@@ -94,7 +95,7 @@ void main() {
         fitnessLevel: FitnessLevel.beginner,
         trainingDaysPerWeek: 3,
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(
         insights.any((i) =>
             i.title.contains('Race Day') ||
@@ -122,7 +123,7 @@ void main() {
           }
         }
       }
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(
         insights.any((i) => i.title.contains('Excellent Consistency')),
         isTrue,
@@ -138,7 +139,7 @@ void main() {
         startDate: DateTime.now().subtract(const Duration(days: 21)),
       );
       // Leave all past workouts incomplete (default)
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       expect(
         insights.any((i) => i.title.contains('Consistency Needs Work')),
         isTrue,
@@ -153,7 +154,7 @@ void main() {
         trainingDaysPerWeek: 6,
         raceDate: DateTime.now().add(const Duration(days: 45)),
       );
-      final insights = InsightsService.generate(plan);
+      final insights = InsightsService.generate(plan, AppLocalizationsEn());
       for (final insight in insights) {
         expect(insight.title, isNotEmpty);
         expect(insight.body, isNotEmpty);

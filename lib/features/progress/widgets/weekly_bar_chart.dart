@@ -11,10 +11,14 @@ class WeeklyBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (weeks.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 160,
         child: Center(
-          child: Text('No data yet', style: TextStyle(color: AppColors.onSurfaceMuted)),
+          child: Builder(builder: (context) {
+            final l10n = AppLocalizations.of(context)!;
+            return Text(l10n.chartNoData,
+                style: const TextStyle(color: AppColors.onSurfaceMuted));
+          }),
         ),
       );
     }

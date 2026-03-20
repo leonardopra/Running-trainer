@@ -8,6 +8,7 @@ import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 import '../../../providers/training_plan_provider.dart';
 import '../widgets/week_card.dart';
+import '../../../core/l10n_helpers.dart';
 
 class PlanOverviewScreen extends ConsumerWidget {
   const PlanOverviewScreen({super.key});
@@ -20,8 +21,8 @@ class PlanOverviewScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     if (plan == null) {
-      return const Scaffold(
-        body: Center(child: Text('No plan found', style: AppTextStyles.body)),
+      return Scaffold(
+        body: Center(child: Text(l10n.planNoPlan, style: AppTextStyles.body)),
       );
     }
 
@@ -38,9 +39,9 @@ class PlanOverviewScreen extends ConsumerWidget {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(plan.goalType.displayName, style: AppTextStyles.heading3),
+                Text(plan.goalType.localizedName(l10n), style: AppTextStyles.heading3),
                 Text(
-                  '${plan.totalWeeks} weeks · ${plan.fitnessLevel.displayName}',
+                  '${plan.totalWeeks} weeks · ${plan.fitnessLevel.localizedName(l10n)}',
                   style: AppTextStyles.caption,
                 ),
               ],
@@ -97,7 +98,7 @@ class PlanOverviewScreen extends ConsumerWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    p.goalType.displayName,
+                                    p.goalType.localizedName(l10n),
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
@@ -107,7 +108,7 @@ class PlanOverviewScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   Text(
-                                    '${p.totalWeeks}w · ${p.fitnessLevel.displayName}',
+                                    '${p.totalWeeks}w · ${p.fitnessLevel.localizedName(l10n)}',
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: isSelected

@@ -55,3 +55,19 @@ extension LocalizedEffortLevel on EffortLevel {
     }
   }
 }
+
+String localizedWeekTheme(String theme, AppLocalizations l10n) {
+  switch (theme) {
+    case 'Foundation Week':              return l10n.weekThemeFoundation;
+    case 'Taper Begins':                 return l10n.weekThemeTaperBegins;
+    case 'Race Prep':                    return l10n.weekThemeRacePrep;
+    case 'Race Week':                    return l10n.weekThemeRaceWeek;
+    case 'Taper':                        return l10n.weekThemeTaper;
+    case 'Recovery Week':                return l10n.weekThemeRecovery;
+    case 'Recovery Week (50+ protocol)': return l10n.weekThemeRecovery50;
+    case 'Base Building':                return l10n.weekThemeBaseBuilding;
+    case 'Strength Phase':               return l10n.weekThemeStrengthPhase;
+    case 'Peak Training':                return l10n.weekThemePeakTraining;
+    default:                             return theme;
+  }
+}

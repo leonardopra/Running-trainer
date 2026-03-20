@@ -90,6 +90,28 @@
     }
   },
 
+  "navHome": "Home",
+  "navPlan": "Piano",
+  "navProgress": "Progressi",
+  "navPace": "Ritmo",
+  "navSettings": "Impostazioni",
+
+  "weekCardWeek": "Settimana {n}",
+  "@weekCardWeek": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "weekCardStats": "{km}km · {completed}/{total} allenamenti",
+  "@weekCardStats": {
+    "placeholders": {
+      "km": { "type": "String" },
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "planNoPlan": "Nessun piano trovato",
+  "chartNoData": "Nessun dato disponibile",
+
   "workoutRestDay": "Giorno di riposo",
   "workoutRestDayDesc": "Il recupero fa parte del piano",
   "workoutOverview": "Panoramica allenamento",
@@ -254,5 +276,103 @@
 
   "langEnglish": "English",
   "langItalian": "Italiano",
-  "langGerman": "Deutsch"
+  "langGerman": "Deutsch",
+
+  "weekThemeFoundation": "Settimana di base",
+  "weekThemeTaperBegins": "Inizio tapering",
+  "weekThemeRacePrep": "Preparazione gara",
+  "weekThemeRaceWeek": "Settimana di gara",
+  "weekThemeTaper": "Tapering",
+  "weekThemeRecovery": "Settimana di recupero",
+  "weekThemeRecovery50": "Recupero (protocollo 50+)",
+  "weekThemeBaseBuilding": "Costruzione base",
+  "weekThemeStrengthPhase": "Fase di forza",
+  "weekThemePeakTraining": "Allenamento di punta",
+
+  "insightTaperWeekTitle": "Settimana di tapering",
+  "insightTaperWeekBody": "Il volume ridotto è intenzionale — il tuo corpo sta assimilando l'allenamento e accumulando energia per il giorno della gara. Fidati del processo.",
+  "insightRecoveryWeekTitle": "Settimana di recupero",
+  "insightRecoveryWeekBody": "Il volume di questa settimana è intenzionalmente più basso. Le settimane di recupero consolidano la forma fisica — non cedere alla tentazione di aggiungere chilometri extra.",
+  "insightWeek1Title": "Settimana 1 — Benvenuto!",
+  "insightWeek1Body": "Concentrati sulla costruzione dell'abitudine, non sul ritmo. Completare ogni corsa, anche lentamente, è ciò che conta ora.",
+  "insightHighConsistencyTitle": "Costanza eccellente",
+  "insightHighConsistencyBody": "{rate}% delle sessioni pianificate completate. Questo livello di costanza è ciò che distingue chi finisce da chi si ritira.",
+  "@insightHighConsistencyBody": {
+    "placeholders": { "rate": { "type": "String" } }
+  },
+  "insightLowConsistencyTitle": "Costanza da migliorare",
+  "insightLowConsistencyBody": "Hai completato il {rate}% delle sessioni pianificate. Anche corse più brevi e lente contano — punta al 70%+ per vedere veri progressi.",
+  "@insightLowConsistencyBody": {
+    "placeholders": { "rate": { "type": "String" } }
+  },
+  "insightBackOnTrackTitle": "Torna in pista",
+  "insightBackOnTrackBody": "Hai saltato {missed} sessioni negli ultimi 7 giorni. Succede — non cercare di recuperare le corse mancate. Riprendi semplicemente da dove sei.",
+  "@insightBackOnTrackBody": {
+    "placeholders": { "missed": { "type": "int" } }
+  },
+  "insightOnTrackTitle": "In linea questa settimana",
+  "insightOnTrackBody": "Hai già registrato {logged} km dei tuoi {target} km previsti. Continua così!",
+  "@insightOnTrackBody": {
+    "placeholders": {
+      "logged": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "insightBehindTitle": "Indietro questa settimana",
+  "insightBehindBody": "Hai ancora {remaining} km da percorrere per raggiungere il tuo obiettivo settimanale. C'è ancora tempo — dàlle tutto.",
+  "@insightBehindBody": {
+    "placeholders": { "remaining": { "type": "String" } }
+  },
+  "insightEasyRunsFastTitle": "Corse facili troppo veloci",
+  "insightEasyRunsFastBody": "Le tue corse facili sono costantemente più veloci del passo obiettivo. Correre facile troppo forte ostacola l'adattamento. Rallenta — se non riesci a sostenere una conversazione, è troppo veloce.",
+  "insightMissedLongRunTitle": "Corsa lunga saltata",
+  "insightMissedLongRunBody": "Hai saltato la corsa lunga della settimana scorsa. La corsa lunga è la pietra angolare dell'allenamento alla resistenza — cerca di darle priorità rispetto alle altre sessioni.",
+  "insightStreakTitle": "Serie di {streak} sessioni 🔥",
+  "@insightStreakTitle": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "insightStreakBody": "Non hai saltato una corsa programmata in {streak} sessioni. Questa costanza si traduce in una forma fisica seria.",
+  "@insightStreakBody": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "insightKeyTomorrowTitle": "Sessione chiave domani",
+  "insightKeyTomorrowBody": "{type} · {km} km domani. Dormi bene stanotte, mangia bene e pianifica il percorso in anticipo.",
+  "@insightKeyTomorrowBody": {
+    "placeholders": {
+      "type": { "type": "String" },
+      "km": { "type": "String" }
+    }
+  },
+  "insightRaceDayTitle": "Giorno della gara! 🏁",
+  "insightRaceDayBody": "Oggi è la tua {race}. Hai fatto il lavoro — fidati del tuo allenamento e goditi ogni chilometro.",
+  "@insightRaceDayBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightRaceWeekTitle": "{days} giorni alla gara",
+  "@insightRaceWeekTitle": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "insightRaceWeekBody": "Settimana di gara per la tua {race}. Dai priorità al riposo, al sonno, all'idratazione e a un ultimo facile shakeout run.",
+  "@insightRaceWeekBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightAlmostThereTitle": "{weeks} settimane alla fine",
+  "@insightAlmostThereTitle": {
+    "placeholders": { "weeks": { "type": "int" } }
+  },
+  "insightAlmostThereBody": "La tua {race} è quasi arrivata. Il fieno è nel fienile — fidati del tuo allenamento ed evita sessioni eroiche.",
+  "@insightAlmostThereBody": {
+    "placeholders": { "race": { "type": "String" } }
+  },
+  "insightWeeksToGoTitle": "{weeks} settimane al giorno della gara",
+  "@insightWeeksToGoTitle": {
+    "placeholders": { "weeks": { "type": "int" } }
+  },
+  "insightWeeksToGoBody": "Hai {weeks} settimane per costruire la forma fisica per la tua {race}. Sii costante — piccole abitudini quotidiane creano grandi risultati.",
+  "@insightWeeksToGoBody": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "race": { "type": "String" }
+    }
+  }
 }

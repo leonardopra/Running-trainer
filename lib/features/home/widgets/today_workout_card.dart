@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/l10n_helpers.dart';
 import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 
@@ -72,7 +73,14 @@ class TodayWorkoutCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Flexible(child: Text(w.title, style: AppTextStyles.heading3)),
+                        Flexible(
+                          child: Text(
+                            w.distanceKm != null
+                                ? '${w.distanceKm!.toStringAsFixed(1)} km · ${w.type.localizedName(l10n)}'
+                                : w.type.localizedName(l10n),
+                            style: AppTextStyles.heading3,
+                          ),
+                        ),
                         if (w.isCompleted) ...[
                           const SizedBox(width: 6),
                           Container(
