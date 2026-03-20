@@ -26,10 +26,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
           SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.background,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            automaticallyImplyLeading: false,
             title: Text(l10n.progressTitle, style: AppTextStyles.heading3),
           ),
           if (stats == null || plan == null)

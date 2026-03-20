@@ -76,10 +76,7 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
           SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.background,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            automaticallyImplyLeading: false,
             title: Text(l10n.paceTitle, style: AppTextStyles.heading3),
           ),
           SliverToBoxAdapter(

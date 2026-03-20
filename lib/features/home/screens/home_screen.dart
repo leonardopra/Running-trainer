@@ -63,7 +63,7 @@ class HomeScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context, greeting),
+          Text(greeting, style: AppTextStyles.heading1),
           const Spacer(),
           Center(
             child: Column(
@@ -98,7 +98,7 @@ class HomeScreen extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-            child: _buildHeader(context, greeting),
+            child: Text(greeting, style: AppTextStyles.heading1),
           ),
           const SizedBox(height: 28),
           // Week chip
@@ -153,83 +153,9 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: WeekSummaryStrip(workouts: currentWeek.workouts),
           ),
-          const SizedBox(height: 32),
-          // Action buttons
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: () => context.push('/plan'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.background,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14)),
-                      ),
-                      child: Text(l10n.btnViewFullPlan,
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w700)),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                SizedBox(
-                  height: 52,
-                  width: 52,
-                  child: ElevatedButton(
-                    onPressed: () => context.push('/progress'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.surface,
-                      foregroundColor: AppColors.onSurface,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                      side: const BorderSide(color: AppColors.surfaceVariant),
-                    ),
-                    child: const Icon(Icons.bar_chart, size: 22),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                SizedBox(
-                  height: 52,
-                  width: 52,
-                  child: ElevatedButton(
-                    onPressed: () => context.push('/pace'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.surface,
-                      foregroundColor: AppColors.onSurface,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                      side: const BorderSide(color: AppColors.surfaceVariant),
-                    ),
-                    child: const Icon(Icons.speed, size: 22),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const SizedBox(height: 40),
         ],
       ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, String greeting) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Text(greeting, style: AppTextStyles.heading1),
-        ),
-        IconButton(
-          icon: const Icon(Icons.settings_outlined, color: AppColors.onSurface),
-          onPressed: () => context.push('/settings'),
-        ),
-      ],
     );
   }
 }

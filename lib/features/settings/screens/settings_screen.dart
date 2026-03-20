@@ -7,6 +7,7 @@ import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../providers/settings_provider.dart';
+import '../../../providers/plan_generation_provider.dart';
 import '../../../services/notification_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -69,10 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.background,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.onSurface),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(l10n.settingsTitle, style: AppTextStyles.heading3),
       ),
       body: ListView(
@@ -293,6 +291,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 32),
 
+          // ── New Plan ──────────────────────────────────────────────────────
+          Text('Training Plan', style: AppTextStyles.heading3),
+          const SizedBox(height: 8),
+          Text(
+            'Generate a fresh training plan without losing your workout history.',
+            style: AppTextStyles.bodyMuted,
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: ElevatedButton(
+              onPressed: () => _showNewPlanDialog(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Start New Training Plan'),
+            ),
+          ),
+          const SizedBox(height: 32),
+
           // ── Data ──────────────────────────────────────────────────────────
           Text(l10n.settingsDataSection, style: AppTextStyles.heading3),
           const SizedBox(height: 16),
@@ -351,6 +374,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showNewPlanDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: const Text('Start a New Plan?', style: AppTextStyles.heading3),
+        content: const Text(
+          'Your workout history and profile stay intact. A fresh plan will be generated for your new goals.',
+          style: AppTextStyles.body,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ref.read(isNewPlanFlowProvider.notifier).state = true;
+              context.go('/onboarding/goal');
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+            child: const Text('Start New Plan'),
+          ),
+        ],
+      ),
     );
   }
 

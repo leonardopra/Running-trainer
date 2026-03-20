@@ -40,7 +40,7 @@ class PlanOverviewScreen extends ConsumerWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings_outlined, color: AppColors.onSurface),
-                onPressed: () => context.push('/settings'),
+                onPressed: () => context.go('/settings'),
               ),
             ],
           ),

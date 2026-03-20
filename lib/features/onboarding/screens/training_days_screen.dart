@@ -106,7 +106,12 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                       ? () {
                           ref.read(onboardingProvider.notifier)
                               .setTrainingDays(_selectedDays.toList()..sort());
-                          context.push('/onboarding/profile');
+                          final isNewPlan = ref.read(isNewPlanFlowProvider);
+                          if (isNewPlan) {
+                            context.push('/onboarding/generating');
+                          } else {
+                            context.push('/onboarding/profile');
+                          }
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

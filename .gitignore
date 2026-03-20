@@ -31,3 +31,6 @@ lib/generated_plugin_registrant.dart
 # Misc
 .DS_Store
 *.log
+
+# FVM Version Cache
+.fvm/

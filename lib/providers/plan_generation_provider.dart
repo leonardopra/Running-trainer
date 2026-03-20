@@ -5,6 +5,7 @@ import '../services/plan_generator_service.dart';
 import '../services/claude_service.dart';
 import 'storage_provider.dart';
 import 'settings_provider.dart';
+import 'training_plan_provider.dart';
 
 // Onboarding state — collected across screens
 class OnboardingState {
@@ -54,6 +55,10 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
 final onboardingProvider = NotifierProvider<OnboardingNotifier, OnboardingState>(() {
   return OnboardingNotifier();
 });
+
+/// When true, the onboarding flow can run even if the user is already onboarded,
+/// so they can generate a new plan without losing their history or profile.
+final isNewPlanFlowProvider = StateProvider<bool>((ref) => false);
 
 // Generation progress
 enum GenerationStep { idle, generating, enriching, done, error }
@@ -162,8 +167,14 @@ class GenerationNotifier extends Notifier<GenerationState> {
       await storage.savePlan(plan);
     }
 
-    // Mark onboarding complete
+    // Mark onboarding complete (idempotent — safe for new-plan flow too)
     await ref.read(settingsProvider.notifier).completeOnboarding();
+
+    // Reset new-plan flow flag
+    ref.read(isNewPlanFlowProvider.notifier).state = false;
+
+    // Invalidate the active plan cache so HomeScreen picks up the new plan
+    ref.invalidate(activePlanProvider);
 
     // Schedule notifications if enabled
     final latestSettings = ref.read(settingsProvider);

@@ -13,7 +13,9 @@ import '../features/plan/screens/workout_detail_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/progress/screens/progress_dashboard_screen.dart';
 import '../features/pace/screens/pace_calculator_screen.dart';
+import '../features/shell/main_scaffold.dart';
 import '../providers/settings_provider.dart';
+import '../providers/plan_generation_provider.dart';
 import '../models/workout.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -22,13 +24,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final settings = ref.read(settingsProvider);
       final onboarded = settings.hasCompletedOnboarding;
+      final isNewPlan = ref.read(isNewPlanFlowProvider);
       final loc = state.matchedLocation;
 
       if (loc == '/') return onboarded ? '/home' : '/onboarding/goal';
 
       final onOnboarding = loc.startsWith('/onboarding');
       if (!onboarded && !onOnboarding) return '/onboarding/goal';
-      if (onboarded && onOnboarding) return '/home';
+      if (onboarded && onOnboarding && !isNewPlan) return '/home';
       return null;
     },
     routes: [
@@ -39,23 +42,31 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/onboarding/days', builder: (_, __) => const TrainingDaysScreen()),
       GoRoute(path: '/onboarding/profile', builder: (_, __) => const ProfileScreen()),
       GoRoute(path: '/onboarding/generating', builder: (_, __) => const PlanGeneratingScreen()),
-      GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
-      GoRoute(
-        path: '/plan',
-        builder: (_, __) => const PlanOverviewScreen(),
+      ShellRoute(
+        builder: (context, state, child) => MainScaffold(
+          location: state.uri.toString(),
+          child: child,
+        ),
         routes: [
+          GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
           GoRoute(
-            path: 'workout/:id',
-            builder: (context, state) {
-              final workout = state.extra as Workout;
-              return WorkoutDetailScreen(workout: workout);
-            },
+            path: '/plan',
+            builder: (_, __) => const PlanOverviewScreen(),
+            routes: [
+              GoRoute(
+                path: 'workout/:id',
+                builder: (context, state) {
+                  final workout = state.extra as Workout;
+                  return WorkoutDetailScreen(workout: workout);
+                },
+              ),
+            ],
           ),
+          GoRoute(path: '/progress', builder: (_, __) => const ProgressDashboardScreen()),
+          GoRoute(path: '/pace', builder: (_, __) => const PaceCalculatorScreen()),
+          GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
         ],
       ),
-      GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
-      GoRoute(path: '/progress', builder: (_, __) => const ProgressDashboardScreen()),
-      GoRoute(path: '/pace', builder: (_, __) => const PaceCalculatorScreen()),
     ],
   );
 });
