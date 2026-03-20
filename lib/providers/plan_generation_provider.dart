@@ -170,11 +170,13 @@ class GenerationNotifier extends Notifier<GenerationState> {
     // Mark onboarding complete (idempotent — safe for new-plan flow too)
     await ref.read(settingsProvider.notifier).completeOnboarding();
 
-    // Reset new-plan flow flag
+    // Reset new-plan flow flag and plan selection so the new plan becomes active
     ref.read(isNewPlanFlowProvider.notifier).state = false;
+    ref.read(selectedPlanIdProvider.notifier).state = null;
 
-    // Invalidate the active plan cache so HomeScreen picks up the new plan
+    // Invalidate plan caches so all screens pick up the new plan
     ref.invalidate(activePlanProvider);
+    ref.invalidate(allPlansProvider);
 
     // Schedule notifications if enabled
     final latestSettings = ref.read(settingsProvider);

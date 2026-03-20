@@ -140,9 +140,18 @@
   "settingsReminderTime": "Orario promemoria",
   "settingsLanguageSection": "Lingua",
   "settingsDataSection": "Dati",
+  "settingsPlanSection": "Piano di allenamento",
+  "settingsPlanDesc": "Genera un nuovo piano senza perdere la cronologia degli allenamenti.",
+  "settingsNewPlanBtn": "Inizia nuovo piano di allenamento",
+  "settingsNewPlanDialogTitle": "Iniziare un nuovo piano?",
+  "settingsNewPlanDialogBody": "La cronologia degli allenamenti e il profilo rimangono intatti. Verrà generato un nuovo piano per i tuoi obiettivi.",
+  "settingsNewPlanConfirm": "Inizia nuovo piano",
+
   "settingsResetAll": "Reimposta tutti i dati",
   "settingsResetDialogTitle": "Reimposta tutti i dati",
   "settingsResetDialogBody": "Questo eliminerà il piano di allenamento, il profilo e tutti i progressi. Questa azione non può essere annullata.",
+
+  "planYourPlans": "I tuoi piani",
 
   "progressTitle": "Progressi",
   "progressNoPlan": "Nessun piano di allenamento ancora.",

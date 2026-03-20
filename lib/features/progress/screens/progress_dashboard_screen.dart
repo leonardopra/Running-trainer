@@ -7,7 +7,7 @@ import '../../../models/enums.dart';
 import '../../../models/training_plan.dart';
 import '../../../models/workout.dart';
 import '../../../providers/progress_provider.dart';
-import '../../../providers/storage_provider.dart';
+import '../../../providers/training_plan_provider.dart';
 import '../widgets/weekly_bar_chart.dart';
 
 class ProgressDashboardScreen extends ConsumerWidget {
@@ -16,7 +16,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(progressStatsProvider);
-    final plan = ref.read(storageServiceProvider).getActivePlan();
+    final plan = ref.watch(activePlanProvider);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(

@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/enums.dart';
 import '../models/progress_stats.dart';
 import '../models/training_plan.dart';
-import 'storage_provider.dart';
+import 'training_plan_provider.dart';
 
 final progressStatsProvider = Provider<ProgressStats?>((ref) {
-  final plan = ref.read(storageServiceProvider).getActivePlan();
+  final plan = ref.watch(activePlanProvider);
   if (plan == null) return null;
   return _computeStats(plan);
 });

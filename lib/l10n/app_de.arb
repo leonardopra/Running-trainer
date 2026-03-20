@@ -140,9 +140,18 @@
   "settingsReminderTime": "Erinnerungszeit",
   "settingsLanguageSection": "Sprache",
   "settingsDataSection": "Daten",
+  "settingsPlanSection": "Trainingsplan",
+  "settingsPlanDesc": "Erstelle einen neuen Trainingsplan, ohne deine Trainingsgeschichte zu verlieren.",
+  "settingsNewPlanBtn": "Neuen Trainingsplan starten",
+  "settingsNewPlanDialogTitle": "Neuen Plan starten?",
+  "settingsNewPlanDialogBody": "Deine Trainingsgeschichte und dein Profil bleiben erhalten. Ein neuer Plan wird für deine Ziele erstellt.",
+  "settingsNewPlanConfirm": "Neuen Plan starten",
+
   "settingsResetAll": "Alle Daten zurücksetzen",
   "settingsResetDialogTitle": "Alle Daten zurücksetzen",
   "settingsResetDialogBody": "Dadurch werden dein Trainingsplan, dein Profil und alle Fortschritte gelöscht. Dies kann nicht rückgängig gemacht werden.",
+
+  "planYourPlans": "Deine Pläne",
 
   "progressTitle": "Fortschritt",
   "progressNoPlan": "Noch kein Trainingsplan.",

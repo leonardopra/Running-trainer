@@ -140,9 +140,18 @@
   "settingsReminderTime": "Reminder time",
   "settingsLanguageSection": "Language",
   "settingsDataSection": "Data",
+  "settingsPlanSection": "Training Plan",
+  "settingsPlanDesc": "Generate a fresh training plan without losing your workout history.",
+  "settingsNewPlanBtn": "Start New Training Plan",
+  "settingsNewPlanDialogTitle": "Start a New Plan?",
+  "settingsNewPlanDialogBody": "Your workout history and profile stay intact. A fresh plan will be generated for your new goals.",
+  "settingsNewPlanConfirm": "Start New Plan",
+
   "settingsResetAll": "Reset All Data",
   "settingsResetDialogTitle": "Reset All Data",
   "settingsResetDialogBody": "This will delete your training plan, profile, and all progress. This cannot be undone.",
+
+  "planYourPlans": "Your Plans",
 
   "progressTitle": "Progress",
   "progressNoPlan": "No training plan yet.",

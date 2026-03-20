@@ -292,18 +292,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 32),
 
           // ── New Plan ──────────────────────────────────────────────────────
-          Text('Training Plan', style: AppTextStyles.heading3),
+          Text(l10n.settingsPlanSection, style: AppTextStyles.heading3),
           const SizedBox(height: 8),
-          Text(
-            'Generate a fresh training plan without losing your workout history.',
-            style: AppTextStyles.bodyMuted,
-          ),
+          Text(l10n.settingsPlanDesc, style: AppTextStyles.bodyMuted),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 52,
             child: ElevatedButton(
-              onPressed: () => _showNewPlanDialog(context),
+              onPressed: () => _showNewPlanDialog(context, l10n),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.background,
@@ -311,7 +308,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text('Start New Training Plan'),
+              child: Text(l10n.settingsNewPlanBtn),
             ),
           ),
           const SizedBox(height: 32),
@@ -377,20 +374,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _showNewPlanDialog(BuildContext context) {
+  void _showNewPlanDialog(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Start a New Plan?', style: AppTextStyles.heading3),
-        content: const Text(
-          'Your workout history and profile stay intact. A fresh plan will be generated for your new goals.',
-          style: AppTextStyles.body,
-        ),
+        title: Text(l10n.settingsNewPlanDialogTitle, style: AppTextStyles.heading3),
+        content: Text(l10n.settingsNewPlanDialogBody, style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.btnCancel),
           ),
           TextButton(
             onPressed: () {
@@ -399,7 +393,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               context.go('/onboarding/goal');
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.primary),
-            child: const Text('Start New Plan'),
+            child: Text(l10n.settingsNewPlanConfirm),
           ),
         ],
       ),
