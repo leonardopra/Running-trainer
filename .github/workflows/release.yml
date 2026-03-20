@@ -52,8 +52,8 @@ jobs:
         id: deploy
         uses: actions/deploy-pages@v4
 
-  # ── APK build → GitHub Releases ───────────────────────────────────────────
-  build-apk:
+  # ── AAB build → GitHub Releases ───────────────────────────────────────────
+  build-aab:
     runs-on: ubuntu-latest
 
     steps:
@@ -81,6 +81,25 @@ jobs:
       - name: Patch build.gradle for core library desugaring
         run: python3 tool/patch_android_build_gradle.py
 
+      # Decode keystore and write key.properties (only when secrets are available)
+      - name: Decode keystore
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          printf 'storeFile=upload-keystore.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+            "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" \
+            > android/key.properties
+
+      - name: Patch build.gradle for signing config and SDK 34
+        env:
+          APP_ID: com.leopra.runningtrainer
+        run: python3 tool/patch_android_signing.py
+
       - name: Generate l10n
         run: flutter gen-l10n
 
@@ -90,13 +109,18 @@ jobs:
       - name: Generate splash screen (android)
         run: flutter pub run flutter_native_splash:create
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build AAB (release)
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        run: flutter build appbundle --release
 
-      - name: Attach APK to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Build AAB (debug — no signing secrets available)
+        if: ${{ secrets.KEYSTORE_BASE64 == '' }}
+        run: flutter build appbundle --debug
+
+      - name: Attach AAB to GitHub Release
+        if: ${{ startsWith(github.ref, 'refs/tags/') && secrets.KEYSTORE_BASE64 != '' }}
         uses: softprops/action-gh-release@v2
         with:
           name: Running Trainer ${{ github.ref_name }}
           generate_release_notes: true
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: build/app/outputs/bundle/release/app-release.aab

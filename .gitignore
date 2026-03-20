@@ -19,6 +19,11 @@ macos/Flutter/ephemeral/
 
 # Android (scaffolded at CI time via `flutter create . --platforms android`, not committed)
 android/
+# Android signing secrets — NEVER commit these
+android/key.properties
+android/app/upload-keystore.jks
+*.jks
+*.keystore
 
 # Web
 lib/generated_plugin_registrant.dart
