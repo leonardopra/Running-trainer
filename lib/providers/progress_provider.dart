@@ -24,6 +24,8 @@ ProgressStats _computeStats(TrainingPlan plan) {
   double totalPlanned = 0;
   double totalLogged = 0;
   final weeklyProgress = <WeekProgress>[];
+  final rpePoints = <RpeDataPoint>[];
+  final feelingMap = <WorkoutFeeling, int>{};
 
   for (int wi = 0; wi < plan.weeks.length; wi++) {
     final week = plan.weeks[wi];
@@ -46,6 +48,16 @@ ProgressStats _computeStats(TrainingPlan plan) {
         completed++;
         weekLogged += w.actualDistanceKm ?? w.distanceKm ?? 0;
         totalLogged += w.actualDistanceKm ?? w.distanceKm ?? 0;
+        if (w.rpe != null && w.completedAt != null) {
+          rpePoints.add(RpeDataPoint(
+            date: w.completedAt!,
+            rpe: w.rpe!,
+            type: w.type,
+          ));
+        }
+        if (w.feeling != null) {
+          feelingMap[w.feeling!] = (feelingMap[w.feeling!] ?? 0) + 1;
+        }
       }
     }
 
@@ -60,6 +72,25 @@ ProgressStats _computeStats(TrainingPlan plan) {
       ));
     }
   }
+
+  rpePoints.sort((a, b) => a.date.compareTo(b.date));
+  final recentRpe = rpePoints.length > 12 ? rpePoints.sublist(rpePoints.length - 12) : rpePoints;
+
+  final allCompleted = plan.weeks
+      .expand((w) => w.workouts)
+      .where((w) => w.isCompleted && w.type != WorkoutType.rest)
+      .toList()
+    ..sort((a, b) => (a.completedAt ?? DateTime(0)).compareTo(b.completedAt ?? DateTime(0)));
+
+  final paceSource = allCompleted
+      .where((w) => (w.actualDistanceKm ?? 0) > 0 && (w.actualDurationMinutes ?? 0) > 0)
+      .toList();
+  final paceSlice = paceSource.length > 12 ? paceSource.sublist(paceSource.length - 12) : paceSource;
+  final pacePoints = paceSlice.map((w) => PaceDataPoint(
+    paceMinPerKm: w.actualDurationMinutes! / w.actualDistanceKm!,
+    type: w.type,
+    date: w.completedAt!,
+  )).toList();
 
   // Streak: count consecutive days going back from today where a run was
   // scheduled AND completed. Rest days are skipped (don't break streak).
@@ -91,5 +122,8 @@ ProgressStats _computeStats(TrainingPlan plan) {
     totalLoggedKm: totalLogged,
     currentStreak: streak,
     weeklyProgress: weeklyProgress,
+    rpeDataPoints: recentRpe,
+    feelingCounts: feelingMap,
+    paceDataPoints: pacePoints,
   );
 }

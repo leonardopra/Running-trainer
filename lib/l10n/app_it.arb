@@ -194,6 +194,12 @@
   "@progressKmLoggedSub": {
     "placeholders": { "n": { "type": "String" } }
   },
+  "progressMiLogged": "Miglia registrate",
+  "progressMiLoggedSub": "di {n} mi pianificate",
+  "@progressMiLoggedSub": {
+    "placeholders": { "n": { "type": "String" } }
+  },
+  "progressWeeklyMiDesc": "Miglia pianificate vs registrate per settimana.",
   "progressStreak": "Serie di corse",
   "progressDay": "giorno",
   "progressDays": "giorni",
@@ -389,5 +395,17 @@
   "insightHighRpeEasyTitle": "Le uscite easy sono troppo dure",
   "insightHighRpeEasyBody": "Le tue recenti uscite easy hanno un RPE elevato. Rallenta per massimizzare i benefici aerobici.",
   "insightNegativeFeelingTitle": "Segnali di affaticamento",
-  "insightNegativeFeelingBody": "Hai segnalato stanchezza o disagio in più sessioni consecutive. Considera un giorno di riposo extra."
+  "insightNegativeFeelingBody": "Hai segnalato stanchezza o disagio in più sessioni consecutive. Considera un giorno di riposo extra.",
+
+  "progressRpeTrend": "Carico allenamento",
+  "progressRpeTrendDesc": "Sforzo percepito negli ultimi allenamenti loggati",
+  "progressFeelingTitle": "Come mi sono sentito",
+  "progressFeelingDesc": "Distribuzione delle sensazioni negli allenamenti completati",
+  "progressNoRpeData": "Logga gli allenamenti con RPE per vedere il carico.",
+  "progressNoFeelingData": "Logga le sensazioni per monitorare la risposta all'allenamento.",
+
+  "progressPaceTrend": "Tendenza ritmo",
+  "progressPaceTrendDescKm": "Ritmo effettivo nelle ultime corse registrate.",
+  "progressPaceTrendDescMi": "Ritmo effettivo (min/mi) nelle ultime corse registrate.",
+  "progressNoPaceData": "Registra corse con distanza e durata per vedere la tendenza del ritmo."
 }

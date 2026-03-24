@@ -373,6 +373,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsResetDialogBody => 'This will delete your training plan, profile, and all progress. This cannot be undone.';
 
   @override
+  String get settingsPlanSection => 'New Plan';
+
+  @override
+  String get settingsPlanDesc => 'Start from scratch with updated goals and a fresh training schedule.';
+
+  @override
+  String get settingsNewPlanBtn => 'Generate New Plan';
+
+  @override
+  String get settingsNewPlanDialogTitle => 'Start a New Plan?';
+
+  @override
+  String get settingsNewPlanDialogBody => 'You\'ll go through setup again to define new goals. Your current plan will be replaced.';
+
+  @override
+  String get settingsNewPlanConfirm => 'Start Over';
+
+  @override
+  String get planYourPlans => 'Your Plans';
+
+  @override
   String get progressTitle => 'Progress';
 
   @override
@@ -393,6 +414,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String progressKmLoggedSub(String n) {
     return 'of $n km planned';
   }
+
+  @override
+  String get progressMiLogged => 'Mi Logged';
+
+  @override
+  String progressMiLoggedSub(String n) => 'of $n mi planned';
+
+  @override
+  String get progressWeeklyMiDesc => 'Planned vs logged miles per week.';
 
   @override
   String get progressStreak => 'Run Streak';
@@ -703,4 +733,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String insightWeeksToGoBody(int weeks, String race) => 'You have $weeks weeks to build fitness for your $race. Stay consistent — small daily habits create big race results.';
+
+  @override
+  String get rpeLabel => 'Perceived effort (RPE)';
+  @override
+  String get rpeEasy => 'Easy';
+  @override
+  String get rpeMax => 'Maximum';
+  @override
+  String get feelingLabel => 'How did you feel?';
+  @override
+  String get feelingGreat => 'Great';
+  @override
+  String get feelingGood => 'Good';
+  @override
+  String get feelingOk => 'Ok';
+  @override
+  String get feelingTired => 'Tired';
+  @override
+  String get feelingInjured => 'Injured';
+  @override
+  String get insightHighRpeEasyTitle => 'Easy runs feel too hard';
+  @override
+  String get insightHighRpeEasyBody => 'Your recent easy runs have a high RPE. Slow down to maximise aerobic benefits.';
+  @override
+  String get insightNegativeFeelingTitle => 'Signs of fatigue';
+  @override
+  String get insightNegativeFeelingBody => "You've reported tiredness or discomfort in multiple consecutive sessions. Consider adding an extra rest day.";
+
+  @override
+  String get progressRpeTrend => 'Training Load';
+  @override
+  String get progressRpeTrendDesc => 'Perceived effort across your last logged runs';
+  @override
+  String get progressFeelingTitle => 'How I Felt';
+  @override
+  String get progressFeelingDesc => 'Feeling distribution across completed workouts';
+  @override
+  String get progressNoRpeData => 'Log workouts with RPE to see your training load.';
+  @override
+  String get progressNoFeelingData => 'Log your feelings to track how you respond to training.';
+
+  @override
+  String get progressPaceTrend => 'Pace Trend';
+  @override
+  String get progressPaceTrendDescKm => 'Actual pace across your last logged runs.';
+  @override
+  String get progressPaceTrendDescMi => 'Actual pace (min/mi) across your last logged runs.';
+  @override
+  String get progressNoPaceData => 'Log runs with distance and duration to see your pace trend.';
 }

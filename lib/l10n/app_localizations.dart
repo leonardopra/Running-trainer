@@ -778,6 +778,14 @@ abstract class AppLocalizations {
   /// **'This will delete your training plan, profile, and all progress. This cannot be undone.'**
   String get settingsResetDialogBody;
 
+  String get settingsPlanSection;
+  String get settingsPlanDesc;
+  String get settingsNewPlanBtn;
+  String get settingsNewPlanDialogTitle;
+  String get settingsNewPlanDialogBody;
+  String get settingsNewPlanConfirm;
+  String get planYourPlans;
+
   /// No description provided for @progressTitle.
   ///
   /// In en, this message translates to:
@@ -813,6 +821,10 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'of {n} km planned'**
   String progressKmLoggedSub(String n);
+
+  String get progressMiLogged;
+  String progressMiLoggedSub(String n);
+  String get progressWeeklyMiDesc;
 
   /// No description provided for @progressStreak.
   ///
@@ -1205,6 +1217,32 @@ abstract class AppLocalizations {
   String insightAlmostThereBody(String race);
   String insightWeeksToGoTitle(int weeks);
   String insightWeeksToGoBody(int weeks, String race);
+
+  String get rpeLabel;
+  String get rpeEasy;
+  String get rpeMax;
+  String get feelingLabel;
+  String get feelingGreat;
+  String get feelingGood;
+  String get feelingOk;
+  String get feelingTired;
+  String get feelingInjured;
+  String get insightHighRpeEasyTitle;
+  String get insightHighRpeEasyBody;
+  String get insightNegativeFeelingTitle;
+  String get insightNegativeFeelingBody;
+
+  String get progressRpeTrend;
+  String get progressRpeTrendDesc;
+  String get progressFeelingTitle;
+  String get progressFeelingDesc;
+  String get progressNoRpeData;
+  String get progressNoFeelingData;
+
+  String get progressPaceTrend;
+  String get progressPaceTrendDescKm;
+  String get progressPaceTrendDescMi;
+  String get progressNoPaceData;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

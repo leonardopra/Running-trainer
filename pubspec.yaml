@@ -1,7 +1,7 @@
 name: running_trainer_app
 description: Personalised running training plans with rule-based progression and optional Claude AI coaching. Cross-platform, fully offline, no account required.
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.1.0+2
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

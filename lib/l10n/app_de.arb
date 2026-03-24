@@ -194,6 +194,12 @@
   "@progressKmLoggedSub": {
     "placeholders": { "n": { "type": "String" } }
   },
+  "progressMiLogged": "Meilen protokolliert",
+  "progressMiLoggedSub": "von {n} mi geplant",
+  "@progressMiLoggedSub": {
+    "placeholders": { "n": { "type": "String" } }
+  },
+  "progressWeeklyMiDesc": "Geplante und protokollierte Meilen pro Woche.",
   "progressStreak": "Laufserie",
   "progressDay": "Tag",
   "progressDays": "Tage",
@@ -389,5 +395,17 @@
   "insightHighRpeEasyTitle": "Leichte Läufe fühlen sich zu schwer an",
   "insightHighRpeEasyBody": "Deine letzten leichten Läufe hatten ein hohes RPE. Verlangsame dich, um die aeroben Vorteile zu maximieren.",
   "insightNegativeFeelingTitle": "Anzeichen von Erschöpfung",
-  "insightNegativeFeelingBody": "Du hast in mehreren aufeinanderfolgenden Einheiten Müdigkeit oder Beschwerden gemeldet. Erwäge einen zusätzlichen Ruhetag."
+  "insightNegativeFeelingBody": "Du hast in mehreren aufeinanderfolgenden Einheiten Müdigkeit oder Beschwerden gemeldet. Erwäge einen zusätzlichen Ruhetag.",
+
+  "progressRpeTrend": "Trainingsbelastung",
+  "progressRpeTrendDesc": "Wahrgenommene Belastung der letzten Einheiten",
+  "progressFeelingTitle": "Wie ich mich gefühlt habe",
+  "progressFeelingDesc": "Gefühlsverteilung über abgeschlossene Einheiten",
+  "progressNoRpeData": "Logge Einheiten mit RPE, um die Belastung zu sehen.",
+  "progressNoFeelingData": "Logge deine Gefühle, um deine Trainingsreaktion zu verfolgen.",
+
+  "progressPaceTrend": "Tempo-Trend",
+  "progressPaceTrendDescKm": "Tatsächliches Tempo deiner letzten protokollierten Läufe.",
+  "progressPaceTrendDescMi": "Tatsächliches Tempo (Min/Meile) deiner letzten protokollierten Läufe.",
+  "progressNoPaceData": "Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend."
 }

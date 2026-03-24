@@ -373,6 +373,27 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsResetDialogBody => 'Dadurch werden dein Trainingsplan, dein Profil und alle Fortschritte gelöscht. Dies kann nicht rückgängig gemacht werden.';
 
   @override
+  String get settingsPlanSection => 'Neuer Plan';
+
+  @override
+  String get settingsPlanDesc => 'Starte neu mit aktualisierten Zielen und einem neuen Trainingsplan.';
+
+  @override
+  String get settingsNewPlanBtn => 'Neuen Plan erstellen';
+
+  @override
+  String get settingsNewPlanDialogTitle => 'Neuen Plan starten?';
+
+  @override
+  String get settingsNewPlanDialogBody => 'Du durchläufst die Einrichtung erneut. Dein aktueller Plan wird ersetzt.';
+
+  @override
+  String get settingsNewPlanConfirm => 'Neu starten';
+
+  @override
+  String get planYourPlans => 'Deine Pläne';
+
+  @override
   String get progressTitle => 'Fortschritt';
 
   @override
@@ -393,6 +414,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String progressKmLoggedSub(String n) {
     return 'von $n km geplant';
   }
+
+  @override
+  String get progressMiLogged => 'Meilen protokolliert';
+
+  @override
+  String progressMiLoggedSub(String n) => 'von $n mi geplant';
+
+  @override
+  String get progressWeeklyMiDesc => 'Geplante und protokollierte Meilen pro Woche.';
 
   @override
   String get progressStreak => 'Laufserie';
@@ -703,4 +733,53 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String insightWeeksToGoBody(int weeks, String race) => 'Du hast $weeks Wochen, um Fitness für deinen $race aufzubauen. Bleib konsequent — kleine tägliche Gewohnheiten schaffen große Wettkampfergebnisse.';
+
+  @override
+  String get rpeLabel => 'Wahrgenommene Anstrengung';
+  @override
+  String get rpeEasy => 'Leicht';
+  @override
+  String get rpeMax => 'Maximum';
+  @override
+  String get feelingLabel => 'Wie hast du dich gefühlt?';
+  @override
+  String get feelingGreat => 'Sehr gut';
+  @override
+  String get feelingGood => 'Gut';
+  @override
+  String get feelingOk => 'Ok';
+  @override
+  String get feelingTired => 'Müde';
+  @override
+  String get feelingInjured => 'Verletzt';
+  @override
+  String get insightHighRpeEasyTitle => 'Leichte Läufe fühlen sich zu schwer an';
+  @override
+  String get insightHighRpeEasyBody => 'Deine letzten leichten Läufe hatten ein hohes RPE. Verlangsame dich, um die aeroben Vorteile zu maximieren.';
+  @override
+  String get insightNegativeFeelingTitle => 'Anzeichen von Erschöpfung';
+  @override
+  String get insightNegativeFeelingBody => 'Du hast in mehreren aufeinanderfolgenden Einheiten Müdigkeit oder Beschwerden gemeldet. Erwäge einen zusätzlichen Ruhetag.';
+
+  @override
+  String get progressRpeTrend => 'Trainingsbelastung';
+  @override
+  String get progressRpeTrendDesc => 'Wahrgenommene Belastung der letzten Einheiten';
+  @override
+  String get progressFeelingTitle => 'Wie ich mich gefühlt habe';
+  @override
+  String get progressFeelingDesc => 'Gefühlsverteilung über abgeschlossene Einheiten';
+  @override
+  String get progressNoRpeData => 'Logge Einheiten mit RPE, um die Belastung zu sehen.';
+  @override
+  String get progressNoFeelingData => 'Logge deine Gefühle, um deine Trainingsreaktion zu verfolgen.';
+
+  @override
+  String get progressPaceTrend => 'Tempo-Trend';
+  @override
+  String get progressPaceTrendDescKm => 'Tatsächliches Tempo deiner letzten protokollierten Läufe.';
+  @override
+  String get progressPaceTrendDescMi => 'Tatsächliches Tempo (Min/Meile) deiner letzten protokollierten Läufe.';
+  @override
+  String get progressNoPaceData => 'Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend.';
 }

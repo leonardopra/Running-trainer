@@ -5,8 +5,9 @@ import '../../../models/progress_stats.dart';
 
 class WeeklyBarChart extends StatelessWidget {
   final List<WeekProgress> weeks;
+  final bool useKilometers;
 
-  const WeeklyBarChart({super.key, required this.weeks});
+  const WeeklyBarChart({super.key, required this.weeks, required this.useKilometers});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +24,10 @@ class WeeklyBarChart extends StatelessWidget {
       );
     }
 
-    final maxKm = weeks.fold<double>(
+    final factor = useKilometers ? 1.0 : 0.621371;
+    final maxVal = weeks.fold<double>(
       1,
-      (m, w) => m < w.plannedKm ? w.plannedKm : m,
+      (m, w) => m < w.plannedKm * factor ? w.plannedKm * factor : m,
     );
 
     return Column(
@@ -51,7 +53,8 @@ class WeeklyBarChart extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: weeks.map((w) => _WeekBar(
                 week: w,
-                maxKm: maxKm,
+                maxVal: maxVal,
+                factor: factor,
               )).toList(),
             ),
           ),
@@ -63,9 +66,10 @@ class WeeklyBarChart extends StatelessWidget {
 
 class _WeekBar extends StatelessWidget {
   final WeekProgress week;
-  final double maxKm;
+  final double maxVal;
+  final double factor;
 
-  const _WeekBar({required this.week, required this.maxKm});
+  const _WeekBar({required this.week, required this.maxVal, required this.factor});
 
   @override
   Widget build(BuildContext context) {
@@ -74,18 +78,17 @@ class _WeekBar extends StatelessWidget {
     const gap = 4.0;
     const groupWidth = 56.0;
 
-    final plannedH = maxKm > 0 ? (week.plannedKm / maxKm * maxHeight).clamp(2.0, maxHeight) : 2.0;
-    final loggedH  = maxKm > 0 ? (week.loggedKm  / maxKm * maxHeight).clamp(0.0, maxHeight) : 0.0;
+    final plannedH = maxVal > 0 ? (week.plannedKm * factor / maxVal * maxHeight).clamp(2.0, maxHeight) : 2.0;
+    final loggedH  = maxVal > 0 ? (week.loggedKm  * factor / maxVal * maxHeight).clamp(0.0, maxHeight) : 0.0;
 
     return SizedBox(
       width: groupWidth,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // km label above bars
           Text(
             week.loggedKm > 0
-                ? '${week.loggedKm.toStringAsFixed(0)}k'
+                ? (week.loggedKm * factor).toStringAsFixed(0)
                 : '',
             style: const TextStyle(fontSize: 9, color: AppColors.primary),
           ),

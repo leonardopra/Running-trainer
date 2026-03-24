@@ -373,6 +373,27 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsResetDialogBody => 'Questo eliminerà il piano di allenamento, il profilo e tutti i progressi. Questa azione non può essere annullata.';
 
   @override
+  String get settingsPlanSection => 'Nuovo piano';
+
+  @override
+  String get settingsPlanDesc => 'Ricomincia da zero con nuovi obiettivi e un piano di allenamento aggiornato.';
+
+  @override
+  String get settingsNewPlanBtn => 'Genera nuovo piano';
+
+  @override
+  String get settingsNewPlanDialogTitle => 'Iniziare un nuovo piano?';
+
+  @override
+  String get settingsNewPlanDialogBody => 'Ricomincerà la configurazione per definire nuovi obiettivi. Il piano attuale verrà sostituito.';
+
+  @override
+  String get settingsNewPlanConfirm => 'Ricomincia';
+
+  @override
+  String get planYourPlans => 'I tuoi piani';
+
+  @override
   String get progressTitle => 'Progressi';
 
   @override
@@ -393,6 +414,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String progressKmLoggedSub(String n) {
     return 'di $n km pianificati';
   }
+
+  @override
+  String get progressMiLogged => 'Miglia registrate';
+
+  @override
+  String progressMiLoggedSub(String n) => 'di $n mi pianificate';
+
+  @override
+  String get progressWeeklyMiDesc => 'Miglia pianificate vs registrate per settimana.';
 
   @override
   String get progressStreak => 'Serie di corse';
@@ -703,4 +733,53 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String insightWeeksToGoBody(int weeks, String race) => 'Hai $weeks settimane per costruire la forma fisica per la tua $race. Sii costante — piccole abitudini quotidiane creano grandi risultati.';
+
+  @override
+  String get rpeLabel => 'Sforzo percepito (RPE)';
+  @override
+  String get rpeEasy => 'Facile';
+  @override
+  String get rpeMax => 'Massimo';
+  @override
+  String get feelingLabel => 'Come ti sei sentito?';
+  @override
+  String get feelingGreat => 'Ottimo';
+  @override
+  String get feelingGood => 'Bene';
+  @override
+  String get feelingOk => 'Così così';
+  @override
+  String get feelingTired => 'Stanco';
+  @override
+  String get feelingInjured => 'Infortunato';
+  @override
+  String get insightHighRpeEasyTitle => 'Le uscite easy sono troppo dure';
+  @override
+  String get insightHighRpeEasyBody => 'Le tue recenti uscite easy hanno un RPE elevato. Rallenta per massimizzare i benefici aerobici.';
+  @override
+  String get insightNegativeFeelingTitle => 'Segnali di affaticamento';
+  @override
+  String get insightNegativeFeelingBody => 'Hai segnalato stanchezza o disagio in più sessioni consecutive. Considera un giorno di riposo extra.';
+
+  @override
+  String get progressRpeTrend => 'Carico allenamento';
+  @override
+  String get progressRpeTrendDesc => 'Sforzo percepito negli ultimi allenamenti loggati';
+  @override
+  String get progressFeelingTitle => 'Come mi sono sentito';
+  @override
+  String get progressFeelingDesc => 'Distribuzione delle sensazioni negli allenamenti completati';
+  @override
+  String get progressNoRpeData => 'Logga gli allenamenti con RPE per vedere il carico.';
+  @override
+  String get progressNoFeelingData => "Logga le sensazioni per monitorare la risposta all'allenamento.";
+
+  @override
+  String get progressPaceTrend => 'Tendenza ritmo';
+  @override
+  String get progressPaceTrendDescKm => 'Ritmo effettivo nelle ultime corse registrate.';
+  @override
+  String get progressPaceTrendDescMi => 'Ritmo effettivo (min/mi) nelle ultime corse registrate.';
+  @override
+  String get progressNoPaceData => 'Registra corse con distanza e durata per vedere la tendenza del ritmo.';
 }

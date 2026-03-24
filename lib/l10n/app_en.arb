@@ -194,6 +194,12 @@
   "@progressKmLoggedSub": {
     "placeholders": { "n": { "type": "String" } }
   },
+  "progressMiLogged": "Mi Logged",
+  "progressMiLoggedSub": "of {n} mi planned",
+  "@progressMiLoggedSub": {
+    "placeholders": { "n": { "type": "String" } }
+  },
+  "progressWeeklyMiDesc": "Planned vs logged miles per week.",
   "progressStreak": "Run Streak",
   "progressDay": "day",
   "progressDays": "days",
@@ -389,5 +395,17 @@
   "insightHighRpeEasyTitle": "Easy runs feel too hard",
   "insightHighRpeEasyBody": "Your recent easy runs have a high RPE. Slow down to maximise aerobic benefits.",
   "insightNegativeFeelingTitle": "Signs of fatigue",
-  "insightNegativeFeelingBody": "You've reported tiredness or discomfort in multiple consecutive sessions. Consider adding an extra rest day."
+  "insightNegativeFeelingBody": "You've reported tiredness or discomfort in multiple consecutive sessions. Consider adding an extra rest day.",
+
+  "progressRpeTrend": "Training Load",
+  "progressRpeTrendDesc": "Perceived effort across your last logged runs",
+  "progressFeelingTitle": "How I Felt",
+  "progressFeelingDesc": "Feeling distribution across completed workouts",
+  "progressNoRpeData": "Log workouts with RPE to see your training load.",
+  "progressNoFeelingData": "Log your feelings to track how you respond to training.",
+
+  "progressPaceTrend": "Pace Trend",
+  "progressPaceTrendDescKm": "Actual pace across your last logged runs.",
+  "progressPaceTrendDescMi": "Actual pace (min/mi) across your last logged runs.",
+  "progressNoPaceData": "Log runs with distance and duration to see your pace trend."
 }

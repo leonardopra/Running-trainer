@@ -7,7 +7,11 @@ import '../../../models/enums.dart';
 import '../../../models/training_plan.dart';
 import '../../../models/workout.dart';
 import '../../../providers/progress_provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../providers/training_plan_provider.dart';
+import '../widgets/feeling_distribution.dart';
+import '../widgets/pace_trend_chart.dart';
+import '../widgets/rpe_trend_chart.dart';
 import '../widgets/weekly_bar_chart.dart';
 
 class ProgressDashboardScreen extends ConsumerWidget {
@@ -17,6 +21,9 @@ class ProgressDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(progressStatsProvider);
     final plan = ref.watch(activePlanProvider);
+    final useKm = ref.watch(settingsProvider).useKilometers;
+    final convFactor = useKm ? 1.0 : 0.621371;
+    final unitLabel = useKm ? 'km' : 'mi';
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -59,9 +66,11 @@ class ProgressDashboardScreen extends ConsumerWidget {
                           icon: Icons.check_circle_outline,
                         ),
                         _StatCard(
-                          label: l10n.progressKmLogged,
-                          value: stats.totalLoggedKm.toStringAsFixed(1),
-                          sub: l10n.progressKmLoggedSub(stats.totalPlannedKm.toStringAsFixed(0)),
+                          label: useKm ? l10n.progressKmLogged : l10n.progressMiLogged,
+                          value: (stats.totalLoggedKm * convFactor).toStringAsFixed(1),
+                          sub: useKm
+                              ? l10n.progressKmLoggedSub(stats.totalPlannedKm.toStringAsFixed(0))
+                              : l10n.progressMiLoggedSub((stats.totalPlannedKm * convFactor).toStringAsFixed(0)),
                           color: AppColors.secondary,
                           icon: Icons.route,
                         ),
@@ -86,7 +95,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
                     // ── Weekly bar chart ──────────────────────────────────
                     Text(l10n.progressWeeklyMileage, style: AppTextStyles.heading3),
                     const SizedBox(height: 4),
-                    Text(l10n.progressWeeklyMileageDesc, style: AppTextStyles.bodyMuted),
+                    Text(useKm ? l10n.progressWeeklyMileageDesc : l10n.progressWeeklyMiDesc, style: AppTextStyles.bodyMuted),
                     const SizedBox(height: 16),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -94,14 +103,59 @@ class ProgressDashboardScreen extends ConsumerWidget {
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: WeeklyBarChart(weeks: stats.weeklyProgress),
+                      child: WeeklyBarChart(weeks: stats.weeklyProgress, useKilometers: useKm),
                     ),
+                    // ── Pace Trend ────────────────────────────────────────
+                    const SizedBox(height: 32),
+                    Text(l10n.progressPaceTrend, style: AppTextStyles.heading3),
+                    const SizedBox(height: 4),
+                    Text(useKm ? l10n.progressPaceTrendDescKm : l10n.progressPaceTrendDescMi, style: AppTextStyles.bodyMuted),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: PaceTrendChart(points: stats.paceDataPoints, useKilometers: useKm),
+                    ),
+
+                    // ── Training Load (RPE Trend) ─────────────────────────
+                    const SizedBox(height: 32),
+                    Text(l10n.progressRpeTrend, style: AppTextStyles.heading3),
+                    const SizedBox(height: 4),
+                    Text(l10n.progressRpeTrendDesc, style: AppTextStyles.bodyMuted),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: RpeTrendChart(points: stats.rpeDataPoints),
+                    ),
+
+                    // ── Feeling Distribution ──────────────────────────────
+                    const SizedBox(height: 32),
+                    Text(l10n.progressFeelingTitle, style: AppTextStyles.heading3),
+                    const SizedBox(height: 4),
+                    Text(l10n.progressFeelingDesc, style: AppTextStyles.bodyMuted),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: FeelingDistribution(counts: stats.feelingCounts),
+                    ),
+
                     const SizedBox(height: 32),
 
                     // ── Recent activity ───────────────────────────────────
                     Text(l10n.progressRecentActivity, style: AppTextStyles.heading3),
                     const SizedBox(height: 12),
-                    _buildRecentActivity(plan, l10n),
+                    _buildRecentActivity(plan, l10n, convFactor, unitLabel),
                   ],
                 ),
               ),
@@ -111,7 +165,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecentActivity(TrainingPlan plan, AppLocalizations l10n) {
+  Widget _buildRecentActivity(TrainingPlan plan, AppLocalizations l10n, double convFactor, String unitLabel) {
     final completed = plan.weeks
         .expand((week) => week.workouts)
         .where((w) => w.isCompleted && w.type != WorkoutType.rest)
@@ -144,7 +198,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
 
     final recent = completed.take(8).toList();
     return Column(
-      children: recent.map<Widget>((w) => _ActivityTile(workout: w as Workout)).toList(),
+      children: recent.map<Widget>((w) => _ActivityTile(workout: w as Workout, convFactor: convFactor, unitLabel: unitLabel)).toList(),
     );
   }
 }
@@ -214,7 +268,9 @@ class _StatCard extends StatelessWidget {
 // ── Recent activity tile ───────────────────────────────────────────────────
 class _ActivityTile extends StatelessWidget {
   final Workout workout;
-  const _ActivityTile({required this.workout});
+  final double convFactor;
+  final String unitLabel;
+  const _ActivityTile({required this.workout, required this.convFactor, required this.unitLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +321,7 @@ class _ActivityTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if (km != null)
-                Text('${(km as double).toStringAsFixed(1)} km',
+                Text('${((km as double) * convFactor).toStringAsFixed(1)} $unitLabel',
                     style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w600,
                       color: AppColors.onSurface,

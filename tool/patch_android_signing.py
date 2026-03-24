@@ -191,3 +191,23 @@ with open(path, 'w') as f:
     f.write(content)
 
 print(f'{path} patched with signing config and SDK 34 successfully.')
+
+# ── Patch AndroidManifest.xml — POST_NOTIFICATIONS permission (Android 13+) ──
+MANIFEST = 'android/app/src/main/AndroidManifest.xml'
+if os.path.exists(MANIFEST):
+    with open(MANIFEST) as f:
+        manifest = f.read()
+    PERMISSION = '<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>'
+    if PERMISSION not in manifest:
+        manifest = manifest.replace(
+            '<application',
+            f'{PERMISSION}\n    <application',
+            1,
+        )
+        with open(MANIFEST, 'w') as f:
+            f.write(manifest)
+        print(f'{MANIFEST} patched with POST_NOTIFICATIONS permission.')
+    else:
+        print('POST_NOTIFICATIONS permission already present — skipping.')
+else:
+    print(f'WARNING: {MANIFEST} not found — run flutter create first.')

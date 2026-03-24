@@ -29,12 +29,17 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
   int? _rpe;
   WorkoutFeeling? _feeling;
 
+  bool get _useKm => ref.read(settingsProvider).useKilometers;
+
   @override
   void initState() {
     super.initState();
     final w = widget.workout;
     if (w.actualDistanceKm != null) {
-      _distanceCtrl.text = w.actualDistanceKm!.toStringAsFixed(1);
+      final val = _useKm
+          ? w.actualDistanceKm!
+          : w.actualDistanceKm! * 0.621371;
+      _distanceCtrl.text = val.toStringAsFixed(2);
     }
     if (w.actualDurationMinutes != null) {
       _durationCtrl.text = w.actualDurationMinutes.toString();
@@ -57,9 +62,11 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
   Future<void> _saveLog() async {
     setState(() => _saving = true);
     final w = widget.workout;
-    final dist = double.tryParse(_distanceCtrl.text.trim());
+    final rawDist = double.tryParse(_distanceCtrl.text.trim());
     final dur  = int.tryParse(_durationCtrl.text.trim());
-    w.actualDistanceKm      = dist;
+    w.actualDistanceKm = rawDist == null
+        ? null
+        : (_useKm ? rawDist : rawDist / 0.621371);
     w.actualDurationMinutes = dur;
     w.notes                 = _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim();
     w.rpe                   = _rpe;
@@ -138,6 +145,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     final typeColor = _getTypeColor(w.type);
     final isRest = w.type == WorkoutType.rest;
     final l10n = AppLocalizations.of(context)!;
+    final distUnit = _useKm ? 'km' : 'mi';
 
     return Scaffold(
       body: CustomScrollView(
@@ -171,7 +179,9 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       if (w.distanceKm != null) ...[
                         _StatCard(
                           label: l10n.workoutStatDistance,
-                          value: '${w.distanceKm!.toStringAsFixed(1)} km',
+                          value: _useKm
+                              ? '${w.distanceKm!.toStringAsFixed(1)} km'
+                              : '${(w.distanceKm! * 0.621371).toStringAsFixed(1)} mi',
                           color: typeColor,
                         ),
                         const SizedBox(width: 12),
@@ -186,7 +196,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       ],
                       _StatCard(
                         label: l10n.workoutStatEffort,
-                        value: w.effortLevel.displayName,
+                        value: w.effortLevel.localizedName(l10n),
                         color: Color(w.effortLevel.colorValue),
                       ),
                     ],
@@ -306,9 +316,11 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                               Expanded(
                                 child: _LogField(
                                   controller: _distanceCtrl,
-                                  label: l10n.workoutLogDistance,
+                                  label: '${l10n.workoutLogDistance.replaceAll('(km)', '')} ($distUnit)',
                                   hint: w.distanceKm != null
-                                      ? w.distanceKm!.toStringAsFixed(1)
+                                      ? (_useKm
+                                          ? w.distanceKm!.toStringAsFixed(1)
+                                          : (w.distanceKm! * 0.621371).toStringAsFixed(1))
                                       : '0.0',
                                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                 ),

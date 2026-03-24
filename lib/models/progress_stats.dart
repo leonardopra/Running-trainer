@@ -1,3 +1,20 @@
+import 'enums.dart';
+
+class PaceDataPoint {
+  final double paceMinPerKm;
+  final WorkoutType type;
+  final DateTime date;
+  const PaceDataPoint({required this.paceMinPerKm, required this.type, required this.date});
+}
+
+class RpeDataPoint {
+  final DateTime date;
+  final int rpe;
+  final WorkoutType type;
+
+  const RpeDataPoint({required this.date, required this.rpe, required this.type});
+}
+
 class WeekProgress {
   final int weekNumber;
   final double plannedKm;
@@ -26,6 +43,9 @@ class ProgressStats {
   final double totalLoggedKm;
   final int currentStreak; // consecutive completed run days up to today
   final List<WeekProgress> weeklyProgress; // only weeks that have started
+  final List<RpeDataPoint> rpeDataPoints;
+  final Map<WorkoutFeeling, int> feelingCounts;
+  final List<PaceDataPoint> paceDataPoints;
 
   const ProgressStats({
     required this.totalNonRestWorkouts,
@@ -34,6 +54,9 @@ class ProgressStats {
     required this.totalLoggedKm,
     required this.currentStreak,
     required this.weeklyProgress,
+    required this.rpeDataPoints,
+    required this.feelingCounts,
+    this.paceDataPoints = const [],
   });
 
   double get completionRate =>
