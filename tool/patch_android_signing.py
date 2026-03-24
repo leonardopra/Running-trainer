@@ -78,14 +78,16 @@ val keystoreProperties = Properties().apply {
         content,
     )
 
-    # 5. Add signingConfigs block before buildTypes
+    # 5. Add signingConfigs block before buildTypes (guarded so null cast never occurs)
     SIGNING_CONFIGS_KTS = '''\
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
         }
     }
 '''
@@ -96,18 +98,23 @@ val keystoreProperties = Properties().apply {
         count=1,
     )
 
-    # 6. Wire release buildType to release signingConfig
+    # 6. Wire release buildType to release signingConfig (also guarded)
+    SIGNING_WIRE = (
+        'if (keystorePropertiesFile.exists()) {\n'
+        '                signingConfig = signingConfigs.getByName("release")\n'
+        '            }'
+    )
     content = re.sub(
         r'(release\s*\{[^}]*?)signingConfig\s*=\s*signingConfigs\.getByName\("debug"\)',
-        r'\1signingConfig = signingConfigs.getByName("release")',
+        r'\1' + SIGNING_WIRE,
         content,
         flags=re.DOTALL,
     )
-    # If the release block doesn't already have a signingConfig line, add one
-    if 'signingConfig = signingConfigs.getByName("release")' not in content:
+    # If the release block doesn't already have a signingConfig wiring, add one
+    if 'signingConfigs.getByName("release")' not in content:
         content = re.sub(
             r'(buildTypes\s*\{[^}]*?release\s*\{)',
-            r'\1\n            signingConfig = signingConfigs.getByName("release")',
+            r'\1\n            ' + SIGNING_WIRE,
             content,
             count=1,
             flags=re.DOTALL,
