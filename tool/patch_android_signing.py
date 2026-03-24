@@ -57,17 +57,17 @@ val keystoreProperties = Properties().apply {
         flags=re.DOTALL,
     )
 
-    # 2. Pin compileSdk to 34 (replace flutter.compileSdkVersion reference)
+    # 2. Pin compileSdk to 36 (minimum required by path_provider_android, url_launcher_android)
     content = re.sub(
         r'compileSdk\s*=\s*\S+',
-        'compileSdk = 34',
+        'compileSdk = 36',
         content,
     )
 
-    # 3. Pin targetSdk to 34 in defaultConfig
+    # 3. Pin targetSdk to 36 in defaultConfig
     content = re.sub(
         r'targetSdk\s*=\s*\S+',
-        'targetSdk = 34',
+        'targetSdk = 36',
         content,
     )
 
@@ -134,17 +134,17 @@ if (keystorePropertiesFile.exists()) {
     # Insert at the very top of the file
     content = KEYSTORE_LOADER + content
 
-    # 2. Pin compileSdkVersion to 34
+    # 2. Pin compileSdkVersion to 36
     content = re.sub(
         r'compileSdkVersion\s+\S+',
-        'compileSdkVersion 34',
+        'compileSdkVersion 36',
         content,
     )
 
-    # 3. Pin targetSdkVersion to 34
+    # 3. Pin targetSdkVersion to 36
     content = re.sub(
         r'targetSdkVersion\s+\S+',
-        'targetSdkVersion 34',
+        'targetSdkVersion 36',
         content,
     )
 
