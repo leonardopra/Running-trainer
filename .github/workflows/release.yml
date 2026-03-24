@@ -81,9 +81,21 @@ jobs:
       - name: Patch build.gradle for core library desugaring
         run: python3 tool/patch_android_build_gradle.py
 
+      # Check if signing secrets are present and expose as step output
+      - name: Check signing secrets
+        id: secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "has_keystore=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_keystore=false" >> $GITHUB_OUTPUT
+          fi
+
       # Decode keystore and write key.properties (only when secrets are available)
       - name: Decode keystore
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        if: steps.secrets.outputs.has_keystore == 'true'
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -110,15 +122,15 @@ jobs:
         run: flutter pub run flutter_native_splash:create
 
       - name: Build AAB (release)
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        if: steps.secrets.outputs.has_keystore == 'true'
         run: flutter build appbundle --release
 
       - name: Build AAB (debug — no signing secrets available)
-        if: ${{ secrets.KEYSTORE_BASE64 == '' }}
+        if: steps.secrets.outputs.has_keystore == 'false'
         run: flutter build appbundle --debug
 
       - name: Attach AAB to GitHub Release
-        if: ${{ startsWith(github.ref, 'refs/tags/') && secrets.KEYSTORE_BASE64 != '' }}
+        if: startsWith(github.ref, 'refs/tags/') && steps.secrets.outputs.has_keystore == 'true'
         uses: softprops/action-gh-release@v2
         with:
           name: Running Trainer ${{ github.ref_name }}
