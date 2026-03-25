@@ -53,6 +53,9 @@ class Workout extends HiveObject {
   @HiveField(15)
   WorkoutFeeling? feeling;
 
+  @HiveField(16)
+  String? postWorkoutCoaching;
+
   Workout({
     required this.id,
     required this.type,
@@ -70,6 +73,7 @@ class Workout extends HiveObject {
     this.notes,
     this.rpe,
     this.feeling,
+    this.postWorkoutCoaching,
   });
 
   Map<String, dynamic> toJson() => {

@@ -407,5 +407,21 @@
   "progressPaceTrend": "Pace Trend",
   "progressPaceTrendDescKm": "Actual pace across your last logged runs.",
   "progressPaceTrendDescMi": "Actual pace (min/mi) across your last logged runs.",
-  "progressNoPaceData": "Log runs with distance and duration to see your pace trend."
+  "progressNoPaceData": "Log runs with distance and duration to see your pace trend.",
+
+  "calendarView": "Calendar view",
+  "listView": "List view",
+
+  "workoutCoachFeedback": "Coach's Feedback",
+  "workoutCoachFeedbackLoading": "Analyzing your run...",
+  "workoutCoachFeedbackError": "Feedback unavailable",
+  "workoutCoachFeedbackHint": "Log RPE or feeling to get AI coaching after your run.",
+  "workoutCoachFeedbackRefresh": "Get feedback",
+  "workoutCoachFeedbackNoKey": "Add your Claude API key in Settings to unlock post-workout coaching.",
+
+  "progressViewAll": "View All",
+  "progressHistoryTitle": "Run History",
+  "progressHistoryEmpty": "No completed runs yet.",
+
+  "settingsPrivacyPolicy": "Privacy Policy"
 }

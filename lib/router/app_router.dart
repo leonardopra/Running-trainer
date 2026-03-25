@@ -11,7 +11,9 @@ import '../features/home/screens/home_screen.dart';
 import '../features/plan/screens/plan_overview_screen.dart';
 import '../features/plan/screens/workout_detail_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
+import '../features/settings/screens/privacy_policy_screen.dart';
 import '../features/progress/screens/progress_dashboard_screen.dart';
+import '../features/progress/screens/run_history_screen.dart';
 import '../features/pace/screens/pace_calculator_screen.dart';
 import '../features/shell/main_scaffold.dart';
 import '../providers/settings_provider.dart';
@@ -62,9 +64,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          GoRoute(path: '/progress', builder: (_, __) => const ProgressDashboardScreen()),
+          GoRoute(
+            path: '/progress',
+            builder: (_, __) => const ProgressDashboardScreen(),
+            routes: [
+              GoRoute(
+                path: 'history',
+                builder: (_, __) => const RunHistoryScreen(),
+              ),
+            ],
+          ),
           GoRoute(path: '/pace', builder: (_, __) => const PaceCalculatorScreen()),
           GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+          GoRoute(path: '/privacy', builder: (_, __) => const PrivacyPolicyScreen()),
         ],
       ),
     ],

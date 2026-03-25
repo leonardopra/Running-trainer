@@ -319,6 +319,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SizedBox(
             width: double.infinity,
             height: 52,
+            child: OutlinedButton.icon(
+              onPressed: () => context.push('/privacy'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.onSurface,
+                side: const BorderSide(color: AppColors.surfaceVariant),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const Icon(Icons.privacy_tip_outlined, size: 18),
+              label: Text(l10n.settingsPrivacyPolicy),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
             child: OutlinedButton(
               onPressed: () => _showResetDialog(context, l10n),
               style: OutlinedButton.styleFrom(

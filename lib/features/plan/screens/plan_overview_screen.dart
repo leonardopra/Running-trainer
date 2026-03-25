@@ -7,7 +7,9 @@ import '../../../core/constants/app_text_styles.dart';
 import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 import '../../../providers/training_plan_provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../widgets/week_card.dart';
+import '../widgets/plan_calendar_widget.dart';
 import '../../../core/l10n_helpers.dart';
 
 class PlanOverviewScreen extends ConsumerWidget {
@@ -18,6 +20,8 @@ class PlanOverviewScreen extends ConsumerWidget {
     final plan = ref.watch(activePlanProvider);
     final allPlans = ref.watch(allPlansProvider);
     final selectedId = ref.watch(selectedPlanIdProvider);
+    final showCalendar = ref.watch(showCalendarViewProvider);
+    final localeCode = ref.watch(settingsProvider).localeCode;
     final l10n = AppLocalizations.of(context)!;
 
     if (plan == null) {
@@ -47,6 +51,16 @@ class PlanOverviewScreen extends ConsumerWidget {
               ],
             ),
             actions: [
+              IconButton(
+                tooltip: showCalendar ? l10n.listView : l10n.calendarView,
+                icon: Icon(
+                  showCalendar ? Icons.list : Icons.calendar_month,
+                  color: AppColors.onSurface,
+                ),
+                onPressed: () => ref
+                    .read(showCalendarViewProvider.notifier)
+                    .state = !showCalendar,
+              ),
               IconButton(
                 icon: const Icon(Icons.settings_outlined, color: AppColors.onSurface),
                 onPressed: () => context.go('/settings'),
@@ -131,22 +145,33 @@ class PlanOverviewScreen extends ConsumerWidget {
               ),
             ),
 
-          // ── Week list ──────────────────────────────────────────────────
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final week = plan.weeks[index];
-                return WeekCard(
-                  week: week,
-                  isExpanded: index == 0,
-                  onWorkoutTap: (Workout workout) {
-                    context.push('/plan/workout/${workout.id}', extra: workout);
-                  },
-                );
-              },
-              childCount: plan.weeks.length,
+          // ── Week list / Calendar ───────────────────────────────────────
+          if (showCalendar)
+            SliverToBoxAdapter(
+              child: PlanCalendarWidget(
+                plan: plan,
+                localeCode: localeCode,
+                onWorkoutTap: (Workout workout) {
+                  context.push('/plan/workout/${workout.id}', extra: workout);
+                },
+              ),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final week = plan.weeks[index];
+                  return WeekCard(
+                    week: week,
+                    isExpanded: index == 0,
+                    onWorkoutTap: (Workout workout) {
+                      context.push('/plan/workout/${workout.id}', extra: workout);
+                    },
+                  );
+                },
+                childCount: plan.weeks.length,
+              ),
             ),
-          ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 40)),
         ],
       ),

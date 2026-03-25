@@ -407,5 +407,21 @@
   "progressPaceTrend": "Tendenza ritmo",
   "progressPaceTrendDescKm": "Ritmo effettivo nelle ultime corse registrate.",
   "progressPaceTrendDescMi": "Ritmo effettivo (min/mi) nelle ultime corse registrate.",
-  "progressNoPaceData": "Registra corse con distanza e durata per vedere la tendenza del ritmo."
+  "progressNoPaceData": "Registra corse con distanza e durata per vedere la tendenza del ritmo.",
+
+  "calendarView": "Vista calendario",
+  "listView": "Vista lista",
+
+  "workoutCoachFeedback": "Feedback Allenatore",
+  "workoutCoachFeedbackLoading": "Analisi in corso...",
+  "workoutCoachFeedbackError": "Feedback non disponibile",
+  "workoutCoachFeedbackHint": "Logga RPE o sensazione per ricevere il coaching AI dopo la corsa.",
+  "workoutCoachFeedbackRefresh": "Ottieni feedback",
+  "workoutCoachFeedbackNoKey": "Aggiungi la chiave API Claude nelle Impostazioni per sbloccare il coaching post-allenamento.",
+
+  "progressViewAll": "Vedi tutti",
+  "progressHistoryTitle": "Storico corse",
+  "progressHistoryEmpty": "Nessuna corsa completata.",
+
+  "settingsPrivacyPolicy": "Informativa sulla privacy"
 }

@@ -407,5 +407,21 @@
   "progressPaceTrend": "Tempo-Trend",
   "progressPaceTrendDescKm": "Tatsächliches Tempo deiner letzten protokollierten Läufe.",
   "progressPaceTrendDescMi": "Tatsächliches Tempo (Min/Meile) deiner letzten protokollierten Läufe.",
-  "progressNoPaceData": "Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend."
+  "progressNoPaceData": "Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend.",
+
+  "calendarView": "Kalenderansicht",
+  "listView": "Listenansicht",
+
+  "workoutCoachFeedback": "Coach-Feedback",
+  "workoutCoachFeedbackLoading": "Lauf wird analysiert...",
+  "workoutCoachFeedbackError": "Feedback nicht verfügbar",
+  "workoutCoachFeedbackHint": "Logge RPE oder Gefühl, um KI-Coaching nach dem Lauf zu erhalten.",
+  "workoutCoachFeedbackRefresh": "Feedback abrufen",
+  "workoutCoachFeedbackNoKey": "Füge deinen Claude-API-Schlüssel in den Einstellungen hinzu, um Post-Workout-Coaching freizuschalten.",
+
+  "progressViewAll": "Alle anzeigen",
+  "progressHistoryTitle": "Laufverlauf",
+  "progressHistoryEmpty": "Noch keine abgeschlossenen Läufe.",
+
+  "settingsPrivacyPolicy": "Datenschutzrichtlinie"
 }

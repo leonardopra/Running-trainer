@@ -33,13 +33,14 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
       notes: fields[13] as String?,
       rpe: fields[14] as int?,
       feeling: fields[15] as WorkoutFeeling?,
+      postWorkoutCoaching: fields[16] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Workout obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -71,7 +72,9 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
       ..writeByte(14)
       ..write(obj.rpe)
       ..writeByte(15)
-      ..write(obj.feeling);
+      ..write(obj.feeling)
+      ..writeByte(16)
+      ..write(obj.postWorkoutCoaching);
   }
 
   @override

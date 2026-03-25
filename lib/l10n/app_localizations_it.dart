@@ -782,4 +782,31 @@ class AppLocalizationsIt extends AppLocalizations {
   String get progressPaceTrendDescMi => 'Ritmo effettivo (min/mi) nelle ultime corse registrate.';
   @override
   String get progressNoPaceData => 'Registra corse con distanza e durata per vedere la tendenza del ritmo.';
+  @override
+  String get calendarView => 'Vista calendario';
+  @override
+  String get listView => 'Vista lista';
+
+  @override
+  String get workoutCoachFeedback => 'Feedback Allenatore';
+  @override
+  String get workoutCoachFeedbackLoading => 'Analisi in corso...';
+  @override
+  String get workoutCoachFeedbackError => 'Feedback non disponibile';
+  @override
+  String get workoutCoachFeedbackHint => 'Logga RPE o sensazione per ricevere il coaching AI dopo la corsa.';
+  @override
+  String get workoutCoachFeedbackRefresh => 'Ottieni feedback';
+  @override
+  String get workoutCoachFeedbackNoKey => 'Aggiungi la chiave API Claude nelle Impostazioni per sbloccare il coaching post-allenamento.';
+
+  @override
+  String get progressViewAll => 'Vedi tutti';
+  @override
+  String get progressHistoryTitle => 'Storico corse';
+  @override
+  String get progressHistoryEmpty => 'Nessuna corsa completata.';
+
+  @override
+  String get settingsPrivacyPolicy => 'Informativa sulla privacy';
 }

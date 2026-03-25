@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -153,7 +154,22 @@ class ProgressDashboardScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
 
                     // ── Recent activity ───────────────────────────────────
-                    Text(l10n.progressRecentActivity, style: AppTextStyles.heading3),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(l10n.progressRecentActivity,
+                            style: AppTextStyles.heading3),
+                        GestureDetector(
+                          onTap: () => context.push('/progress/history'),
+                          child: Text(l10n.progressViewAll,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary,
+                              )),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 12),
                     _buildRecentActivity(plan, l10n, convFactor, unitLabel),
                   ],

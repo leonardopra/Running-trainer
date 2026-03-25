@@ -59,9 +59,54 @@ Rules: max 60 words per description, direct/practical tone, no markdown.''';
     return _applyEnrichments(week, enrichments);
   }
 
+  Future<String?> generatePostWorkoutCoaching({
+    required Workout workout,
+    required String apiKey,
+    int? rpe,
+    WorkoutFeeling? feeling,
+    double? actualDistanceKm,
+    int? actualDurationMinutes,
+    String? notes,
+    int? age,
+  }) async {
+    final distStr = actualDistanceKm != null
+        ? '${actualDistanceKm.toStringAsFixed(2)} km'
+        : 'unknown distance';
+    final durStr = actualDurationMinutes != null
+        ? '$actualDurationMinutes min'
+        : 'unknown duration';
+    final rpeStr = rpe != null ? '$rpe/10' : 'not logged';
+    final feelingStr = feeling != null ? feeling.name : 'not logged';
+    final notesStr = (notes != null && notes.isNotEmpty) ? notes : 'none';
+    final ageStr = age != null ? ', age $age' : '';
+
+    final typeLabel = workout.type.name
+        .replaceAllMapped(RegExp(r'(?<=[a-z])(?=[A-Z])'), (_) => ' ');
+    final prompt =
+        'Athlete$ageStr completed a $typeLabel '
+        '(planned: ${workout.distanceKm?.toStringAsFixed(1) ?? '?'} km). '
+        'Actual: $distStr, $durStr. RPE: $rpeStr. Feeling: $feelingStr. Notes: $notesStr. '
+        'Give 2-3 sentences of honest, practical coaching feedback. Be concise, no markdown.';
+
+    try {
+      final text = await _callWithRetry(
+        apiKey: apiKey,
+        prompt: prompt,
+        systemPrompt:
+            'You are an experienced running coach. Give concise, honest, actionable post-workout feedback. Plain text only, no markdown, max 80 words.',
+        maxTokens: 256,
+      );
+      return text.trim();
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<String> _callWithRetry({
     required String apiKey,
     required String prompt,
+    String? systemPrompt,
+    int maxTokens = 1024,
     int attempt = 0,
   }) async {
     try {
@@ -74,8 +119,9 @@ Rules: max 60 words per description, direct/practical tone, no markdown.''';
         }),
         data: {
           'model': _model,
-          'max_tokens': 1024,
-          'system': 'You are an expert running coach. Provide concise, practical workout guidance. Always respond with valid JSON only — no markdown, no code fences.',
+          'max_tokens': maxTokens,
+          'system': systemPrompt ??
+              'You are an expert running coach. Provide concise, practical workout guidance. Always respond with valid JSON only — no markdown, no code fences.',
           'messages': [
             {'role': 'user', 'content': prompt}
           ],
@@ -92,7 +138,13 @@ Rules: max 60 words per description, direct/practical tone, no markdown.''';
       if (e.response?.statusCode == 429 && attempt < _maxRetries) {
         final delay = Duration(seconds: (2 * (attempt + 1)));
         await Future.delayed(delay);
-        return _callWithRetry(apiKey: apiKey, prompt: prompt, attempt: attempt + 1);
+        return _callWithRetry(
+          apiKey: apiKey,
+          prompt: prompt,
+          systemPrompt: systemPrompt,
+          maxTokens: maxTokens,
+          attempt: attempt + 1,
+        );
       }
       throw ClaudeApiException('Failed to connect to Claude API: ${e.message}');
     }

@@ -782,4 +782,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get progressPaceTrendDescMi => 'Actual pace (min/mi) across your last logged runs.';
   @override
   String get progressNoPaceData => 'Log runs with distance and duration to see your pace trend.';
+  @override
+  String get calendarView => 'Calendar view';
+  @override
+  String get listView => 'List view';
+
+  @override
+  String get workoutCoachFeedback => "Coach's Feedback";
+  @override
+  String get workoutCoachFeedbackLoading => 'Analyzing your run...';
+  @override
+  String get workoutCoachFeedbackError => 'Feedback unavailable';
+  @override
+  String get workoutCoachFeedbackHint => 'Log RPE or feeling to get AI coaching after your run.';
+  @override
+  String get workoutCoachFeedbackRefresh => 'Get feedback';
+  @override
+  String get workoutCoachFeedbackNoKey => 'Add your Claude API key in Settings to unlock post-workout coaching.';
+
+  @override
+  String get progressViewAll => 'View All';
+  @override
+  String get progressHistoryTitle => 'Run History';
+  @override
+  String get progressHistoryEmpty => 'No completed runs yet.';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
 }

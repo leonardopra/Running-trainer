@@ -8,6 +8,7 @@ import '../../../models/workout.dart';
 import '../../../models/enums.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../providers/training_plan_provider.dart';
+import '../../../services/claude_service.dart';
 import '../../../services/pace_calculator_service.dart';
 import '../widgets/effort_badge.dart';
 import '../../stretching/screens/stretching_screen.dart';
@@ -28,6 +29,9 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
   bool _saving = false;
   int? _rpe;
   WorkoutFeeling? _feeling;
+  String? _postWorkoutCoaching;
+  bool _loadingCoaching = false;
+  bool _coachingError = false;
 
   bool get _useKm => ref.read(settingsProvider).useKilometers;
 
@@ -49,6 +53,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     }
     _rpe = w.rpe;
     _feeling = w.feeling;
+    _postWorkoutCoaching = w.postWorkoutCoaching;
   }
 
   @override
@@ -85,6 +90,35 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
           duration: const Duration(seconds: 2),
         ),
       );
+      if (w.rpe != null || w.feeling != null) {
+        _fetchCoaching();
+      }
+    }
+  }
+
+  Future<void> _fetchCoaching() async {
+    final apiKey = ref.read(settingsProvider).claudeApiKey;
+    if (apiKey == null || apiKey.isEmpty) return;
+    final w = widget.workout;
+    setState(() { _loadingCoaching = true; _coachingError = false; });
+    final settings = ref.read(settingsProvider);
+    final coaching = await ClaudeService().generatePostWorkoutCoaching(
+      workout: w,
+      apiKey: apiKey,
+      rpe: w.rpe,
+      feeling: w.feeling,
+      actualDistanceKm: w.actualDistanceKm,
+      actualDurationMinutes: w.actualDurationMinutes,
+      notes: w.notes,
+      age: settings.age,
+    );
+    if (!mounted) return;
+    if (coaching != null) {
+      w.postWorkoutCoaching = coaching;
+      await w.save();
+      setState(() { _postWorkoutCoaching = coaching; _loadingCoaching = false; });
+    } else {
+      setState(() { _coachingError = true; _loadingCoaching = false; });
     }
   }
 
@@ -97,6 +131,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     w.notes                 = null;
     w.rpe                   = null;
     w.feeling               = null;
+    w.postWorkoutCoaching   = null;
     _distanceCtrl.clear();
     _durationCtrl.clear();
     _notesCtrl.clear();
@@ -105,7 +140,114 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     setState(() {
       _rpe = null;
       _feeling = null;
+      _postWorkoutCoaching = null;
+      _coachingError = false;
     });
+  }
+
+  Widget _buildCoachFeedbackCard(
+      Workout w, AppLocalizations l10n, String? apiKey) {
+    Widget content;
+
+    if (apiKey == null || apiKey.isEmpty) {
+      content = Row(
+        children: [
+          const Icon(Icons.lock_outline,
+              color: AppColors.onSurfaceMuted, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(l10n.workoutCoachFeedbackNoKey,
+                style: AppTextStyles.bodyMuted),
+          ),
+        ],
+      );
+    } else if (_loadingCoaching) {
+      content = Row(
+        children: [
+          const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                  strokeWidth: 2, color: AppColors.primary)),
+          const SizedBox(width: 10),
+          Text(l10n.workoutCoachFeedbackLoading, style: AppTextStyles.bodyMuted),
+        ],
+      );
+    } else if (_postWorkoutCoaching != null) {
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(_postWorkoutCoaching!, style: AppTextStyles.body),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: _fetchCoaching,
+            child: Text(l10n.workoutCoachFeedbackRefresh,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+        ],
+      );
+    } else if (_coachingError) {
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.workoutCoachFeedbackError, style: AppTextStyles.bodyMuted),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: _fetchCoaching,
+            child: Text(l10n.workoutCoachFeedbackRefresh,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+        ],
+      );
+    } else {
+      content = Row(
+        children: [
+          const Icon(Icons.psychology_outlined,
+              color: AppColors.onSurfaceMuted, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(l10n.workoutCoachFeedbackHint,
+                style: AppTextStyles.bodyMuted),
+          ),
+        ],
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.psychology, color: AppColors.primary, size: 18),
+              const SizedBox(width: 8),
+              Text(l10n.workoutCoachFeedback,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  )),
+            ],
+          ),
+          const SizedBox(height: 10),
+          content,
+        ],
+      ),
+    );
   }
 
   String _feelingEmoji(WorkoutFeeling f) {
@@ -479,7 +621,10 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    _buildCoachFeedbackCard(w, l10n,
+                        ref.read(settingsProvider).claudeApiKey),
+                    const SizedBox(height: 8),
                   ],
 
                   // ── Stretching Routines ─────────────────────────────────

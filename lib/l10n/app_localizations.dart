@@ -1243,6 +1243,22 @@ abstract class AppLocalizations {
   String get progressPaceTrendDescKm;
   String get progressPaceTrendDescMi;
   String get progressNoPaceData;
+
+  String get calendarView;
+  String get listView;
+
+  String get workoutCoachFeedback;
+  String get workoutCoachFeedbackLoading;
+  String get workoutCoachFeedbackError;
+  String get workoutCoachFeedbackHint;
+  String get workoutCoachFeedbackRefresh;
+  String get workoutCoachFeedbackNoKey;
+
+  String get progressViewAll;
+  String get progressHistoryTitle;
+  String get progressHistoryEmpty;
+
+  String get settingsPrivacyPolicy;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

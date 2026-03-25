@@ -782,4 +782,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get progressPaceTrendDescMi => 'Tatsächliches Tempo (Min/Meile) deiner letzten protokollierten Läufe.';
   @override
   String get progressNoPaceData => 'Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend.';
+  @override
+  String get calendarView => 'Kalenderansicht';
+  @override
+  String get listView => 'Listenansicht';
+
+  @override
+  String get workoutCoachFeedback => 'Coach-Feedback';
+  @override
+  String get workoutCoachFeedbackLoading => 'Lauf wird analysiert...';
+  @override
+  String get workoutCoachFeedbackError => 'Feedback nicht verfügbar';
+  @override
+  String get workoutCoachFeedbackHint => 'Logge RPE oder Gefühl, um KI-Coaching nach dem Lauf zu erhalten.';
+  @override
+  String get workoutCoachFeedbackRefresh => 'Feedback abrufen';
+  @override
+  String get workoutCoachFeedbackNoKey => 'Füge deinen Claude-API-Schlüssel in den Einstellungen hinzu, um Post-Workout-Coaching freizuschalten.';
+
+  @override
+  String get progressViewAll => 'Alle anzeigen';
+  @override
+  String get progressHistoryTitle => 'Laufverlauf';
+  @override
+  String get progressHistoryEmpty => 'Noch keine abgeschlossenen Läufe.';
+
+  @override
+  String get settingsPrivacyPolicy => 'Datenschutzrichtlinie';
 }

@@ -12,6 +12,8 @@ final allPlansProvider = Provider<List<TrainingPlan>>((ref) {
   return ref.read(storageServiceProvider).getAllPlans();
 });
 
+final showCalendarViewProvider = StateProvider<bool>((ref) => false);
+
 /// Il piano attivo: quello selezionato dall'utente, oppure l'ultimo creato.
 final activePlanProvider = Provider<TrainingPlan?>((ref) {
   final selectedId = ref.watch(selectedPlanIdProvider);
