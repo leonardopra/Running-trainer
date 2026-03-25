@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import '../models/enums.dart';
 import '../models/training_week.dart';
 import '../models/workout.dart';
 
