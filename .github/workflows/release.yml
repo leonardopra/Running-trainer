@@ -41,7 +41,7 @@ jobs:
 
       - name: Build web
         # base-href must match the GitHub Pages sub-path (repo name)
-        run: flutter build web --release --renderer html --base-href /Running-trainer/
+        run: flutter build web --release --base-href /Running-trainer/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
