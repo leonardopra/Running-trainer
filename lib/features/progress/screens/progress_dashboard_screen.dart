@@ -214,7 +214,7 @@ class ProgressDashboardScreen extends ConsumerWidget {
 
     final recent = completed.take(8).toList();
     return Column(
-      children: recent.map<Widget>((w) => _ActivityTile(workout: w as Workout, convFactor: convFactor, unitLabel: unitLabel)).toList(),
+      children: recent.map<Widget>((w) => _ActivityTile(workout: w, convFactor: convFactor, unitLabel: unitLabel)).toList(),
     );
   }
 }
@@ -337,7 +337,7 @@ class _ActivityTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if (km != null)
-                Text('${((km as double) * convFactor).toStringAsFixed(1)} $unitLabel',
+                Text('${(km * convFactor).toStringAsFixed(1)} $unitLabel',
                     style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w600,
                       color: AppColors.onSurface,

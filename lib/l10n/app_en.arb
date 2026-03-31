@@ -94,6 +94,7 @@
   "navPlan": "Plan",
   "navProgress": "Progress",
   "navPace": "Pace",
+  "navStretching": "Stretching",
   "navSettings": "Settings",
 
   "weekCardWeek": "Week {n}",
@@ -283,6 +284,7 @@
   "langEnglish": "English",
   "langItalian": "Italiano",
   "langGerman": "Deutsch",
+  "langSpanish": "Español",
 
   "weekThemeFoundation": "Foundation Week",
   "weekThemeTaperBegins": "Taper Begins",

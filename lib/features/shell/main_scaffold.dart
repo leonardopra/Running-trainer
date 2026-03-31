@@ -26,7 +26,7 @@ class MainScaffold extends StatelessWidget {
       body: child,
       bottomNavigationBar: NavigationBar(
         backgroundColor: AppColors.surface,
-        indicatorColor: AppColors.primary.withOpacity(0.15),
+        indicatorColor: AppColors.primary.withValues(alpha: 0.15),
         selectedIndex: selectedIndex,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         onDestinationSelected: (index) {

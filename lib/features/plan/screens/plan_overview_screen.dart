@@ -5,7 +5,6 @@ import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../models/workout.dart';
-import '../../../models/enums.dart';
 import '../../../providers/training_plan_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../widgets/week_card.dart';
@@ -98,7 +97,7 @@ class PlanOverviewScreen extends ConsumerWidget {
                                   horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppColors.primary.withOpacity(0.15)
+                                    ? AppColors.primary.withValues(alpha:0.15)
                                     : AppColors.surface,
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
@@ -126,7 +125,7 @@ class PlanOverviewScreen extends ConsumerWidget {
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: isSelected
-                                          ? AppColors.primary.withOpacity(0.8)
+                                          ? AppColors.primary.withValues(alpha:0.8)
                                           : AppColors.onSurfaceMuted,
                                     ),
                                   ),

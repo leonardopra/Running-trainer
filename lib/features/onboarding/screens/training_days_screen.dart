@@ -70,7 +70,7 @@ class _TrainingDaysScreenState extends ConsumerState<TrainingDaysScreen> {
                       height: 72,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.primary.withOpacity(0.2)
+                            ? AppColors.primary.withValues(alpha: 0.2)
                             : AppColors.surface,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(

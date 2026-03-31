@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../models/enums.dart';
 import '../models/training_plan.dart';
 import '../services/plan_generator_service.dart';

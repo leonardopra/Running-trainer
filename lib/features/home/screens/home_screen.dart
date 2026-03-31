@@ -108,9 +108,9 @@ class HomeScreen extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary.withOpacity(0.35)),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
               ),
               child: Text(
                 l10n.homeWeekChip(weekIndex + 1, plan.totalWeeks, localizedWeekTheme(currentWeek.weekTheme, l10n)),

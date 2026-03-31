@@ -38,7 +38,7 @@ class WeeklyBarChart extends StatelessWidget {
           final l10n = AppLocalizations.of(context)!;
           return Row(
             children: [
-              _LegendDot(color: AppColors.primary.withOpacity(0.3), label: l10n.progressPlanned),
+              _LegendDot(color: AppColors.primary.withValues(alpha:0.3), label: l10n.progressPlanned),
               const SizedBox(width: 16),
               _LegendDot(color: AppColors.primary, label: l10n.progressLogged),
             ],
@@ -102,7 +102,7 @@ class _WeekBar extends StatelessWidget {
                 width: barWidth,
                 height: plannedH,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.25),
+                  color: AppColors.primary.withValues(alpha:0.25),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                 ),
               ),

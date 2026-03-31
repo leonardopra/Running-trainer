@@ -18,7 +18,7 @@ class NotificationService {
     tz_data.initializeTimeZones();
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettings = InitializationSettings(android: androidSettings);
-    await _plugin.initialize(initSettings);
+    await _plugin.initialize(settings: initSettings);
     _initialized = true;
   }
 
@@ -64,11 +64,11 @@ class NotificationService {
             : '';
 
         await _plugin.zonedSchedule(
-          id,
-          'Time to run! 🏃',
-          '${workout.title}$km',
-          tz.TZDateTime.from(workoutDate, tz.local),
-          const NotificationDetails(
+          id: id,
+          title: 'Time to run! 🏃',
+          body: '${workout.title}$km',
+          scheduledDate: tz.TZDateTime.from(workoutDate, tz.local),
+          notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
               _channelId,
               _channelName,
@@ -78,8 +78,6 @@ class NotificationService {
             ),
           ),
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
         );
       }
     }

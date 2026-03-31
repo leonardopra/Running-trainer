@@ -51,13 +51,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingGoalTitle => 'Was ist dein\nLaufziel?';
 
   @override
-  String get onboardingGoalSubtitle => 'Wir erstellen einen Plan, der auf dein Ziel zugeschnitten ist.';
+  String get onboardingGoalSubtitle =>
+      'Wir erstellen einen Plan, der auf dein Ziel zugeschnitten ist.';
 
   @override
   String get onboardingRaceDateTitle => 'Wann ist dein\nWettkampf?';
 
   @override
-  String get onboardingRaceDateSubtitle => 'Wähle ein Wettkampfdatum oder eine Trainingsdauer.';
+  String get onboardingRaceDateSubtitle =>
+      'Wähle ein Wettkampfdatum oder eine Trainingsdauer.';
 
   @override
   String get onboardingToggleRaceDate => 'Wettkampfdatum';
@@ -77,13 +79,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingFitnessTitle => 'Was ist dein\nFitnessniveau?';
 
   @override
-  String get onboardingFitnessSubtitle => 'Sei ehrlich — wir erstellen den richtigen Plan für dich.';
+  String get onboardingFitnessSubtitle =>
+      'Sei ehrlich — wir erstellen den richtigen Plan für dich.';
 
   @override
   String get onboardingDaysTitle => 'An welchen Tagen\nkannst du trainieren?';
 
   @override
-  String get onboardingDaysSubtitle => 'Wähle mindestens 3 Tage für einen effektiven Plan.';
+  String get onboardingDaysSubtitle =>
+      'Wähle mindestens 3 Tage für einen effektiven Plan.';
 
   @override
   String onboardingDaysSelected(int count) {
@@ -115,10 +119,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingProfileTitle => 'Erzähl uns von\ndir';
 
   @override
-  String get onboardingProfileSubtitle => 'Der Name ist erforderlich. Körperdaten helfen, deinen Plan zu personalisieren.';
+  String get onboardingProfileSubtitle =>
+      'Der Name ist erforderlich. Körperdaten helfen, deinen Plan zu personalisieren.';
 
   @override
-  String get onboardingProfilePrivacy => 'Alle Daten sind verschlüsselt und werden nur auf diesem Gerät gespeichert.';
+  String get onboardingProfilePrivacy =>
+      'Alle Daten sind verschlüsselt und werden nur auf diesem Gerät gespeichert.';
 
   @override
   String get formYourName => 'Dein Name';
@@ -154,7 +160,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get generatingAITitle => 'KI-Coaching wird hinzugefügt...';
 
   @override
-  String get generatingAISubtitle => 'Claude schreibt deine Workout-Beschreibungen';
+  String get generatingAISubtitle =>
+      'Claude schreibt deine Workout-Beschreibungen';
 
   @override
   String get generatingDoneTitle => 'Plan fertig!';
@@ -183,7 +190,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeNoPlan => 'Kein aktiver Plan';
 
   @override
-  String get homeNoPlanDesc => 'Dein Plan erscheint hier, sobald er erstellt wurde.';
+  String get homeNoPlanDesc =>
+      'Dein Plan erscheint hier, sobald er erstellt wurde.';
 
   @override
   String get homeToday => 'Heute';
@@ -209,13 +217,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navPace => 'Tempo';
 
   @override
+  String get navStretching => 'Stretching';
+
+  @override
   String get navSettings => 'Einstellungen';
 
   @override
-  String weekCardWeek(int n) => 'Woche $n';
+  String weekCardWeek(int n) {
+    return 'Woche $n';
+  }
 
   @override
-  String weekCardStats(String km, int completed, int total) => '${km}km · $completed/$total Workouts';
+  String weekCardStats(String km, int completed, int total) {
+    return '${km}km · $completed/$total Workouts';
+  }
 
   @override
   String get planNoPlan => 'Kein Plan gefunden';
@@ -236,7 +251,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workoutCoachTip => 'Trainer-Tipp';
 
   @override
-  String get workoutNoAI => 'Füge deinen Claude API-Schlüssel in den Einstellungen hinzu, um KI-Coaching freizuschalten.';
+  String get workoutNoAI =>
+      'Füge deinen Claude API-Schlüssel in den Einstellungen hinzu, um KI-Coaching freizuschalten.';
 
   @override
   String get workoutTargetPace => 'Zieltempo';
@@ -262,7 +278,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workoutLogCompleted => 'Abgeschlossen';
 
   @override
-  String get workoutLogDesc => 'Tatsächliche Distanz, Zeit und Notizen erfassen.';
+  String get workoutLogDesc =>
+      'Tatsächliche Distanz, Zeit und Notizen erfassen.';
 
   @override
   String get workoutLogDistance => 'Distanz (km)';
@@ -283,7 +300,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workoutStretchingRoutines => 'Dehnübungen';
 
   @override
-  String get workoutStretchingDesc => 'Aufwärmen vor und abkühlen nach dem Lauf.';
+  String get workoutStretchingDesc =>
+      'Aufwärmen vor und abkühlen nach dem Lauf.';
 
   @override
   String get workoutPreRunBtn => 'Aufwärmen\nvor dem Lauf';
@@ -298,7 +316,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsProfileSection => 'Profil';
 
   @override
-  String get settingsProfileDesc => 'Dein Name und Körperdaten helfen, deinen Plan zu personalisieren.';
+  String get settingsProfileDesc =>
+      'Dein Name und Körperdaten helfen, deinen Plan zu personalisieren.';
 
   @override
   String get settingsFormName => 'Name';
@@ -325,13 +344,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsFormHeightHint => 'z.B. 175';
 
   @override
-  String get settingsPrivacy => 'Alle Profildaten sind verschlüsselt und werden nur auf diesem Gerät gespeichert.';
+  String get settingsPrivacy =>
+      'Alle Profildaten sind verschlüsselt und werden nur auf diesem Gerät gespeichert.';
 
   @override
   String get settingsAISection => 'KI-Coaching';
 
   @override
-  String get settingsAIDesc => 'Gib deinen Claude API-Schlüssel ein, um KI-generierte Beschreibungen freizuschalten.';
+  String get settingsAIDesc =>
+      'Gib deinen Claude API-Schlüssel ein, um KI-generierte Beschreibungen freizuschalten.';
 
   @override
   String get settingsAIKeyHint => 'sk-ant-...';
@@ -346,10 +367,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsNotificationsSection => 'Benachrichtigungen';
 
   @override
-  String get settingsNotificationsWebMsg => 'Workout-Erinnerungen sind in der Android-App verfügbar.';
+  String get settingsNotificationsWebMsg =>
+      'Workout-Erinnerungen sind in der Android-App verfügbar.';
 
   @override
-  String get settingsNotificationsDesc => 'Erhalte zur gewählten Zeit eine Erinnerung an jedem Trainingstag.';
+  String get settingsNotificationsDesc =>
+      'Erhalte zur gewählten Zeit eine Erinnerung an jedem Trainingstag.';
 
   @override
   String get settingsWorkoutReminders => 'Workout-Erinnerungen';
@@ -364,31 +387,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsDataSection => 'Daten';
 
   @override
+  String get settingsPlanSection => 'Trainingsplan';
+
+  @override
+  String get settingsPlanDesc =>
+      'Erstelle einen neuen Trainingsplan, ohne deine Trainingsgeschichte zu verlieren.';
+
+  @override
+  String get settingsNewPlanBtn => 'Neuen Trainingsplan starten';
+
+  @override
+  String get settingsNewPlanDialogTitle => 'Neuen Plan starten?';
+
+  @override
+  String get settingsNewPlanDialogBody =>
+      'Deine Trainingsgeschichte und dein Profil bleiben erhalten. Ein neuer Plan wird für deine Ziele erstellt.';
+
+  @override
+  String get settingsNewPlanConfirm => 'Neuen Plan starten';
+
+  @override
   String get settingsResetAll => 'Alle Daten zurücksetzen';
 
   @override
   String get settingsResetDialogTitle => 'Alle Daten zurücksetzen';
 
   @override
-  String get settingsResetDialogBody => 'Dadurch werden dein Trainingsplan, dein Profil und alle Fortschritte gelöscht. Dies kann nicht rückgängig gemacht werden.';
-
-  @override
-  String get settingsPlanSection => 'Neuer Plan';
-
-  @override
-  String get settingsPlanDesc => 'Starte neu mit aktualisierten Zielen und einem neuen Trainingsplan.';
-
-  @override
-  String get settingsNewPlanBtn => 'Neuen Plan erstellen';
-
-  @override
-  String get settingsNewPlanDialogTitle => 'Neuen Plan starten?';
-
-  @override
-  String get settingsNewPlanDialogBody => 'Du durchläufst die Einrichtung erneut. Dein aktueller Plan wird ersetzt.';
-
-  @override
-  String get settingsNewPlanConfirm => 'Neu starten';
+  String get settingsResetDialogBody =>
+      'Dadurch werden dein Trainingsplan, dein Profil und alle Fortschritte gelöscht. Dies kann nicht rückgängig gemacht werden.';
 
   @override
   String get planYourPlans => 'Deine Pläne';
@@ -419,10 +445,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get progressMiLogged => 'Meilen protokolliert';
 
   @override
-  String progressMiLoggedSub(String n) => 'von $n mi geplant';
+  String progressMiLoggedSub(String n) {
+    return 'von $n mi geplant';
+  }
 
   @override
-  String get progressWeeklyMiDesc => 'Geplante und protokollierte Meilen pro Woche.';
+  String get progressWeeklyMiDesc =>
+      'Geplante und protokollierte Meilen pro Woche.';
 
   @override
   String get progressStreak => 'Laufserie';
@@ -445,7 +474,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get progressWeeklyMileage => 'Wöchentliche Laufleistung';
 
   @override
-  String get progressWeeklyMileageDesc => 'Geplante vs. protokollierte Kilometer pro Woche.';
+  String get progressWeeklyMileageDesc =>
+      'Geplante vs. protokollierte Kilometer pro Woche.';
 
   @override
   String get progressPlanned => 'Geplant';
@@ -490,7 +520,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get paceNoTime => 'Gib deine Zielzeit ein, um deine Trainingstempozonen zu sehen.';
+  String get paceNoTime =>
+      'Gib deine Zielzeit ein, um deine Trainingstempozonen zu sehen.';
 
   @override
   String get paceTrainingZones => 'Trainingszonen';
@@ -522,13 +553,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get stretchStaticHeading => 'Statisches Dehnen';
 
   @override
-  String get stretchPreRunBanner => '~8 Min  •  Aktiviert Muskeln und beugt Verletzungen vor';
+  String get stretchPreRunBanner =>
+      '~8 Min  •  Aktiviert Muskeln und beugt Verletzungen vor';
 
   @override
-  String get stretchPostRunBanner => '~12 Min  •  Beschleunigt Erholung und reduziert Muskelkater';
+  String get stretchPostRunBanner =>
+      '~12 Min  •  Beschleunigt Erholung und reduziert Muskelkater';
 
   @override
-  String get stretchTip => 'Tippe auf eine Übung, um Anweisungen und ein Tutorial zu sehen.';
+  String get stretchTip =>
+      'Tippe auf eine Übung, um Anweisungen und ein Tutorial zu sehen.';
 
   @override
   String get stretchWatchTutorial => 'Tutorial auf YouTube ansehen';
@@ -552,19 +586,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get fitnessLevelBeginner => 'Anfänger';
 
   @override
-  String get fitnessLevelBeginnerDesc => 'Unter 15 km/Woche oder gerade erst begonnen';
+  String get fitnessLevelBeginnerDesc =>
+      'Unter 15 km/Woche oder gerade erst begonnen';
 
   @override
   String get fitnessLevelIntermediate => 'Fortgeschritten';
 
   @override
-  String get fitnessLevelIntermediateDesc => 'Regelmäßig 20–40 km/Woche seit 6+ Monaten';
+  String get fitnessLevelIntermediateDesc =>
+      'Regelmäßig 20–40 km/Woche seit 6+ Monaten';
 
   @override
   String get fitnessLevelAdvanced => 'Leistungssportler';
 
   @override
-  String get fitnessLevelAdvancedDesc => '50+ km/Woche mit strukturierter Trainingsgeschichte';
+  String get fitnessLevelAdvancedDesc =>
+      '50+ km/Woche mit strukturierter Trainingsgeschichte';
 
   @override
   String get workoutTypeEasyRun => 'Lockerer Lauf';
@@ -609,6 +646,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get langGerman => 'Deutsch';
 
   @override
+  String get langSpanish => 'Español';
+
+  @override
   String get weekThemeFoundation => 'Grundlagenwoche';
 
   @override
@@ -642,168 +682,244 @@ class AppLocalizationsDe extends AppLocalizations {
   String get insightTaperWeekTitle => 'Taper-Woche';
 
   @override
-  String get insightTaperWeekBody => 'Das reduzierte Volumen ist beabsichtigt — dein Körper verarbeitet das Training und speichert Energie für den Wettkampftag. Vertraue dem Prozess.';
+  String get insightTaperWeekBody =>
+      'Das reduzierte Volumen ist beabsichtigt — dein Körper verarbeitet das Training und speichert Energie für den Wettkampftag. Vertraue dem Prozess.';
 
   @override
   String get insightRecoveryWeekTitle => 'Erholungswoche';
 
   @override
-  String get insightRecoveryWeekBody => 'Das Volumen dieser Woche ist bewusst niedriger. Erholungswochen festigen die Fitness — lass dich nicht verleiten, zusätzliche Kilometer hinzuzufügen.';
+  String get insightRecoveryWeekBody =>
+      'Das Volumen dieser Woche ist bewusst niedriger. Erholungswochen festigen die Fitness — lass dich nicht verleiten, zusätzliche Kilometer hinzuzufügen.';
 
   @override
   String get insightWeek1Title => 'Woche 1 — Willkommen!';
 
   @override
-  String get insightWeek1Body => 'Konzentriere dich auf das Aufbauen der Gewohnheit, nicht auf das Tempo. Jeden Lauf zu absolvieren, wie auch immer langsam, ist jetzt das Wichtigste.';
+  String get insightWeek1Body =>
+      'Konzentriere dich auf das Aufbauen der Gewohnheit, nicht auf das Tempo. Jeden Lauf zu absolvieren, wie auch immer langsam, ist jetzt das Wichtigste.';
 
   @override
   String get insightHighConsistencyTitle => 'Ausgezeichnete Beständigkeit';
 
   @override
-  String insightHighConsistencyBody(String rate) => '$rate% der geplanten Einheiten abgeschlossen. Diese Beständigkeit unterscheidet Finisher von DNFs.';
+  String insightHighConsistencyBody(String rate) {
+    return '$rate% der geplanten Einheiten abgeschlossen. Diese Beständigkeit unterscheidet Finisher von DNFs.';
+  }
 
   @override
   String get insightLowConsistencyTitle => 'Beständigkeit braucht Arbeit';
 
   @override
-  String insightLowConsistencyBody(String rate) => 'Du hast $rate% der geplanten Einheiten abgeschlossen. Auch kürzere, langsamere Läufe zählen — strebe 70%+ an, um echte Fortschritte zu sehen.';
+  String insightLowConsistencyBody(String rate) {
+    return 'Du hast $rate% der geplanten Einheiten abgeschlossen. Auch kürzere, langsamere Läufe zählen — strebe 70%+ an, um echte Fortschritte zu sehen.';
+  }
 
   @override
   String get insightBackOnTrackTitle => 'Wieder auf Kurs';
 
   @override
-  String insightBackOnTrackBody(int missed) => 'Du hast $missed Einheiten in den letzten 7 Tagen verpasst. Das Leben passiert — versuche nicht, verpasste Läufe nachzuholen. Mach einfach weiter.';
+  String insightBackOnTrackBody(int missed) {
+    return 'Du hast $missed Einheiten in den letzten 7 Tagen verpasst. Das Leben passiert — versuche nicht, verpasste Läufe nachzuholen. Mach einfach weiter.';
+  }
 
   @override
   String get insightOnTrackTitle => 'Diese Woche auf Kurs';
 
   @override
-  String insightOnTrackBody(String logged, String target) => 'Du hast bereits $logged km deines $target-km-Ziels protokolliert. Weiter so!';
+  String insightOnTrackBody(String logged, String target) {
+    return 'Du hast bereits $logged km deines $target-km-Ziels protokolliert. Weiter so!';
+  }
 
   @override
   String get insightBehindTitle => 'Diese Woche im Rückstand';
 
   @override
-  String insightBehindBody(String remaining) => 'Du hast noch $remaining km vor dir, um dein Wochenziel zu erreichen. Es ist noch Zeit — mach das Beste draus.';
+  String insightBehindBody(String remaining) {
+    return 'Du hast noch $remaining km vor dir, um dein Wochenziel zu erreichen. Es ist noch Zeit — mach das Beste draus.';
+  }
 
   @override
   String get insightEasyRunsFastTitle => 'Lockere Läufe zu schnell';
 
   @override
-  String get insightEasyRunsFastBody => 'Deine lockeren Läufe sind regelmäßig schneller als das Zieltempo. Zu hartes Laufen im lockeren Bereich hemmt die Anpassung. Langsamer — wenn du kein Gespräch führen kannst, ist es zu schnell.';
+  String get insightEasyRunsFastBody =>
+      'Deine lockeren Läufe sind regelmäßig schneller als das Zieltempo. Zu hartes Laufen im lockeren Bereich hemmt die Anpassung. Langsamer — wenn du kein Gespräch führen kannst, ist es zu schnell.';
 
   @override
   String get insightMissedLongRunTitle => 'Langer Lauf verpasst';
 
   @override
-  String get insightMissedLongRunBody => 'Du hast den langen Lauf der letzten Woche ausgelassen. Der lange Lauf ist der Grundstein des Ausdauertrainings — versuche, ihm Vorrang vor anderen Einheiten zu geben.';
+  String get insightMissedLongRunBody =>
+      'Du hast den langen Lauf der letzten Woche ausgelassen. Der lange Lauf ist der Grundstein des Ausdauertrainings — versuche, ihm Vorrang vor anderen Einheiten zu geben.';
 
   @override
-  String insightStreakTitle(int streak) => '$streak-Einheiten-Serie 🔥';
+  String insightStreakTitle(int streak) {
+    return '$streak-Einheiten-Serie 🔥';
+  }
 
   @override
-  String insightStreakBody(int streak) => 'Du hast in $streak Einheiten keinen geplanten Lauf verpasst. Diese Beständigkeit summiert sich zu ernsthafter Fitness.';
+  String insightStreakBody(int streak) {
+    return 'Du hast in $streak Einheiten keinen geplanten Lauf verpasst. Diese Beständigkeit summiert sich zu ernsthafter Fitness.';
+  }
 
   @override
   String get insightKeyTomorrowTitle => 'Schlüsseleinheit morgen';
 
   @override
-  String insightKeyTomorrowBody(String type, String km) => '$type · $km km morgen. Schlaf gut heute Nacht, iss gut und plane deine Route im Voraus.';
+  String insightKeyTomorrowBody(String type, String km) {
+    return '$type · $km km morgen. Schlaf gut heute Nacht, iss gut und plane deine Route im Voraus.';
+  }
 
   @override
   String get insightRaceDayTitle => 'Wettkampftag! 🏁';
 
   @override
-  String insightRaceDayBody(String race) => 'Heute ist dein $race. Du hast die Arbeit gemacht — vertraue deinem Training und genieße jeden Kilometer.';
+  String insightRaceDayBody(String race) {
+    return 'Heute ist dein $race. Du hast die Arbeit gemacht — vertraue deinem Training und genieße jeden Kilometer.';
+  }
 
   @override
-  String insightRaceWeekTitle(int days) => '$days Tage bis zum Wettkampf';
+  String insightRaceWeekTitle(int days) {
+    return '$days Tage bis zum Wettkampf';
+  }
 
   @override
-  String insightRaceWeekBody(String race) => 'Wettkampfwoche für deinen $race. Priorisiere Ruhe, Schlaf, Hydration und einen letzten leichten Shakeout-Lauf.';
+  String insightRaceWeekBody(String race) {
+    return 'Wettkampfwoche für deinen $race. Priorisiere Ruhe, Schlaf, Hydration und einen letzten leichten Shakeout-Lauf.';
+  }
 
   @override
-  String insightAlmostThereTitle(int weeks) => 'Noch $weeks Wochen';
+  String insightAlmostThereTitle(int weeks) {
+    return 'Noch $weeks Wochen';
+  }
 
   @override
-  String insightAlmostThereBody(String race) => 'Dein $race rückt näher. Das Heu ist im Stall — vertraue deinem Training und vermeide heroische Einheiten.';
+  String insightAlmostThereBody(String race) {
+    return 'Dein $race rückt näher. Das Heu ist im Stall — vertraue deinem Training und vermeide heroische Einheiten.';
+  }
 
   @override
-  String insightWeeksToGoTitle(int weeks) => 'Noch $weeks Wochen bis zum Wettkampftag';
+  String insightWeeksToGoTitle(int weeks) {
+    return 'Noch $weeks Wochen bis zum Wettkampftag';
+  }
 
   @override
-  String insightWeeksToGoBody(int weeks, String race) => 'Du hast $weeks Wochen, um Fitness für deinen $race aufzubauen. Bleib konsequent — kleine tägliche Gewohnheiten schaffen große Wettkampfergebnisse.';
+  String insightWeeksToGoBody(int weeks, String race) {
+    return 'Du hast $weeks Wochen, um Fitness für deinen $race aufzubauen. Bleib konsequent — kleine tägliche Gewohnheiten schaffen große Wettkampfergebnisse.';
+  }
 
   @override
   String get rpeLabel => 'Wahrgenommene Anstrengung';
+
   @override
   String get rpeEasy => 'Leicht';
+
   @override
   String get rpeMax => 'Maximum';
+
   @override
   String get feelingLabel => 'Wie hast du dich gefühlt?';
+
   @override
   String get feelingGreat => 'Sehr gut';
+
   @override
   String get feelingGood => 'Gut';
+
   @override
   String get feelingOk => 'Ok';
+
   @override
   String get feelingTired => 'Müde';
+
   @override
   String get feelingInjured => 'Verletzt';
+
   @override
-  String get insightHighRpeEasyTitle => 'Leichte Läufe fühlen sich zu schwer an';
+  String get insightHighRpeEasyTitle =>
+      'Leichte Läufe fühlen sich zu schwer an';
+
   @override
-  String get insightHighRpeEasyBody => 'Deine letzten leichten Läufe hatten ein hohes RPE. Verlangsame dich, um die aeroben Vorteile zu maximieren.';
+  String get insightHighRpeEasyBody =>
+      'Deine letzten leichten Läufe hatten ein hohes RPE. Verlangsame dich, um die aeroben Vorteile zu maximieren.';
+
   @override
   String get insightNegativeFeelingTitle => 'Anzeichen von Erschöpfung';
+
   @override
-  String get insightNegativeFeelingBody => 'Du hast in mehreren aufeinanderfolgenden Einheiten Müdigkeit oder Beschwerden gemeldet. Erwäge einen zusätzlichen Ruhetag.';
+  String get insightNegativeFeelingBody =>
+      'Du hast in mehreren aufeinanderfolgenden Einheiten Müdigkeit oder Beschwerden gemeldet. Erwäge einen zusätzlichen Ruhetag.';
 
   @override
   String get progressRpeTrend => 'Trainingsbelastung';
+
   @override
-  String get progressRpeTrendDesc => 'Wahrgenommene Belastung der letzten Einheiten';
+  String get progressRpeTrendDesc =>
+      'Wahrgenommene Belastung der letzten Einheiten';
+
   @override
   String get progressFeelingTitle => 'Wie ich mich gefühlt habe';
+
   @override
-  String get progressFeelingDesc => 'Gefühlsverteilung über abgeschlossene Einheiten';
+  String get progressFeelingDesc =>
+      'Gefühlsverteilung über abgeschlossene Einheiten';
+
   @override
-  String get progressNoRpeData => 'Logge Einheiten mit RPE, um die Belastung zu sehen.';
+  String get progressNoRpeData =>
+      'Logge Einheiten mit RPE, um die Belastung zu sehen.';
+
   @override
-  String get progressNoFeelingData => 'Logge deine Gefühle, um deine Trainingsreaktion zu verfolgen.';
+  String get progressNoFeelingData =>
+      'Logge deine Gefühle, um deine Trainingsreaktion zu verfolgen.';
 
   @override
   String get progressPaceTrend => 'Tempo-Trend';
+
   @override
-  String get progressPaceTrendDescKm => 'Tatsächliches Tempo deiner letzten protokollierten Läufe.';
+  String get progressPaceTrendDescKm =>
+      'Tatsächliches Tempo deiner letzten protokollierten Läufe.';
+
   @override
-  String get progressPaceTrendDescMi => 'Tatsächliches Tempo (Min/Meile) deiner letzten protokollierten Läufe.';
+  String get progressPaceTrendDescMi =>
+      'Tatsächliches Tempo (Min/Meile) deiner letzten protokollierten Läufe.';
+
   @override
-  String get progressNoPaceData => 'Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend.';
+  String get progressNoPaceData =>
+      'Protokolliere Läufe mit Distanz und Dauer für deinen Tempo-Trend.';
+
   @override
   String get calendarView => 'Kalenderansicht';
+
   @override
   String get listView => 'Listenansicht';
 
   @override
   String get workoutCoachFeedback => 'Coach-Feedback';
+
   @override
   String get workoutCoachFeedbackLoading => 'Lauf wird analysiert...';
+
   @override
   String get workoutCoachFeedbackError => 'Feedback nicht verfügbar';
+
   @override
-  String get workoutCoachFeedbackHint => 'Logge RPE oder Gefühl, um KI-Coaching nach dem Lauf zu erhalten.';
+  String get workoutCoachFeedbackHint =>
+      'Logge RPE oder Gefühl, um KI-Coaching nach dem Lauf zu erhalten.';
+
   @override
   String get workoutCoachFeedbackRefresh => 'Feedback abrufen';
+
   @override
-  String get workoutCoachFeedbackNoKey => 'Füge deinen Claude-API-Schlüssel in den Einstellungen hinzu, um Post-Workout-Coaching freizuschalten.';
+  String get workoutCoachFeedbackNoKey =>
+      'Füge deinen Claude-API-Schlüssel in den Einstellungen hinzu, um Post-Workout-Coaching freizuschalten.';
 
   @override
   String get progressViewAll => 'Alle anzeigen';
+
   @override
   String get progressHistoryTitle => 'Laufverlauf';
+
   @override
   String get progressHistoryEmpty => 'Noch keine abgeschlossenen Läufe.';
 

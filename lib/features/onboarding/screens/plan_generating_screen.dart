@@ -66,7 +66,7 @@ class _PlanGeneratingScreenState extends ConsumerState<PlanGeneratingScreen>
                   height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     border: Border.all(color: AppColors.primary, width: 2),
                   ),
                   child: const Icon(

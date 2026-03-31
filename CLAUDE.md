@@ -6,12 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 flutter pub get                                    # Install dependencies
-flutter run -d chrome                             # Run on web (fastest iteration)
-flutter run -d macos                              # Run on macOS desktop
+flutter run -d macos                              # Run on macOS desktop (recommended)
+flutter run -d emulator-5554                      # Run on Android emulator
 flutter test                                      # Run all tests
 flutter test test/plan_generator_test.dart        # Run a single test file
-dart run build_runner build --delete-conflicting-outputs  # Regenerate .g.dart files (only needed if models change)
 ```
+
+> **Note:** `flutter run -d chrome` requires Chrome to be installed. Android platform files (`android/`) are present but were scaffolded via `flutter create --platforms android .` — not part of original source.
 
 ## Architecture
 
@@ -47,7 +48,7 @@ The redirect guard is in `lib/router/app_router.dart`. `hasCompletedOnboarding` 
 - 80/20 easy/quality rule across 3–6 training days; each week always has exactly 7 `Workout` entries
 - `maxHR = 220 - age` is passed to Claude for HR zone guidance
 
-**Hive models** (`lib/models/`): All `.g.dart` adapter files are hand-written (not generated). TypeIds: Workout=1, TrainingWeek=2, TrainingPlan=3, UserPreferences=4, enums start at 10. If you add/change `@HiveField` annotations, manually update the corresponding `.g.dart` file — do not run `build_runner` unless you intend to regenerate all adapters. `Workout` includes logging fields: `actualDistanceKm`, `actualDurationMinutes`, `notes`, `isCompleted`, `completedAt`.
+**Hive models** (`lib/models/`): All `.g.dart` adapter files are hand-written (not generated). TypeIds: Workout=1, TrainingWeek=2, TrainingPlan=3, UserPreferences=4, enums start at 10. If you add/change `@HiveField` annotations, manually update the corresponding `.g.dart` file. **Do not add `hive_generator` back to pubspec** — it is incompatible with the current Flutter SDK (3.41+) alongside Riverpod v3 due to `analyzer` version conflicts. `Workout` includes logging fields: `actualDistanceKm`, `actualDurationMinutes`, `notes`, `isCompleted`, `completedAt`.
 
 Non-Hive models: `ProgressStats` (computed from plan), `CoachingInsight` (priority + type), `StretchExercise`.
 

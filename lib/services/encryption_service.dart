@@ -5,9 +5,7 @@ import 'package:hive/hive.dart';
 
 class EncryptionService {
   static const _keyName = 'hive_prefs_aes_key';
-  static const _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  static const _storage = FlutterSecureStorage();
 
   /// Returns a cipher backed by a key stored in the OS keychain (iOS/macOS)
   /// or EncryptedSharedPreferences (Android). On web, the key is stored in

@@ -48,7 +48,7 @@ class _StretchExerciseCardState extends State<StretchExerciseCard> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _expanded
-                  ? _accentColor.withOpacity(0.4)
+                  ? _accentColor.withValues(alpha:0.4)
                   : AppColors.surfaceVariant,
             ),
           ),
@@ -62,7 +62,7 @@ class _StretchExerciseCardState extends State<StretchExerciseCard> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: _accentColor.withOpacity(0.15),
+                      color: _accentColor.withValues(alpha:0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(widget.exercise.icon,
@@ -113,7 +113,7 @@ class _StretchExerciseCardState extends State<StretchExerciseCard> {
                     label: Text(AppLocalizations.of(context)!.stretchWatchTutorial),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: _accentColor,
-                      side: BorderSide(color: _accentColor.withOpacity(0.5)),
+                      side: BorderSide(color: _accentColor.withValues(alpha:0.5)),
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -141,9 +141,9 @@ class _MuscleChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha:0.25)),
       ),
       child: Text(
         label,

@@ -35,15 +35,15 @@ class WeekSummaryStrip extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: isCompleted
-                    ? AppColors.secondary.withOpacity(0.15)
-                    : color.withOpacity(0.15),
+                    ? AppColors.secondary.withValues(alpha:0.15)
+                    : color.withValues(alpha:0.15),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isToday
                       ? AppColors.primary
                       : isCompleted
-                          ? AppColors.secondary.withOpacity(0.6)
-                          : color.withOpacity(0.5),
+                          ? AppColors.secondary.withValues(alpha:0.6)
+                          : color.withValues(alpha:0.5),
                   width: isToday ? 2.0 : 1.0,
                 ),
               ),

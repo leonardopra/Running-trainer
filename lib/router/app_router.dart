@@ -15,6 +15,7 @@ import '../features/settings/screens/privacy_policy_screen.dart';
 import '../features/progress/screens/progress_dashboard_screen.dart';
 import '../features/progress/screens/run_history_screen.dart';
 import '../features/pace/screens/pace_calculator_screen.dart';
+import '../features/stretching/screens/stretching_screen.dart';
 import '../features/shell/main_scaffold.dart';
 import '../providers/settings_provider.dart';
 import '../providers/plan_generation_provider.dart';
@@ -75,6 +76,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(path: '/pace', builder: (_, __) => const PaceCalculatorScreen()),
+          GoRoute(path: '/stretching', builder: (_, __) => const StretchingScreen(isPreRun: true)),
           GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
           GoRoute(path: '/privacy', builder: (_, __) => const PrivacyPolicyScreen()),
         ],

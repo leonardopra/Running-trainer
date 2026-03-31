@@ -30,7 +30,7 @@ class StretchExercise {
     if (durationSeconds >= 60) {
       final mins = durationSeconds ~/ 60;
       final secs = durationSeconds % 60;
-      return secs > 0 ? '${mins}m ${secs}s' : '${mins} min';
+      return secs > 0 ? '${mins}m ${secs}s' : '$mins min';
     }
     return '${durationSeconds}s each side';
   }

@@ -256,7 +256,7 @@ class _HistoryTile extends StatelessWidget {
               children: [
                 if (km != null)
                   Text(
-                    '${((km as double) * convFactor).toStringAsFixed(1)} $unitLabel',
+                    '${(km * convFactor).toStringAsFixed(1)} $unitLabel',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,

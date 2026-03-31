@@ -38,7 +38,7 @@ class UserPreferences extends HiveObject {
   int? goalTimeSeconds; // saved from pace calculator
 
   @HiveField(11)
-  String localeCode = 'en'; // language preference: 'en', 'it', 'de'
+  String localeCode = 'en'; // language preference: 'en', 'it', 'de', 'es'
 
   UserPreferences({
     this.claudeApiKey,

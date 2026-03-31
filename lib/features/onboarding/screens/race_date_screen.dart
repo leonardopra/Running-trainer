@@ -192,7 +192,7 @@ class _RaceDateScreenState extends ConsumerState<RaceDateScreen> {
             margin: const EdgeInsets.symmetric(vertical: 6),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary.withOpacity(0.15) : AppColors.surface,
+              color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isSelected ? AppColors.primary : AppColors.surfaceVariant,

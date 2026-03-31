@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:running_trainer_app/models/enums.dart';
-import 'package:running_trainer_app/models/workout.dart';
 import 'package:running_trainer_app/services/insights_service.dart';
 import 'package:running_trainer_app/services/plan_generator_service.dart';
 import 'package:running_trainer_app/l10n/app_localizations_en.dart';

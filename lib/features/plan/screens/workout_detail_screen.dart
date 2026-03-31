@@ -224,9 +224,9 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.06),
+        color: AppColors.primary.withValues(alpha:0.06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha:0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,10 +374,10 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.08),
+                        color: AppColors.primary.withValues(alpha:0.08),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: AppColors.primary.withOpacity(0.3),
+                          color: AppColors.primary.withValues(alpha:0.3),
                         ),
                       ),
                       child: Text(w.coachingTip!, style: AppTextStyles.body),
@@ -425,7 +425,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: AppColors.secondary.withOpacity(0.15),
+                              color: AppColors.secondary.withValues(alpha:0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(l10n.workoutLogCompleted,
@@ -447,7 +447,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: w.isCompleted
-                              ? AppColors.secondary.withOpacity(0.35)
+                              ? AppColors.secondary.withValues(alpha:0.35)
                               : AppColors.surfaceVariant,
                         ),
                       ),
@@ -500,7 +500,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.12),
+                                  color: AppColors.primary.withValues(alpha:0.12),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
@@ -560,7 +560,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                                       horizontal: 10, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: selected
-                                        ? AppColors.secondary.withOpacity(0.2)
+                                        ? AppColors.secondary.withValues(alpha:0.2)
                                         : AppColors.surfaceVariant,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
@@ -728,9 +728,9 @@ class _TargetPaceSection extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha:0.08),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: color.withOpacity(0.3)),
+            border: Border.all(color: color.withValues(alpha:0.3)),
           ),
           child: Row(
             children: [
@@ -798,9 +798,9 @@ class _StatCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha:0.1),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
+          border: Border.all(color: color.withValues(alpha:0.3)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -892,9 +892,9 @@ class _StretchButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha:0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
+          border: Border.all(color: color.withValues(alpha:0.3)),
         ),
         child: Column(
           children: [

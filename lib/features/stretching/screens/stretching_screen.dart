@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:running_trainer_app/l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -29,7 +30,7 @@ class StretchingScreen extends StatelessWidget {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios,
                   color: AppColors.onSurface),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.go('/home'),
             ),
             title: Text(title, style: AppTextStyles.heading3),
           ),
@@ -43,10 +44,10 @@ class StretchingScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: accentColor.withOpacity(0.08),
+                      color: accentColor.withValues(alpha:0.08),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                          color: accentColor.withOpacity(0.3)),
+                          color: accentColor.withValues(alpha:0.3)),
                     ),
                     child: Row(
                       children: [

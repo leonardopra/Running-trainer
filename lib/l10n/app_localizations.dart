@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
 import 'app_localizations_it.dart';
 
 // ignore_for_file: type=lint
@@ -19,7 +20,7 @@ import 'app_localizations_it.dart';
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'gen_l10n/app_localizations.dart';
+/// import 'l10n/app_localizations.dart';
 ///
 /// return MaterialApp(
 ///   localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -63,7 +64,8 @@ import 'app_localizations_it.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +73,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,7 +86,8 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -94,6 +98,7 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
     Locale('en'),
+    Locale('es'),
     Locale('it')
   ];
 
@@ -458,30 +463,63 @@ abstract class AppLocalizations {
   String homeWeekChip(int current, int total, String theme);
 
   /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
   String get navHome;
 
   /// No description provided for @navPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
   String get navPlan;
 
   /// No description provided for @navProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
   String get navProgress;
 
   /// No description provided for @navPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Pace'**
   String get navPace;
 
+  /// No description provided for @navStretching.
+  ///
+  /// In en, this message translates to:
+  /// **'Stretching'**
+  String get navStretching;
+
   /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
   String get navSettings;
 
   /// No description provided for @weekCardWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week {n}'**
   String weekCardWeek(int n);
 
   /// No description provided for @weekCardStats.
+  ///
+  /// In en, this message translates to:
+  /// **'{km}km · {completed}/{total} workouts'**
   String weekCardStats(String km, int completed, int total);
 
   /// No description provided for @planNoPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No plan found'**
   String get planNoPlan;
 
   /// No description provided for @chartNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data yet'**
   String get chartNoData;
 
   /// No description provided for @workoutRestDay.
@@ -760,6 +798,42 @@ abstract class AppLocalizations {
   /// **'Data'**
   String get settingsDataSection;
 
+  /// No description provided for @settingsPlanSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Training Plan'**
+  String get settingsPlanSection;
+
+  /// No description provided for @settingsPlanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate a fresh training plan without losing your workout history.'**
+  String get settingsPlanDesc;
+
+  /// No description provided for @settingsNewPlanBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Start New Training Plan'**
+  String get settingsNewPlanBtn;
+
+  /// No description provided for @settingsNewPlanDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a New Plan?'**
+  String get settingsNewPlanDialogTitle;
+
+  /// No description provided for @settingsNewPlanDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your workout history and profile stay intact. A fresh plan will be generated for your new goals.'**
+  String get settingsNewPlanDialogBody;
+
+  /// No description provided for @settingsNewPlanConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Start New Plan'**
+  String get settingsNewPlanConfirm;
+
   /// No description provided for @settingsResetAll.
   ///
   /// In en, this message translates to:
@@ -778,12 +852,10 @@ abstract class AppLocalizations {
   /// **'This will delete your training plan, profile, and all progress. This cannot be undone.'**
   String get settingsResetDialogBody;
 
-  String get settingsPlanSection;
-  String get settingsPlanDesc;
-  String get settingsNewPlanBtn;
-  String get settingsNewPlanDialogTitle;
-  String get settingsNewPlanDialogBody;
-  String get settingsNewPlanConfirm;
+  /// No description provided for @planYourPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Plans'**
   String get planYourPlans;
 
   /// No description provided for @progressTitle.
@@ -822,8 +894,22 @@ abstract class AppLocalizations {
   /// **'of {n} km planned'**
   String progressKmLoggedSub(String n);
 
+  /// No description provided for @progressMiLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Mi Logged'**
   String get progressMiLogged;
+
+  /// No description provided for @progressMiLoggedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'of {n} mi planned'**
   String progressMiLoggedSub(String n);
+
+  /// No description provided for @progressWeeklyMiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned vs logged miles per week.'**
   String get progressWeeklyMiDesc;
 
   /// No description provided for @progressStreak.
@@ -1174,94 +1260,477 @@ abstract class AppLocalizations {
   /// **'Deutsch'**
   String get langGerman;
 
+  /// No description provided for @langSpanish.
+  ///
+  /// In en, this message translates to:
+  /// **'Español'**
+  String get langSpanish;
+
+  /// No description provided for @weekThemeFoundation.
+  ///
+  /// In en, this message translates to:
+  /// **'Foundation Week'**
   String get weekThemeFoundation;
+
+  /// No description provided for @weekThemeTaperBegins.
+  ///
+  /// In en, this message translates to:
+  /// **'Taper Begins'**
   String get weekThemeTaperBegins;
+
+  /// No description provided for @weekThemeRacePrep.
+  ///
+  /// In en, this message translates to:
+  /// **'Race Prep'**
   String get weekThemeRacePrep;
+
+  /// No description provided for @weekThemeRaceWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Race Week'**
   String get weekThemeRaceWeek;
+
+  /// No description provided for @weekThemeTaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Taper'**
   String get weekThemeTaper;
+
+  /// No description provided for @weekThemeRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery Week'**
   String get weekThemeRecovery;
+
+  /// No description provided for @weekThemeRecovery50.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery Week (50+ protocol)'**
   String get weekThemeRecovery50;
+
+  /// No description provided for @weekThemeBaseBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Building'**
   String get weekThemeBaseBuilding;
+
+  /// No description provided for @weekThemeStrengthPhase.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength Phase'**
   String get weekThemeStrengthPhase;
+
+  /// No description provided for @weekThemePeakTraining.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak Training'**
   String get weekThemePeakTraining;
 
+  /// No description provided for @insightTaperWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Taper Week'**
   String get insightTaperWeekTitle;
+
+  /// No description provided for @insightTaperWeekBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower volume is intentional — your body is absorbing the training and storing energy for race day. Trust the process.'**
   String get insightTaperWeekBody;
+
+  /// No description provided for @insightRecoveryWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery Week'**
   String get insightRecoveryWeekTitle;
+
+  /// No description provided for @insightRecoveryWeekBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This week\'s volume is intentionally lower. Recovery weeks are where fitness is consolidated — don\'t be tempted to add extra miles.'**
   String get insightRecoveryWeekBody;
+
+  /// No description provided for @insightWeek1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Week 1 — Welcome!'**
   String get insightWeek1Title;
+
+  /// No description provided for @insightWeek1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus on building the habit, not the pace. Completing every run, however slowly, is what matters right now.'**
   String get insightWeek1Body;
+
+  /// No description provided for @insightHighConsistencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent Consistency'**
   String get insightHighConsistencyTitle;
+
+  /// No description provided for @insightHighConsistencyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{rate}% of planned sessions completed. That level of consistency is what separates finishers from DNFs.'**
   String insightHighConsistencyBody(String rate);
+
+  /// No description provided for @insightLowConsistencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistency Needs Work'**
   String get insightLowConsistencyTitle;
+
+  /// No description provided for @insightLowConsistencyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve completed {rate}% of planned sessions. Even shorter, slower runs count — aim for 70%+ to see real fitness gains.'**
   String insightLowConsistencyBody(String rate);
+
+  /// No description provided for @insightBackOnTrackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting Back on Track'**
   String get insightBackOnTrackTitle;
+
+  /// No description provided for @insightBackOnTrackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve missed {missed} sessions in the last 7 days. Life happens — don\'t try to make up missed runs. Just pick up where you are.'**
   String insightBackOnTrackBody(int missed);
+
+  /// No description provided for @insightOnTrackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'On Track This Week'**
   String get insightOnTrackTitle;
+
+  /// No description provided for @insightOnTrackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve already logged {logged} km of your {target} km target. Keep it up!'**
   String insightOnTrackBody(String logged, String target);
+
+  /// No description provided for @insightBehindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Behind This Week'**
   String get insightBehindTitle;
+
+  /// No description provided for @insightBehindBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You still have {remaining} km to go to hit your weekly target. There\'s still time — make it count.'**
   String insightBehindBody(String remaining);
+
+  /// No description provided for @insightEasyRunsFastTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy Runs Too Fast'**
   String get insightEasyRunsFastTitle;
+
+  /// No description provided for @insightEasyRunsFastBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your easy runs are consistently faster than target pace. Running easy too hard blunts adaptation. Slow down — if you can\'t hold a conversation, it\'s too fast.'**
   String get insightEasyRunsFastBody;
+
+  /// No description provided for @insightMissedLongRunTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed Long Run'**
   String get insightMissedLongRunTitle;
+
+  /// No description provided for @insightMissedLongRunBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You skipped last week\'s long run. The long run is the cornerstone of endurance training — try to prioritise it above other sessions.'**
   String get insightMissedLongRunBody;
+
+  /// No description provided for @insightStreakTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{streak}-Session Streak 🔥'**
   String insightStreakTitle(int streak);
+
+  /// No description provided for @insightStreakBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t missed a scheduled run in {streak} sessions. That consistency compounds into serious fitness.'**
   String insightStreakBody(int streak);
+
+  /// No description provided for @insightKeyTomorrowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Key Session Tomorrow'**
   String get insightKeyTomorrowTitle;
+
+  /// No description provided for @insightKeyTomorrowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} · {km} km tomorrow. Sleep well tonight, eat well, and plan your route in advance.'**
   String insightKeyTomorrowBody(String type, String km);
+
+  /// No description provided for @insightRaceDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Race Day! 🏁'**
   String get insightRaceDayTitle;
+
+  /// No description provided for @insightRaceDayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is your {race}. You\'ve done the work — trust your training and enjoy every kilometre.'**
   String insightRaceDayBody(String race);
+
+  /// No description provided for @insightRaceWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} Days to Race'**
   String insightRaceWeekTitle(int days);
+
+  /// No description provided for @insightRaceWeekBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Race week for your {race}. Prioritise rest, sleep, hydration, and a final easy shakeout run.'**
   String insightRaceWeekBody(String race);
+
+  /// No description provided for @insightAlmostThereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{weeks} Weeks to Go'**
   String insightAlmostThereTitle(int weeks);
+
+  /// No description provided for @insightAlmostThereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {race} is almost here. The hay is in the barn — trust your training and avoid heroic sessions.'**
   String insightAlmostThereBody(String race);
+
+  /// No description provided for @insightWeeksToGoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{weeks} Weeks to Race Day'**
   String insightWeeksToGoTitle(int weeks);
+
+  /// No description provided for @insightWeeksToGoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {weeks} weeks to build fitness for your {race}. Stay consistent — small daily habits create big race results.'**
   String insightWeeksToGoBody(int weeks, String race);
 
+  /// No description provided for @rpeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Perceived effort (RPE)'**
   String get rpeLabel;
+
+  /// No description provided for @rpeEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy'**
   String get rpeEasy;
+
+  /// No description provided for @rpeMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum'**
   String get rpeMax;
+
+  /// No description provided for @feelingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'How did you feel?'**
   String get feelingLabel;
+
+  /// No description provided for @feelingGreat.
+  ///
+  /// In en, this message translates to:
+  /// **'Great'**
   String get feelingGreat;
+
+  /// No description provided for @feelingGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
   String get feelingGood;
+
+  /// No description provided for @feelingOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ok'**
   String get feelingOk;
+
+  /// No description provided for @feelingTired.
+  ///
+  /// In en, this message translates to:
+  /// **'Tired'**
   String get feelingTired;
+
+  /// No description provided for @feelingInjured.
+  ///
+  /// In en, this message translates to:
+  /// **'Injured'**
   String get feelingInjured;
+
+  /// No description provided for @insightHighRpeEasyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy runs feel too hard'**
   String get insightHighRpeEasyTitle;
+
+  /// No description provided for @insightHighRpeEasyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent easy runs have a high RPE. Slow down to maximise aerobic benefits.'**
   String get insightHighRpeEasyBody;
+
+  /// No description provided for @insightNegativeFeelingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signs of fatigue'**
   String get insightNegativeFeelingTitle;
+
+  /// No description provided for @insightNegativeFeelingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reported tiredness or discomfort in multiple consecutive sessions. Consider adding an extra rest day.'**
   String get insightNegativeFeelingBody;
 
+  /// No description provided for @progressRpeTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Training Load'**
   String get progressRpeTrend;
+
+  /// No description provided for @progressRpeTrendDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Perceived effort across your last logged runs'**
   String get progressRpeTrendDesc;
+
+  /// No description provided for @progressFeelingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How I Felt'**
   String get progressFeelingTitle;
+
+  /// No description provided for @progressFeelingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Feeling distribution across completed workouts'**
   String get progressFeelingDesc;
+
+  /// No description provided for @progressNoRpeData.
+  ///
+  /// In en, this message translates to:
+  /// **'Log workouts with RPE to see your training load.'**
   String get progressNoRpeData;
+
+  /// No description provided for @progressNoFeelingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Log your feelings to track how you respond to training.'**
   String get progressNoFeelingData;
 
+  /// No description provided for @progressPaceTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Pace Trend'**
   String get progressPaceTrend;
+
+  /// No description provided for @progressPaceTrendDescKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual pace across your last logged runs.'**
   String get progressPaceTrendDescKm;
+
+  /// No description provided for @progressPaceTrendDescMi.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual pace (min/mi) across your last logged runs.'**
   String get progressPaceTrendDescMi;
+
+  /// No description provided for @progressNoPaceData.
+  ///
+  /// In en, this message translates to:
+  /// **'Log runs with distance and duration to see your pace trend.'**
   String get progressNoPaceData;
 
+  /// No description provided for @calendarView.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar view'**
   String get calendarView;
+
+  /// No description provided for @listView.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
   String get listView;
 
+  /// No description provided for @workoutCoachFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach\'s Feedback'**
   String get workoutCoachFeedback;
+
+  /// No description provided for @workoutCoachFeedbackLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your run...'**
   String get workoutCoachFeedbackLoading;
+
+  /// No description provided for @workoutCoachFeedbackError.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback unavailable'**
   String get workoutCoachFeedbackError;
+
+  /// No description provided for @workoutCoachFeedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log RPE or feeling to get AI coaching after your run.'**
   String get workoutCoachFeedbackHint;
+
+  /// No description provided for @workoutCoachFeedbackRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Get feedback'**
   String get workoutCoachFeedbackRefresh;
+
+  /// No description provided for @workoutCoachFeedbackNoKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your Claude API key in Settings to unlock post-workout coaching.'**
   String get workoutCoachFeedbackNoKey;
 
+  /// No description provided for @progressViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
   String get progressViewAll;
+
+  /// No description provided for @progressHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Run History'**
   String get progressHistoryTitle;
+
+  /// No description provided for @progressHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed runs yet.'**
   String get progressHistoryEmpty;
 
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
   String get settingsPrivacyPolicy;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1270,26 +1739,29 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['de', 'en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['de', 'en', 'es', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'de': return AppLocalizationsDe();
-    case 'en': return AppLocalizationsEn();
-    case 'it': return AppLocalizationsIt();
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'it':
+      return AppLocalizationsIt();
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

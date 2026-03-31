@@ -106,7 +106,7 @@ class _PaceCalculatorScreenState extends ConsumerState<PaceCalculatorScreen> {
                                   horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
                                 color: selected
-                                    ? AppColors.primary.withOpacity(0.15)
+                                    ? AppColors.primary.withValues(alpha:0.15)
                                     : AppColors.surface,
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
@@ -314,7 +314,7 @@ class _PaceZoneCardState extends State<_PaceZoneCard> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _expanded
-                  ? color.withOpacity(0.5)
+                  ? color.withValues(alpha:0.5)
                   : AppColors.surfaceVariant,
             ),
           ),

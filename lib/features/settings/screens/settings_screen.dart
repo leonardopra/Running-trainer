@@ -173,7 +173,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   onChanged: (value) {
                     ref.read(settingsProvider.notifier).setUseKilometers(value);
                   },
-                  activeColor: AppColors.primary,
+                  activeThumbColor: AppColors.primary,
                 ),
               ],
             ),
@@ -211,7 +211,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               .read(settingsProvider.notifier)
                               .setNotifications(enabled: value);
                         },
-                        activeColor: AppColors.primary,
+                        activeThumbColor: AppColors.primary,
                       ),
                     ],
                   ),
@@ -254,10 +254,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 8),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.12),
+                              color: AppColors.primary.withValues(alpha:0.12),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: AppColors.primary.withOpacity(0.35)),
+                                  color: AppColors.primary.withValues(alpha:0.35)),
                             ),
                             child: Text(
                               TimeOfDay(
@@ -431,9 +431,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () async {
+              final router = GoRouter.of(context);
               Navigator.of(ctx).pop();
               await ref.read(settingsProvider.notifier).resetAll();
-              if (mounted) context.go('/onboarding/goal');
+              if (mounted) router.go('/onboarding/goal');
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: Text(l10n.btnReset),
@@ -459,6 +460,7 @@ class _LanguagePicker extends StatelessWidget {
     ('en', '🇬🇧', 'English'),
     ('it', '🇮🇹', 'Italiano'),
     ('de', '🇩🇪', 'Deutsch'),
+    ('es', '🇪🇸', 'Español'),
   ];
 
   @override
