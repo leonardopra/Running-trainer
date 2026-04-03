@@ -954,6 +954,30 @@ abstract class AppLocalizations {
   /// **'Planned vs logged kilometres per week.'**
   String get progressWeeklyMileageDesc;
 
+  /// No description provided for @progressWeeklyCompletionRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Completion Rate'**
+  String get progressWeeklyCompletionRate;
+
+  /// No description provided for @progressWeeklyCompletionRateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentage of completed workouts for each started week.'**
+  String get progressWeeklyCompletionRateDesc;
+
+  /// No description provided for @progressWorkoutDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Type Distribution'**
+  String get progressWorkoutDistribution;
+
+  /// No description provided for @progressWorkoutDistributionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Mix of non-rest workouts across the weeks you\'ve already started.'**
+  String get progressWorkoutDistributionDesc;
+
   /// No description provided for @progressPlanned.
   ///
   /// In en, this message translates to:

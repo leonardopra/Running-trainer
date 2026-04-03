@@ -26,6 +26,7 @@ ProgressStats _computeStats(TrainingPlan plan) {
   final weeklyProgress = <WeekProgress>[];
   final rpePoints = <RpeDataPoint>[];
   final feelingMap = <WorkoutFeeling, int>{};
+  final workoutTypeMap = <WorkoutType, int>{};
 
   for (int wi = 0; wi < plan.weeks.length; wi++) {
     final week = plan.weeks[wi];
@@ -42,6 +43,10 @@ ProgressStats _computeStats(TrainingPlan plan) {
       totalNonRest++;
       weekPlanned += w.distanceKm ?? 0;
       totalPlanned += w.distanceKm ?? 0;
+
+      if (hasStarted) {
+        workoutTypeMap[w.type] = (workoutTypeMap[w.type] ?? 0) + 1;
+      }
 
       if (w.isCompleted) {
         weekCompleted++;
@@ -125,5 +130,13 @@ ProgressStats _computeStats(TrainingPlan plan) {
     rpeDataPoints: recentRpe,
     feelingCounts: feelingMap,
     paceDataPoints: pacePoints,
+    workoutTypeCounts: WorkoutType.values
+        .where((type) => type != WorkoutType.rest)
+        .map((type) => WorkoutTypeCount(
+              type: type,
+              count: workoutTypeMap[type] ?? 0,
+            ))
+        .where((entry) => entry.count > 0)
+        .toList(),
   );
 }

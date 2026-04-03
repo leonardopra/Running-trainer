@@ -22,6 +22,7 @@ dependencies:
   url_launcher: ^6.2.6
   flutter_local_notifications: ^21.0.0
   timezone: ^0.11.0
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
