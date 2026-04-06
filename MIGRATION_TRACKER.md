@@ -38,15 +38,15 @@ Recent Android verification:
 | Plan overview | Complete | Partial | Not started | Not started | P0 | Android shows first week summary only |
 | Workout detail | Complete | Partial | Not started | Not started | P0 | Android logging exists, UI still basic |
 | Workout logging | Complete | Complete | Not started | Not started | P0 | No AI coaching yet on Android |
-| Progress dashboard | Complete | Partial | Not started | Not started | P0 | Core stats done, richer UI missing |
+| Progress dashboard | Complete | Complete | Not started | Not started | P0 | Stat grid, feeling/type breakdown, recent activity, run history |
 | Settings | Complete | Partial | Not started | Not started | P0 | Basic profile/units/API key only |
-| Pace calculator | Complete | Not started | Not started | Not started | P0 | |
-| Insights engine | Complete | Not started | Not started | Not started | P0 | |
+| Pace calculator | Complete | Complete | Not started | Not started | P0 | Android ported, shown in WorkoutDetail |
+| Insights engine | Complete | Complete | Not started | Not started | P0 | Android ported, shown on HomeScreen |
 | Localization | Complete | Not started | Not started | Not started | P1 | Android still uses hardcoded strings |
 | Notifications | Partial | Not started | Not started | Not started | P1 | Android notifications still missing |
 | AI enrichment | Complete | Not started | Not started | Not started | P1 | Depends on backend or direct client integration |
 | Post-workout AI coaching | Complete | Not started | Not started | Not started | P1 | |
-| Run history | Complete | Not started | Not started | Not started | P1 | |
+| Run history | Complete | Complete | Not started | Not started | P1 | Android RunHistoryScreen with type filters |
 | Stretching | Complete | Not started | Not started | Not started | P2 | |
 | Privacy screen | Complete | Not started | Not started | Not started | P2 | |
 
@@ -99,13 +99,13 @@ Recent Android verification:
 - `[ ] P0` Full Android Day 1 parity with Flutter
 
 ### Next
-- `[ ] P0` Add race-date and duration selection to onboarding
+- `[x] P0` Add race-date and duration selection to onboarding
 - `[ ] P0` Add full multi-week plan overview, not only first-week summary
-- `[ ] P0` Improve workout detail UX and validation
-- `[ ] P0` Add run history screen
-- `[ ] P0` Port pace calculator
-- `[ ] P0` Port insights engine
-- `[ ] P0` Improve progress dashboard presentation
+- `[x] P0` Improve workout detail UX and validation
+- `[x] P0` Add run history screen
+- `[x] P0` Port pace calculator
+- `[x] P0` Port insights engine
+- `[x] P0` Improve progress dashboard presentation
 - `[ ] P0` Expand settings to match Flutter more closely
 - `[ ] P1` Add local notifications scheduling
 - `[ ] P1` Add AI week enrichment
