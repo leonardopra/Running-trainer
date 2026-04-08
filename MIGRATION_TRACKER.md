@@ -44,8 +44,8 @@ Recent Android verification:
 | Insights engine | Complete | Complete | Not started | Not started | P0 | Android ported, shown on HomeScreen |
 | Localization | Complete | Not started | Not started | Not started | P1 | Android still uses hardcoded strings |
 | Notifications | Partial | Not started | Not started | Not started | P1 | Android notifications still missing |
-| AI enrichment | Complete | Not started | Not started | Not started | P1 | Depends on backend or direct client integration |
-| Post-workout AI coaching | Complete | Not started | Not started | Not started | P1 | |
+| AI enrichment | Complete | Complete | Not started | Not started | P1 | Direct client integration via Anthropic API |
+| Post-workout AI coaching | Complete | Complete | Not started | Not started | P1 | |
 | Run history | Complete | Complete | Not started | Not started | P1 | Android RunHistoryScreen with type filters |
 | Stretching | Complete | Not started | Not started | Not started | P2 | |
 | Privacy screen | Complete | Not started | Not started | Not started | P2 | |
@@ -108,8 +108,8 @@ Recent Android verification:
 - `[x] P0` Improve progress dashboard presentation
 - `[x] P0` Expand settings to match Flutter more closely
 - `[x] P1` Add local notifications scheduling
-- `[ ] P1` Add AI week enrichment
-- `[ ] P1` Add post-workout AI coaching
+- `[x] P1` Add AI week enrichment
+- `[x] P1` Add post-workout AI coaching
 - `[ ] P1` Add localization support
 - `[ ] P1` Add instrumentation/UI tests for onboarding and workout logging
 - `[ ] P2` Add stretching screen

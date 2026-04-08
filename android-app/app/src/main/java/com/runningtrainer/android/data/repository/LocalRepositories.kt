@@ -39,6 +39,10 @@ class LocalTrainingPlanRepository(
         return result
     }
 
+    override suspend fun updatePlan(plan: TrainingPlan) {
+        persistPlan(plan)
+    }
+
     override suspend fun saveWorkoutLog(input: WorkoutLogInput) {
         updateActivePlan { plan ->
             plan.copy(
@@ -58,6 +62,21 @@ class LocalTrainingPlanRepository(
                                     completedAt = input.completedAt ?: workout.completedAt ?: Clock.System.now()
                                 )
                             }
+                        }
+                    )
+                }
+            )
+        }
+    }
+
+    override suspend fun applyPostWorkoutCoaching(workoutId: String, coaching: String) {
+        updateActivePlan { plan ->
+            plan.copy(
+                weeks = plan.weeks.map { week ->
+                    week.copy(
+                        workouts = week.workouts.map { workout ->
+                            if (workout.id == workoutId) workout.copy(postWorkoutCoaching = coaching)
+                            else workout
                         }
                     )
                 }

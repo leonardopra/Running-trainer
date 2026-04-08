@@ -12,7 +12,9 @@ interface TrainingPlanRepository {
     fun observeActivePlan(): Flow<TrainingPlan?>
     fun observeProgressStats(): Flow<ProgressStats?>
     suspend fun generateAndSavePlan(request: PlanGenerationRequest): PlanGenerationResult
+    suspend fun updatePlan(plan: TrainingPlan)
     suspend fun saveWorkoutLog(input: WorkoutLogInput)
+    suspend fun applyPostWorkoutCoaching(workoutId: String, coaching: String)
     suspend fun clearWorkoutLog(workoutId: String)
     suspend fun clearAllPlans()
 }

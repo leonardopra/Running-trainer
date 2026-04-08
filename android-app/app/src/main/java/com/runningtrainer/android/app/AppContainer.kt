@@ -8,6 +8,7 @@ import com.runningtrainer.android.data.repository.LocalSettingsRepository
 import com.runningtrainer.android.data.repository.LocalTrainingPlanRepository
 import com.runningtrainer.android.data.repository.SettingsRepository
 import com.runningtrainer.android.data.repository.TrainingPlanRepository
+import com.runningtrainer.android.domain.service.ClaudeService
 import com.runningtrainer.android.domain.service.InsightsService
 import com.runningtrainer.android.domain.service.PaceCalculatorService
 import com.runningtrainer.android.domain.service.PlanGenerator
@@ -36,5 +37,6 @@ class AppContainer(context: Context) {
     val settingsRepository: SettingsRepository = LocalSettingsRepository(settingsStore)
     val paceCalculatorService = PaceCalculatorService()
     val insightsService = InsightsService()
+    val claudeService = ClaudeService()
     val notificationService = NotificationService(context)
 }

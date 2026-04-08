@@ -17,6 +17,7 @@ import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutFeeling
 import com.runningtrainer.android.domain.model.WorkoutLogInput
 import com.runningtrainer.android.domain.model.WorkoutType
+import com.runningtrainer.android.domain.service.ClaudeService
 import com.runningtrainer.android.domain.service.InsightsService
 import com.runningtrainer.android.domain.service.PaceCalculatorService
 import com.runningtrainer.android.notifications.NotificationService
@@ -54,7 +55,9 @@ data class MainUiState(
     val insights: List<CoachingInsight> = emptyList(),
     val selectedWorkoutPaceZones: List<PaceZone> = emptyList(),
     val isGeneratingPlan: Boolean = false,
-    val generationError: String? = null
+    val generationError: String? = null,
+    val isEnrichingPlan: Boolean = false,
+    val enrichmentError: String? = null
 )
 
 class MainViewModel(
@@ -62,12 +65,15 @@ class MainViewModel(
     private val settingsRepository: SettingsRepository,
     private val insightsService: InsightsService = InsightsService(),
     private val paceCalculatorService: PaceCalculatorService = PaceCalculatorService(),
-    private val notificationService: NotificationService? = null
+    private val notificationService: NotificationService? = null,
+    private val claudeService: ClaudeService? = null
 ) : ViewModel() {
     private val currentDestination = MutableStateFlow(AppDestination.Goal)
     private val onboarding = MutableStateFlow(OnboardingFormState())
     private val isGenerating = MutableStateFlow(false)
     private val generationError = MutableStateFlow<String?>(null)
+    private val isEnriching = MutableStateFlow(false)
+    private val enrichmentError = MutableStateFlow<String?>(null)
     private val selectedWorkoutId = MutableStateFlow<String?>(null)
     private val persistedState = combine(
         settingsRepository.observePreferences(),
@@ -88,13 +94,20 @@ class MainViewModel(
         )
     }
 
+    private val generationUiState = combine(isGenerating, generationError) { generating, error ->
+        generating to error
+    }
+    private val enrichmentUiState = combine(isEnriching, enrichmentError) { enriching, error ->
+        enriching to error
+    }
+
     val uiState: StateFlow<MainUiState> = combine(
         persistedUiState,
         currentDestination,
         onboarding,
-        isGenerating,
-        generationError
-    ) { persisted, destination, form, generating, error ->
+        generationUiState,
+        enrichmentUiState
+    ) { persisted, destination, form, (generating, genError), (enriching, enrichError) ->
         val preferences = persisted.preferences
         val activePlan = persisted.activePlan
         val selectedWorkout = activePlan?.weeks?.flatMap { it.workouts }?.firstOrNull { it.id == persisted.selectedWorkoutId }
@@ -126,7 +139,9 @@ class MainViewModel(
             insights = insights,
             selectedWorkoutPaceZones = paceZones,
             isGeneratingPlan = generating,
-            generationError = error
+            generationError = genError,
+            isEnrichingPlan = enriching,
+            enrichmentError = enrichError
         )
     }.stateIn(
         scope = viewModelScope,
@@ -216,6 +231,10 @@ class MainViewModel(
                     }
                 }
                 currentDestination.value = AppDestination.Home
+                val apiKey = prefs.claudeApiKey
+                if (!apiKey.isNullOrBlank() && claudeService != null) {
+                    viewModelScope.launch { runEnrichment(apiKey, prefs) }
+                }
             }.onFailure { throwable ->
                 generationError.value = throwable.message ?: "Unable to generate plan."
                 currentDestination.value = AppDestination.Profile
@@ -285,6 +304,10 @@ class MainViewModel(
         feeling: WorkoutFeeling?
     ) {
         viewModelScope.launch {
+            val prefs = uiState.value.preferences
+            val workoutSnapshot = uiState.value.activePlan
+                ?.weeks?.flatMap { it.workouts }?.firstOrNull { it.id == workoutId }
+
             trainingPlanRepository.saveWorkoutLog(
                 WorkoutLogInput(
                     workoutId = workoutId,
@@ -298,6 +321,27 @@ class MainViewModel(
                 )
             )
             currentDestination.value = AppDestination.Home
+
+            val apiKey = prefs.claudeApiKey
+            if (!apiKey.isNullOrBlank() && claudeService != null && workoutSnapshot != null) {
+                viewModelScope.launch {
+                    val loggedWorkout = workoutSnapshot.copy(
+                        actualDistanceKm = actualDistanceKm.toDoubleOrNull(),
+                        actualDurationMinutes = actualDurationMinutes.toIntOrNull(),
+                        notes = notes.takeIf { it.isNotBlank() },
+                        rpe = rpe,
+                        feeling = feeling
+                    )
+                    val coaching = claudeService.generatePostWorkoutCoaching(
+                        workout = loggedWorkout,
+                        apiKey = apiKey,
+                        age = prefs.age
+                    )
+                    if (coaching != null) {
+                        trainingPlanRepository.applyPostWorkoutCoaching(workoutId, coaching)
+                    }
+                }
+            }
         }
     }
 
@@ -346,17 +390,34 @@ class MainViewModel(
         }
     }
 
+    private suspend fun runEnrichment(apiKey: String, prefs: UserPreferencesDto) {
+        val plan = trainingPlanRepository.observeActivePlan().firstOrNull() ?: return
+        if (plan.isClaudeEnriched) return
+        isEnriching.value = true
+        enrichmentError.value = null
+        val result = claudeService!!.enrichPlan(plan, apiKey, prefs)
+        if (result.isAuthError) {
+            enrichmentError.value = "Invalid API key. Check Settings."
+        } else {
+            trainingPlanRepository.updatePlan(
+                plan.copy(weeks = result.enrichedWeeks, isClaudeEnriched = true)
+            )
+        }
+        isEnriching.value = false
+    }
+
     companion object {
         fun factory(
             trainingPlanRepository: TrainingPlanRepository,
             settingsRepository: SettingsRepository,
             insightsService: InsightsService = InsightsService(),
             paceCalculatorService: PaceCalculatorService = PaceCalculatorService(),
-            notificationService: NotificationService? = null
+            notificationService: NotificationService? = null,
+            claudeService: ClaudeService? = null
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainViewModel(trainingPlanRepository, settingsRepository, insightsService, paceCalculatorService, notificationService) as T
+                return MainViewModel(trainingPlanRepository, settingsRepository, insightsService, paceCalculatorService, notificationService, claudeService) as T
             }
         }
     }

@@ -17,7 +17,8 @@ class MainActivity : ComponentActivity() {
             settingsRepository = container.settingsRepository,
             insightsService = container.insightsService,
             paceCalculatorService = container.paceCalculatorService,
-            notificationService = container.notificationService
+            notificationService = container.notificationService,
+            claudeService = container.claudeService
         )
     }
 
