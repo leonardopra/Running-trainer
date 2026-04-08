@@ -34,9 +34,9 @@ Recent Android verification:
 | Onboarding core flow | Complete | Partial | Not started | Not started | P0 | Android missing race-date/duration parity |
 | Local plan generation | Complete | Complete | Not started | Not started | P0 | Android matched to fixtures |
 | Local plan persistence | Complete | Complete | Not started | Not started | P0 | Room/DataStore on Android |
-| Home screen | Complete | Partial | Not started | Not started | P0 | Android still simplified |
-| Plan overview | Complete | Complete | Not started | Not started | P0 | All weeks shown inline on HomeScreen |
-| Workout detail | Complete | Partial | Not started | Not started | P0 | Android logging exists, UI still basic |
+| Home screen | Complete | Complete | Not started | Not started | P0 | Greeting, plan chips, insight strip, week cards with workout type bars |
+| Plan overview | Complete | Complete | Not started | Not started | P0 | All weeks shown inline on HomeScreen with color-coded tiles |
+| Workout detail | Complete | Complete | Not started | Not started | P0 | Type-colored header bar, pace zone card, styled feeling chips, RPE slider |
 | Workout logging | Complete | Complete | Not started | Not started | P0 | No AI coaching yet on Android |
 | Progress dashboard | Complete | Complete | Not started | Not started | P0 | Stat grid, feeling/type breakdown, recent activity, run history |
 | Settings | Complete | Complete | Not started | Not started | P0 | Profile, units, API key (obscured), new plan, reset all with dialogs |
@@ -75,6 +75,15 @@ Recent Android verification:
 ### Completed
 - `[x] P0` Created Gradle-based native Android project
 - `[x] P0` Added Compose app shell
+- `[x] P0` Aligned UI design system to Flutter reference:
+  - Color palette: primary `#00E5FF`, secondary `#76FF03`, surface `#13131A`, surfaceVariant `#1E1E2A`
+  - Custom typography matching Flutter sizes/weights
+  - Border-based card styling (no elevation), 16dp radius
+  - Workout type color palette across all screens
+  - Bottom navigation bar for Home / Progress / Settings
+  - Onboarding: progress indicator, selection cards, filled text fields, 56dp CTA buttons
+  - Insight chips and plan chips with primary color tint
+  - Stat cards with per-metric accent borders
 - `[x] P0` Added Android application bootstrap and dependency container
 - `[x] P0` Ported domain models to Kotlin
 - `[x] P0` Ported plan generator to Kotlin
