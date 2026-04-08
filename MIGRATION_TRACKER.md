@@ -35,11 +35,11 @@ Recent Android verification:
 | Local plan generation | Complete | Complete | Not started | Not started | P0 | Android matched to fixtures |
 | Local plan persistence | Complete | Complete | Not started | Not started | P0 | Room/DataStore on Android |
 | Home screen | Complete | Partial | Not started | Not started | P0 | Android still simplified |
-| Plan overview | Complete | Partial | Not started | Not started | P0 | Android shows first week summary only |
+| Plan overview | Complete | Complete | Not started | Not started | P0 | All weeks shown inline on HomeScreen |
 | Workout detail | Complete | Partial | Not started | Not started | P0 | Android logging exists, UI still basic |
 | Workout logging | Complete | Complete | Not started | Not started | P0 | No AI coaching yet on Android |
 | Progress dashboard | Complete | Complete | Not started | Not started | P0 | Stat grid, feeling/type breakdown, recent activity, run history |
-| Settings | Complete | Partial | Not started | Not started | P0 | Basic profile/units/API key only |
+| Settings | Complete | Complete | Not started | Not started | P0 | Profile, units, API key (obscured), new plan, reset all with dialogs |
 | Pace calculator | Complete | Complete | Not started | Not started | P0 | Android ported, shown in WorkoutDetail |
 | Insights engine | Complete | Complete | Not started | Not started | P0 | Android ported, shown on HomeScreen |
 | Localization | Complete | Not started | Not started | Not started | P1 | Android still uses hardcoded strings |
@@ -100,14 +100,14 @@ Recent Android verification:
 
 ### Next
 - `[x] P0` Add race-date and duration selection to onboarding
-- `[ ] P0` Add full multi-week plan overview, not only first-week summary
+- `[x] P0` Add full multi-week plan overview, not only first-week summary
 - `[x] P0` Improve workout detail UX and validation
 - `[x] P0` Add run history screen
 - `[x] P0` Port pace calculator
 - `[x] P0` Port insights engine
 - `[x] P0` Improve progress dashboard presentation
-- `[ ] P0` Expand settings to match Flutter more closely
-- `[ ] P1` Add local notifications scheduling
+- `[x] P0` Expand settings to match Flutter more closely
+- `[x] P1` Add local notifications scheduling
 - `[ ] P1` Add AI week enrichment
 - `[ ] P1` Add post-workout AI coaching
 - `[ ] P1` Add localization support
