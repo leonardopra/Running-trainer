@@ -1,31 +1,120 @@
 package com.runningtrainer.android.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.domain.model.FitnessLevel
 import com.runningtrainer.android.domain.model.GoalType
 import com.runningtrainer.android.ui.MainUiState
+import com.runningtrainer.android.ui.theme.SurfaceVar
+import com.runningtrainer.android.ui.theme.TextMuted
+
+// ── Onboarding progress indicator ────────────────────────────────────────────
+
+@Composable
+private fun OnboardingProgress(step: Int, total: Int = 5) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        repeat(total) { i ->
+            val primary = MaterialTheme.colorScheme.primary
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(3.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(if (i < step) primary else SurfaceVar)
+            )
+        }
+    }
+}
+
+// ── Continue button ───────────────────────────────────────────────────────────
+
+@Composable
+private fun ContinueButton(
+    text: String = "Continue",
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth().height(56.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.background,
+            disabledContainerColor = SurfaceVar,
+            disabledContentColor = TextMuted
+        )
+    ) {
+        Text(text, style = MaterialTheme.typography.labelLarge)
+    }
+}
+
+// ── Filled text field (Flutter style) ────────────────────────────────────────
+
+@Composable
+private fun FilledField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.fillMaxWidth(),
+        label = { Text(label, color = TextMuted) },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        shape = RoundedCornerShape(12.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedIndicatorColor = primary,
+            unfocusedIndicatorColor = SurfaceVar,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedLabelColor = primary,
+            cursorColor = primary
+        )
+    )
+}
+
+// ── Screens ───────────────────────────────────────────────────────────────────
 
 @Composable
 fun GoalSelectionScreen(
@@ -34,15 +123,25 @@ fun GoalSelectionScreen(
 ) {
     SelectionListScreen(
         innerPadding = innerPadding,
-        title = "Choose your goal",
-        subtitle = "Native Android now starts with the same primary goal choice as the Flutter reference.",
+        step = 1,
+        title = "What's your goal?",
+        subtitle = "We'll build your training plan around this target.",
         items = GoalType.entries,
+        itemEmoji = {
+            when (it) {
+                GoalType.fiveK          -> "🏃"
+                GoalType.tenK           -> "🏅"
+                GoalType.halfMarathon   -> "🌟"
+                GoalType.marathon       -> "🏆"
+                GoalType.generalFitness -> "💪"
+            }
+        },
         itemTitle = {
             when (it) {
-                GoalType.fiveK -> "5K"
-                GoalType.tenK -> "10K"
-                GoalType.halfMarathon -> "Half Marathon"
-                GoalType.marathon -> "Marathon"
+                GoalType.fiveK          -> "5K"
+                GoalType.tenK           -> "10K"
+                GoalType.halfMarathon   -> "Half Marathon"
+                GoalType.marathon       -> "Marathon"
                 GoalType.generalFitness -> "General Fitness"
             }
         },
@@ -50,7 +149,7 @@ fun GoalSelectionScreen(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RaceConfigScreen(
     innerPadding: PaddingValues,
@@ -61,64 +160,57 @@ fun RaceConfigScreen(
     val form = uiState.onboarding
     val goal = form.goalType
     val suggestedDuration = when (goal) {
-        GoalType.fiveK -> 8
-        GoalType.tenK -> 10
-        GoalType.halfMarathon -> 12
-        GoalType.marathon -> 16
+        GoalType.fiveK          -> 8
+        GoalType.tenK           -> 10
+        GoalType.halfMarathon   -> 12
+        GoalType.marathon       -> 16
         GoalType.generalFitness, null -> 8
     }
+    val primary = MaterialTheme.colorScheme.primary
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(20.dp),
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Text("Race date or plan duration", style = MaterialTheme.typography.headlineMedium)
+        OnboardingProgress(step = 2)
+        Text("Race setup", style = MaterialTheme.typography.displayLarge)
         Text(
-            "Match the Flutter onboarding by choosing either a target race date or a fixed plan duration.",
-            style = MaterialTheme.typography.bodyLarge
+            "Choose a target date or a plan duration.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        OutlinedTextField(
+        FilledField(
             value = form.raceDateInput,
             onValueChange = { onConfigChanged(it, if (it.isNotBlank()) null else form.durationWeeks) },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Race date (YYYY-MM-DD)") }
+            label = "Race date (YYYY-MM-DD)"
         )
 
         Text("Or choose a duration", style = MaterialTheme.typography.titleMedium)
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             listOf(suggestedDuration, 8, 10, 12, 14, 16).distinct().forEach { weeks ->
-                FilterChip(
-                    selected = form.durationWeeks == weeks && form.raceDateInput.isBlank(),
-                    onClick = { onConfigChanged("", weeks) },
-                    label = { Text("$weeks weeks") }
+                val selected = form.durationWeeks == weeks && form.raceDateInput.isBlank()
+                DurationChip(
+                    label = "$weeks wks",
+                    selected = selected,
+                    onClick = { onConfigChanged("", weeks) }
                 )
             }
         }
 
-        Text(
-            text = if (form.raceDateInput.isNotBlank()) {
-                "Race date mode selected."
-            } else {
-                "Duration mode selected: ${form.durationWeeks ?: suggestedDuration} weeks."
-            },
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Button(onClick = {
+        Spacer(modifier = Modifier.weight(1f))
+        ContinueButton(onClick = {
             if (form.raceDateInput.isBlank() && form.durationWeeks == null) {
                 onConfigChanged("", suggestedDuration)
             }
             onContinue()
-        }) {
-            Text("Continue")
-        }
+        })
     }
 }
 
@@ -129,28 +221,36 @@ fun FitnessSelectionScreen(
 ) {
     SelectionListScreen(
         innerPadding = innerPadding,
-        title = "Select your fitness level",
-        subtitle = "This selection drives the base mileage used by the local rule engine.",
+        step = 3,
+        title = "Fitness level",
+        subtitle = "This drives your starting weekly mileage.",
         items = FitnessLevel.entries,
+        itemEmoji = {
+            when (it) {
+                FitnessLevel.beginner     -> "🌱"
+                FitnessLevel.intermediate -> "⚡"
+                FitnessLevel.advanced     -> "🔥"
+            }
+        },
         itemTitle = {
             when (it) {
-                FitnessLevel.beginner -> "Beginner"
+                FitnessLevel.beginner     -> "Beginner"
                 FitnessLevel.intermediate -> "Intermediate"
-                FitnessLevel.advanced -> "Advanced"
+                FitnessLevel.advanced     -> "Advanced"
             }
         },
         itemBody = {
             when (it) {
-                FitnessLevel.beginner -> "Running less than 15km/week or easing back in."
-                FitnessLevel.intermediate -> "A stable running base between 20 and 40km/week."
-                FitnessLevel.advanced -> "Structured training with a strong weekly mileage background."
+                FitnessLevel.beginner     -> "Running less than 15 km/week or easing back in."
+                FitnessLevel.intermediate -> "A stable base between 20–40 km/week."
+                FitnessLevel.advanced     -> "Structured training with strong weekly mileage."
             }
         },
         onSelected = onFitnessSelected
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TrainingDaysScreen(
     innerPadding: PaddingValues,
@@ -162,23 +262,30 @@ fun TrainingDaysScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(20.dp),
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Text("How many days can you train?", style = MaterialTheme.typography.headlineMedium)
-        Text("The current local rule engine supports 3 to 6 sessions per week.", style = MaterialTheme.typography.bodyLarge)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OnboardingProgress(step = 4)
+        Text("Training days", style = MaterialTheme.typography.displayLarge)
+        Text(
+            "How many sessions per week can you commit to?",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             (3..6).forEach { dayCount ->
-                FilterChip(
+                DurationChip(
+                    label = "$dayCount days",
                     selected = selectedDays == dayCount,
-                    onClick = { onDaysChanged(dayCount) },
-                    label = { Text("$dayCount days/week") }
+                    onClick = { onDaysChanged(dayCount) }
                 )
             }
         }
-        Button(onClick = onContinue) {
-            Text("Continue")
-        }
+        Spacer(modifier = Modifier.weight(1f))
+        ContinueButton(onClick = onContinue)
     }
 }
 
@@ -194,48 +301,51 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(20.dp),
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Runner profile", style = MaterialTheme.typography.headlineMedium)
-        Text("This data stays local and already feeds age-aware generation.", style = MaterialTheme.typography.bodyLarge)
+        OnboardingProgress(step = 5)
+        Text("Runner profile", style = MaterialTheme.typography.displayLarge)
+        Text(
+            "Your data stays on device and personalizes coaching.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
-        OutlinedTextField(
+        FilledField(
             value = form.name,
             onValueChange = { onProfileChanged(it, form.age, form.weightKg, form.heightCm) },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Name") }
+            label = "Name"
         )
-        OutlinedTextField(
+        FilledField(
             value = form.age,
             onValueChange = { onProfileChanged(form.name, it, form.weightKg, form.heightCm) },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Age") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            label = "Age",
+            keyboardType = KeyboardType.Number
         )
-        OutlinedTextField(
+        FilledField(
             value = form.weightKg,
             onValueChange = { onProfileChanged(form.name, form.age, it, form.heightCm) },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Weight (kg)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            label = "Weight (kg)",
+            keyboardType = KeyboardType.Decimal
         )
-        OutlinedTextField(
+        FilledField(
             value = form.heightCm,
             onValueChange = { onProfileChanged(form.name, form.age, form.weightKg, it) },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Height (cm)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            label = "Height (cm)",
+            keyboardType = KeyboardType.Decimal
         )
+
         uiState.generationError?.let { error ->
-            Text(error, color = MaterialTheme.colorScheme.error)
+            Text(error, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
-        Button(
-            onClick = onGeneratePlan,
-            enabled = !uiState.isGeneratingPlan && form.goalType != null && form.fitnessLevel != null
-        ) {
-            Text("Generate local plan")
-        }
+
+        Spacer(modifier = Modifier.weight(1f))
+        ContinueButton(
+            text = if (uiState.isGeneratingPlan) "Generating…" else "Generate Plan",
+            enabled = !uiState.isGeneratingPlan && form.goalType != null && form.fitnessLevel != null,
+            onClick = onGeneratePlan
+        )
     }
 }
 
@@ -245,21 +355,31 @@ fun GeneratingPlanScreen(innerPadding: PaddingValues) {
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Generating plan", style = MaterialTheme.typography.headlineMedium)
-        Text("The Android app is generating the plan locally and saving it before any future AI enrichment.", style = MaterialTheme.typography.bodyLarge)
+        Text("Building your plan…", style = MaterialTheme.typography.displayLarge)
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            "Generating a personalized plan based on your profile.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
+
+// ── Reusable selection card list ──────────────────────────────────────────────
 
 @Composable
 private fun <T> SelectionListScreen(
     innerPadding: PaddingValues,
+    step: Int,
     title: String,
     subtitle: String,
     items: List<T>,
     itemTitle: (T) -> String,
+    itemEmoji: ((T) -> String)? = null,
     itemBody: ((T) -> String)? = null,
     onSelected: (T) -> Unit
 ) {
@@ -267,31 +387,82 @@ private fun <T> SelectionListScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = 24.dp),
+        contentPadding = PaddingValues(vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(title, style = MaterialTheme.typography.headlineMedium)
-                Text(subtitle, style = MaterialTheme.typography.bodyLarge)
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OnboardingProgress(step = step)
+                Text(title, style = MaterialTheme.typography.displayLarge)
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
         items(items) { item ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelected(item) }
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(itemTitle(item), style = MaterialTheme.typography.titleLarge)
-                    itemBody?.let {
-                        Text(it(item), style = MaterialTheme.typography.bodyMedium)
-                    }
+            SelectionCard(
+                title = itemTitle(item),
+                emoji = itemEmoji?.invoke(item),
+                body = itemBody?.invoke(item),
+                onClick = { onSelected(item) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SelectionCard(
+    title: String,
+    emoji: String? = null,
+    body: String? = null,
+    onClick: () -> Unit
+) {
+    val shape = RoundedCornerShape(16.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surface, shape)
+            .border(1.dp, SurfaceVar, shape)
+            .clickable(onClick = onClick)
+            .padding(16.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (emoji != null) {
+                Text(emoji, style = MaterialTheme.typography.titleLarge)
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(title, style = MaterialTheme.typography.titleLarge)
+                if (body != null) {
+                    Text(body, style = MaterialTheme.typography.bodyMedium, color = TextMuted)
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DurationChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    val primary = MaterialTheme.colorScheme.primary
+    val shape = RoundedCornerShape(20.dp)
+    val bg = if (selected) primary.copy(alpha = 0.15f) else SurfaceVar.copy(alpha = 0.5f)
+    val border = if (selected) primary else SurfaceVar
+    val textColor = if (selected) primary else MaterialTheme.colorScheme.onSurface
+
+    Box(
+        modifier = Modifier
+            .clip(shape)
+            .background(bg, shape)
+            .border(1.dp, border, shape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+    ) {
+        Text(label, style = MaterialTheme.typography.labelLarge, color = textColor)
     }
 }

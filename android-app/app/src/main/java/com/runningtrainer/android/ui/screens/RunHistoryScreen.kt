@@ -181,14 +181,6 @@ private fun workoutTypeLabel(type: WorkoutType): String = when (type) {
     WorkoutType.rest -> "Rest"
 }
 
-private fun workoutTypeColor(type: WorkoutType) = when (type) {
-    WorkoutType.easyRun -> androidx.compose.ui.graphics.Color(0xFF1565C0)
-    WorkoutType.longRun -> androidx.compose.ui.graphics.Color(0xFF2E7D32)
-    WorkoutType.tempoRun -> androidx.compose.ui.graphics.Color(0xFFE65100)
-    WorkoutType.intervalRun -> androidx.compose.ui.graphics.Color(0xFF6A1B9A)
-    WorkoutType.crossTrain -> androidx.compose.ui.graphics.Color(0xFF00695C)
-    WorkoutType.rest -> androidx.compose.ui.graphics.Color.Gray
-}
 
 private fun feelingEmojiHistory(feeling: WorkoutFeeling): String = when (feeling) {
     WorkoutFeeling.great -> "🙌"

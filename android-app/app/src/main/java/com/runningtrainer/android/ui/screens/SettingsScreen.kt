@@ -1,38 +1,47 @@
 package com.runningtrainer.android.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.domain.model.UserPreferencesDto
+import com.runningtrainer.android.ui.theme.SurfaceVar
+import com.runningtrainer.android.ui.theme.TextMuted
 
 @Composable
 fun SettingsScreen(
@@ -62,14 +71,14 @@ fun SettingsScreen(
             title = { Text("Start a new plan?") },
             text = { Text("This will replace your current training plan. Your workout history will be lost.") },
             confirmButton = {
-                TextButton(onClick = {
-                    showNewPlanDialog = false
-                    onStartNewPlan()
-                }) { Text("Start new plan") }
+                TextButton(onClick = { showNewPlanDialog = false; onStartNewPlan() }) {
+                    Text("Start new plan", color = MaterialTheme.colorScheme.primary)
+                }
             },
             dismissButton = {
                 TextButton(onClick = { showNewPlanDialog = false }) { Text("Cancel") }
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 
@@ -79,17 +88,14 @@ fun SettingsScreen(
             title = { Text("Reset all data?") },
             text = { Text("All plans, workouts, and settings will be permanently deleted.") },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        showResetDialog = false
-                        onResetAll()
-                    },
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
-                ) { Text("Reset") }
+                TextButton(onClick = { showResetDialog = false; onResetAll() }) {
+                    Text("Reset", color = MaterialTheme.colorScheme.error)
+                }
             },
             dismissButton = {
                 TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 
@@ -97,158 +103,222 @@ fun SettingsScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(20.dp)
+            .padding(horizontal = 20.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Settings", style = MaterialTheme.typography.headlineMedium)
-
         // ── Profile ───────────────────────────────────────────────────────────
-        Text("Profile", style = MaterialTheme.typography.titleMedium)
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Name") }
-        )
-        OutlinedTextField(
-            value = age,
-            onValueChange = { age = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Age") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        OutlinedTextField(
-            value = weight,
-            onValueChange = { weight = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Weight (kg)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
-        OutlinedTextField(
-            value = height,
-            onValueChange = { height = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Height (cm)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
-
-        HorizontalDivider()
+        SectionHeader("Profile")
+        SettingsSection {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                SettingsField(value = name, onValueChange = { name = it }, label = "Name")
+                SettingsField(
+                    value = age, onValueChange = { age = it }, label = "Age",
+                    keyboardType = KeyboardType.Number
+                )
+                SettingsField(
+                    value = weight, onValueChange = { weight = it }, label = "Weight (kg)",
+                    keyboardType = KeyboardType.Decimal
+                )
+                SettingsField(
+                    value = height, onValueChange = { height = it }, label = "Height (cm)",
+                    keyboardType = KeyboardType.Decimal
+                )
+            }
+        }
 
         // ── AI Coaching ───────────────────────────────────────────────────────
-        Text("AI Coaching", style = MaterialTheme.typography.titleMedium)
-        Text(
-            "Optional. Used for personalized workout tips.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        OutlinedTextField(
-            value = apiKey,
-            onValueChange = { apiKey = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Claude API key") },
-            visualTransformation = if (obscureKey) PasswordVisualTransformation() else VisualTransformation.None,
-            trailingIcon = {
-                TextButton(onClick = { obscureKey = !obscureKey }) {
-                    Text(
-                        text = if (obscureKey) "Show" else "Hide",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+        SectionHeader("AI Coaching")
+        SettingsSection {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "Optional Claude API key for personalized tips.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextMuted
+                )
+                SettingsField(
+                    value = apiKey,
+                    onValueChange = { apiKey = it },
+                    label = "Claude API key",
+                    visualTransformation = if (obscureKey) PasswordVisualTransformation() else VisualTransformation.None,
+                    trailingIcon = {
+                        TextButton(onClick = { obscureKey = !obscureKey }) {
+                            Text(
+                                if (obscureKey) "Show" else "Hide",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                )
             }
-        )
-
-        HorizontalDivider()
+        }
 
         // ── Units ─────────────────────────────────────────────────────────────
-        Text("Units", style = MaterialTheme.typography.titleMedium)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Use kilometers", style = MaterialTheme.typography.bodyLarge)
-            Switch(checked = useKm, onCheckedChange = { useKm = it })
-        }
-
-        HorizontalDivider()
-
-        // ── Notifications ─────────────────────────────────────────────────────
-        Text("Notifications", style = MaterialTheme.typography.titleMedium)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Workout reminders", style = MaterialTheme.typography.bodyLarge)
-            Switch(checked = notificationsEnabled, onCheckedChange = { notificationsEnabled = it })
-        }
-        if (notificationsEnabled) {
+        SectionHeader("Units")
+        SettingsSection {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedTextField(
-                    value = notificationHour,
-                    onValueChange = { notificationHour = it },
-                    modifier = Modifier.weight(1f),
-                    label = { Text("Hour (0–23)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
-                OutlinedTextField(
-                    value = notificationMinute,
-                    onValueChange = { notificationMinute = it },
-                    modifier = Modifier.weight(1f),
-                    label = { Text("Minute (0–59)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                Text("Use kilometers", style = MaterialTheme.typography.bodyLarge)
+                Switch(
+                    checked = useKm,
+                    onCheckedChange = { useKm = it },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.background,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary
+                    )
                 )
             }
         }
 
-        HorizontalDivider()
-
-        // ── New Plan ──────────────────────────────────────────────────────────
-        Text("Training Plan", style = MaterialTheme.typography.titleMedium)
-        Text(
-            "Generate a new plan based on updated goals or fitness level.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Button(
-            onClick = { showNewPlanDialog = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Start new plan")
+        // ── Notifications ─────────────────────────────────────────────────────
+        SectionHeader("Notifications")
+        SettingsSection {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Workout reminders", style = MaterialTheme.typography.bodyLarge)
+                    Switch(
+                        checked = notificationsEnabled,
+                        onCheckedChange = { notificationsEnabled = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.background,
+                            checkedTrackColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
+                if (notificationsEnabled) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        SettingsField(
+                            value = notificationHour,
+                            onValueChange = { notificationHour = it },
+                            label = "Hour (0–23)",
+                            keyboardType = KeyboardType.Number,
+                            modifier = Modifier.weight(1f)
+                        )
+                        SettingsField(
+                            value = notificationMinute,
+                            onValueChange = { notificationMinute = it },
+                            label = "Minute (0–59)",
+                            keyboardType = KeyboardType.Number,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
         }
 
-        HorizontalDivider()
+        // ── Training Plan ─────────────────────────────────────────────────────
+        SectionHeader("Training Plan")
+        SettingsSection {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "Generate a new plan based on updated goals or fitness level.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextMuted
+                )
+                Button(
+                    onClick = { showNewPlanDialog = true },
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Start new plan")
+                }
+            }
+        }
 
         // ── Data ──────────────────────────────────────────────────────────────
-        Text("Data", style = MaterialTheme.typography.titleMedium)
+        SectionHeader("Data")
         OutlinedButton(
             onClick = { showResetDialog = true },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f))
         ) {
             Text("Reset all data")
         }
 
-        HorizontalDivider()
-
-        // ── Actions ───────────────────────────────────────────────────────────
+        // ── Save ──────────────────────────────────────────────────────────────
         Button(
             onClick = {
                 val hour = notificationHour.toIntOrNull()?.coerceIn(0, 23) ?: 8
                 val minute = notificationMinute.toIntOrNull()?.coerceIn(0, 59) ?: 0
                 onSave(name, age, weight, height, useKm, apiKey, notificationsEnabled, hour, minute)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Text("Save settings")
+            Text("Save settings", style = MaterialTheme.typography.labelLarge)
         }
-        TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text("Back")
-        }
+
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
     }
+}
+
+// ── Private components ────────────────────────────────────────────────────────
+
+@Composable
+private fun SectionHeader(title: String) {
+    Text(
+        title,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier.padding(top = 4.dp)
+    )
+}
+
+@Composable
+private fun SettingsSection(content: @Composable () -> Unit) {
+    val shape = RoundedCornerShape(16.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surface, shape)
+            .border(1.dp, SurfaceVar, shape)
+            .padding(16.dp)
+    ) { content() }
+}
+
+@Composable
+private fun SettingsField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.fillMaxWidth(),
+        label = { Text(label, color = TextMuted, style = MaterialTheme.typography.bodyMedium) },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        visualTransformation = visualTransformation,
+        trailingIcon = trailingIcon,
+        shape = RoundedCornerShape(12.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            focusedIndicatorColor = primary,
+            unfocusedIndicatorColor = SurfaceVar,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedLabelColor = primary,
+            cursorColor = primary
+        )
+    )
 }
