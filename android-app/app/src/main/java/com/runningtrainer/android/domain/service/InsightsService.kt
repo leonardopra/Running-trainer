@@ -298,6 +298,7 @@ class InsightsService {
             GoalType.tenK -> "10K"
             GoalType.halfMarathon -> "Half Marathon"
             GoalType.marathon -> "Marathon"
+            GoalType.trailRun -> "Trail Race"
             GoalType.generalFitness -> "race"
         }
         return when {

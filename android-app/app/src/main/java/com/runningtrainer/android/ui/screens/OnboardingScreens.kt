@@ -133,6 +133,7 @@ fun GoalSelectionScreen(
                 GoalType.tenK           -> "🏅"
                 GoalType.halfMarathon   -> "🌟"
                 GoalType.marathon       -> "🏆"
+                GoalType.trailRun       -> "🏔️"
                 GoalType.generalFitness -> "💪"
             }
         },
@@ -142,6 +143,7 @@ fun GoalSelectionScreen(
                 GoalType.tenK           -> "10K"
                 GoalType.halfMarathon   -> "Half Marathon"
                 GoalType.marathon       -> "Marathon"
+                GoalType.trailRun       -> "Trail Run"
                 GoalType.generalFitness -> "General Fitness"
             }
         },
@@ -164,6 +166,7 @@ fun RaceConfigScreen(
         GoalType.tenK           -> 10
         GoalType.halfMarathon   -> 12
         GoalType.marathon       -> 16
+        GoalType.trailRun       -> 14
         GoalType.generalFitness, null -> 8
     }
     val primary = MaterialTheme.colorScheme.primary

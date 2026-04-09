@@ -5,6 +5,7 @@ enum class GoalType {
     tenK,
     halfMarathon,
     marathon,
+    trailRun,
     generalFitness
 }
 

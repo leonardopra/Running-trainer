@@ -32,6 +32,7 @@ class PlanGenerator(
         GoalType.tenK to 10,
         GoalType.halfMarathon to 12,
         GoalType.marathon to 16,
+        GoalType.trailRun to 14,
         GoalType.generalFitness to 8
     )
 

@@ -39,6 +39,7 @@ class PaceCalculatorService {
             GoalType.tenK -> 10.0
             GoalType.halfMarathon -> 21.0975
             GoalType.marathon -> 42.195
+            GoalType.trailRun -> 25.0
             GoalType.generalFitness -> 10.0
         }
 
@@ -66,6 +67,12 @@ class PaceCalculatorService {
                 WorkoutType.longRun to ZoneMult(1.08, 1.17),
                 WorkoutType.tempoRun to ZoneMult(0.93, 0.97),
                 WorkoutType.intervalRun to ZoneMult(0.81, 0.86)
+            ),
+            GoalType.trailRun to mapOf(
+                WorkoutType.easyRun to ZoneMult(1.18, 1.30),
+                WorkoutType.longRun to ZoneMult(1.20, 1.33),
+                WorkoutType.tempoRun to ZoneMult(0.97, 1.03),
+                WorkoutType.intervalRun to ZoneMult(0.85, 0.90)
             ),
             GoalType.generalFitness to mapOf(
                 WorkoutType.easyRun to ZoneMult(1.22, 1.34),
