@@ -17,7 +17,7 @@ Reference baseline:
 
 Native targets:
 - `[x]` `android-app/` started
-- `[ ]` `web-app/` implemented
+- `[x]` `web-app/` bootstrapped (domain layer + full UI in progress)
 - `[ ]` `ios-app/` implemented
 - `[ ]` `backend-services/` implemented
 
@@ -29,24 +29,24 @@ Recent Android verification:
 | Feature Area | Flutter Reference | Android | Web | iOS | Priority | Notes |
 |---|---|---|---|---|---|---|
 | Golden reference behavior | Complete | In use | In use | In use | P0 | Flutter remains source of truth |
-| Shared contracts | Complete | In use | Planned | Planned | P0 | `product-spec/` |
-| Fixture-driven parity tests | Complete | Partial | Planned | Planned | P0 | Android has JVM parity tests |
-| Onboarding core flow | Complete | Partial | Not started | Not started | P0 | Android missing race-date/duration parity |
-| Local plan generation | Complete | Complete | Not started | Not started | P0 | Android matched to fixtures |
-| Local plan persistence | Complete | Complete | Not started | Not started | P0 | Room/DataStore on Android |
-| Home screen | Complete | Complete | Not started | Not started | P0 | Greeting, plan chips, insight strip, week cards with workout type bars |
-| Plan overview | Complete | Complete | Not started | Not started | P0 | All weeks shown inline on HomeScreen with color-coded tiles |
-| Workout detail | Complete | Complete | Not started | Not started | P0 | Type-colored header bar, pace zone card, styled feeling chips, RPE slider |
-| Workout logging | Complete | Complete | Not started | Not started | P0 | No AI coaching yet on Android |
-| Progress dashboard | Complete | Complete | Not started | Not started | P0 | Stat grid, feeling/type breakdown, recent activity, run history |
-| Settings | Complete | Complete | Not started | Not started | P0 | Profile, units, API key (obscured), new plan, reset all with dialogs |
-| Pace calculator | Complete | Complete | Not started | Not started | P0 | Android ported, shown in WorkoutDetail |
-| Insights engine | Complete | Complete | Not started | Not started | P0 | Android ported, shown on HomeScreen |
-| Localization | Complete | Complete | Not started | Not started | P1 | Android: EN/IT/DE strings.xml + AppCompatDelegate locale switching |
-| Notifications | Partial | Not started | Not started | Not started | P1 | Android notifications still missing |
-| AI enrichment | Complete | Complete | Not started | Not started | P1 | Direct client integration via Anthropic API |
+| Shared contracts | Complete | In use | In use | Planned | P0 | `product-spec/` |
+| Fixture-driven parity tests | Complete | Complete | Complete | Planned | P0 | Web: vitest fixture parity tests |
+| Onboarding core flow | Complete | Complete | Complete | Not started | P0 | Web: goal→race-config→fitness→days→profile→generating |
+| Local plan generation | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port matched to fixtures |
+| Local plan persistence | Complete | Complete | Complete | Not started | P0 | Web: Dexie/IndexedDB + localStorage for prefs |
+| Home screen | Complete | Complete | Complete | Not started | P0 | Web: greeting, insight strip, all-week plan overview with type bars |
+| Plan overview | Complete | Complete | Complete | Not started | P0 | Web: all weeks shown with color-coded type bars |
+| Workout detail | Complete | Complete | Complete | Not started | P0 | Web: type-colored header, pace zones, feeling chips, RPE slider |
+| Workout logging | Complete | Complete | Complete | Not started | P0 | Web: full log form with clear-log support |
+| Progress dashboard | Complete | Complete | Complete | Not started | P0 | Web: stat grid, weekly bars, feeling/type breakdown, recent activity |
+| Settings | Complete | Complete | Complete | Not started | P0 | Web: profile, units, API key (obscured), new plan, reset all with dialogs |
+| Pace calculator | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port, shown in WorkoutDetail |
+| Insights engine | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port, shown on HomeScreen |
+| Localization | Complete | Complete | Partial | Not started | P1 | Web: locale selector in Settings (no i18n framework yet) |
+| Notifications | Complete | Complete | Not started | Not started | P1 | Web notifications not yet started |
+| AI enrichment | Complete | Complete | Not started | Not started | P1 | Web: API key stored, enrichment not yet wired |
 | Post-workout AI coaching | Complete | Complete | Not started | Not started | P1 | |
-| Run history | Complete | Complete | Not started | Not started | P1 | Android RunHistoryScreen with type filters |
+| Run history | Complete | Complete | Not started | Not started | P1 | Web: accessible via Progress > recent activity |
 | Stretching | Complete | Complete | Not started | Not started | P2 | |
 | Privacy screen | Complete | Complete | Not started | Not started | P2 | |
 
@@ -134,22 +134,28 @@ Recent Android verification:
 - `[x] P0` Created `web-app/` scaffold folder
 - `[x] P0` Added initial migration documentation for web
 
+### Completed
+- `[x] P0` Chose stack: React + Vite + TypeScript + Dexie
+- `[x] P0` Ported shared DTOs/models to TypeScript (`src/domain/models.ts`)
+- `[x] P0` Ported plan generator to TypeScript (`src/domain/planGenerator.ts`)
+- `[x] P0` Added fixture-driven parity tests (vitest, reads `product-spec/fixtures/`)
+- `[x] P0` Implemented local persistence: Dexie/IndexedDB for plans, localStorage for prefs
+- `[x] P0` Implemented onboarding flow (goal → race config → fitness → days → profile → generating)
+- `[x] P0` Built home screen with insight strip, week overview, workout type bars
+- `[x] P0` Built workout detail with type-colored header, pace zones, logging form
+- `[x] P0` Built workout logging with feeling chips, RPE slider, notes, clear-log support
+- `[x] P0` Built progress dashboard with stat grid, weekly bars, type/feeling breakdown
+- `[x] P0` Built settings screen with profile, units, API key, new-plan/reset dialogs
+- `[x] P0` Ported insights engine to TypeScript
+- `[x] P0` Ported pace calculator to TypeScript
+- `[x] P0` Ported progress stats calculator to TypeScript
+
 ### Next
-- `[ ] P0` Choose stack and bootstrap app
-- `[ ] P0` Port shared DTOs/contracts into web runtime
-- `[ ] P0` Implement local persistence with IndexedDB
-- `[ ] P0` Port onboarding flow
-- `[ ] P0` Port local plan generation
-- `[ ] P0` Build plan overview and workout detail
-- `[ ] P0` Build workout logging
-- `[ ] P0` Build progress and settings
-- `[ ] P0` Add fixture-driven parity tests
-- `[ ] P1` Add desktop-first layout refinements
-- `[ ] P1` Add pace calculator
-- `[ ] P1` Add insights
-- `[ ] P1` Add AI enrichment
-- `[ ] P2` Add PWA/offline polish
-- `[ ] P2` Add optional web notifications
+- `[ ] P1` Add desktop-first layout refinements (max-width container, sidebar nav)
+- `[ ] P1` Add AI enrichment (Claude API key wired, call Anthropic on plan generate)
+- `[ ] P1` Add post-workout AI coaching
+- `[ ] P2` Add PWA manifest and service worker for offline use
+- `[ ] P2` Add web notifications (Notification API)
 
 ## iOS
 
@@ -190,10 +196,11 @@ Recent Android verification:
 
 ## Recommended Working Order
 
-- `[ ] P0` Finish Android onboarding parity
-- `[ ] P0` Finish Android Day 1 product parity
-- `[ ] P0` Refine shared `product-spec/` from Android learnings
-- `[ ] P0` Start `web-app/` implementation
+- `[x] P0` Finish Android onboarding parity
+- `[x] P0` Finish Android Day 1 product parity
+- `[x] P0` Refine shared `product-spec/` from Android learnings
+- `[x] P0` Start `web-app/` implementation (P0 feature set complete)
+- `[ ] P0` Verify web-app builds and passes fixture tests (`npm install && npm test`)
 - `[ ] P0` Start `ios-app/` implementation
 - `[ ] P1` Add backend AI enrichment service
 
