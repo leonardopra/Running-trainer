@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.domain.model.ProgressStats
 import com.runningtrainer.android.domain.model.WorkoutFeeling
 import com.runningtrainer.android.domain.model.WorkoutType
+import androidx.compose.ui.res.stringResource
+import com.runningtrainer.android.R
 import com.runningtrainer.android.ui.theme.ColorEasyRun
 import com.runningtrainer.android.ui.theme.ColorIntervalRun
 import com.runningtrainer.android.ui.theme.Secondary
@@ -55,9 +57,9 @@ fun ProgressScreen(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("No data yet", style = MaterialTheme.typography.displayLarge)
+            Text(stringResource(R.string.no_data_yet), style = MaterialTheme.typography.displayLarge)
             Text(
-                "Complete some workouts to see your progress.",
+                stringResource(R.string.progress_no_plan_desc),
                 style = MaterialTheme.typography.bodyLarge,
                 color = TextMuted
             )
@@ -85,16 +87,16 @@ fun ProgressScreen(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    label = "Completion",
+                    label = stringResource(R.string.progress_completion),
                     value = "$completionPct%",
                     sub = "${progressStats.completedWorkouts}/${progressStats.totalNonRestWorkouts} workouts",
                     accentColor = MaterialTheme.colorScheme.primary
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    label = "Distance",
+                    label = stringResource(R.string.progress_distance),
                     value = "${"%.1f".format(progressStats.totalLoggedKm)} km",
-                    sub = "of ${"%.1f".format(progressStats.totalPlannedKm)} planned",
+                    sub = stringResource(R.string.progress_of_planned, "%.1f".format(progressStats.totalPlannedKm)),
                     accentColor = ColorIntervalRun
                 )
             }
@@ -106,16 +108,16 @@ fun ProgressScreen(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    label = "Streak",
+                    label = stringResource(R.string.progress_streak),
                     value = "${progressStats.currentStreak}",
-                    sub = "consecutive workouts",
+                    sub = stringResource(R.string.progress_consecutive),
                     accentColor = Secondary
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    label = "Weeks Done",
+                    label = stringResource(R.string.progress_weeks_done),
                     value = "$weeksCompleted",
-                    sub = "of ${progressStats.weeklyProgress.size} started",
+                    sub = stringResource(R.string.progress_of_started, progressStats.weeklyProgress.size),
                     accentColor = ColorEasyRun
                 )
             }
@@ -126,7 +128,7 @@ fun ProgressScreen(
             item {
                 SurfaceCard(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("How You've Felt", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.how_youve_felt), style = MaterialTheme.typography.titleMedium)
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             WorkoutFeeling.entries.forEach { feeling ->
                                 val count = progressStats.feelingCounts[feeling] ?: 0
@@ -163,7 +165,7 @@ fun ProgressScreen(
             item {
                 SurfaceCard(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text("Workout Types", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.workout_types), style = MaterialTheme.typography.titleMedium)
                         progressStats.workoutTypeCounts.forEach { typeCount ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -196,7 +198,7 @@ fun ProgressScreen(
 
         // Weekly progress
         item {
-            Text("Weekly Progress", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.weekly_progress), style = MaterialTheme.typography.titleLarge)
         }
         items(progressStats.weeklyProgress) { week ->
             val weekDone = week.completionRate >= 0.8
@@ -211,7 +213,7 @@ fun ProgressScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Week ${week.weekNumber}", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.home_week_label, week.weekNumber), style = MaterialTheme.typography.titleMedium)
                         Text(
                             "${(week.completionRate * 100).toInt()}%",
                             style = MaterialTheme.typography.labelLarge,
@@ -229,7 +231,7 @@ fun ProgressScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            "${"%.1f".format(week.loggedKm)} / ${"%.1f".format(week.plannedKm)} km",
+                            stringResource(R.string.week_progress_km, week.loggedKm, week.plannedKm),
                             style = MaterialTheme.typography.labelSmall,
                             color = TextMuted
                         )
@@ -251,20 +253,22 @@ fun ProgressScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Recent Activity", style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.recent_activity), style = MaterialTheme.typography.titleLarge)
                     TextButton(onClick = onViewAllHistory) {
-                        Text("View All", color = MaterialTheme.colorScheme.primary)
+                        Text(stringResource(R.string.btn_view_all), color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
             items(progressStats.recentCompletedWorkouts.take(4)) { workout ->
+                val todayStr = stringResource(R.string.today)
+                val yesterdayStr = stringResource(R.string.yesterday)
                 val relativeDate = workout.completedAt?.let { completedAt ->
                     val completedDate = completedAt.toLocalDateTime(TimeZone.currentSystemDefault()).date
                     val completed = LocalDate.of(completedDate.year, completedDate.monthNumber, completedDate.dayOfMonth)
                     val daysAgo = ChronoUnit.DAYS.between(completed, LocalDate.now()).toInt()
                     when (daysAgo) {
-                        0    -> "Today"
-                        1    -> "Yesterday"
+                        0    -> todayStr
+                        1    -> yesterdayStr
                         else -> "$daysAgo days ago"
                     }
                 } ?: ""
@@ -290,7 +294,7 @@ fun ProgressScreen(
                         Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(relativeDate, style = MaterialTheme.typography.labelSmall, color = TextMuted)
                             if (workout.rpe != null) {
-                                Text("RPE ${workout.rpe}", style = MaterialTheme.typography.labelSmall, color = TextMuted)
+                                Text(stringResource(R.string.rpe_label, workout.rpe), style = MaterialTheme.typography.labelSmall, color = TextMuted)
                             }
                             workout.feeling?.let {
                                 Text(feelingEmoji(it), style = MaterialTheme.typography.titleMedium)
@@ -347,11 +351,12 @@ private fun feelingColor(feeling: WorkoutFeeling): Color = when (feeling) {
     WorkoutFeeling.injured -> Color(0xFFEF9A9A)
 }
 
+@Composable
 private fun workoutTypeLabel(type: WorkoutType): String = when (type) {
-    WorkoutType.easyRun     -> "Easy Run"
-    WorkoutType.longRun     -> "Long Run"
-    WorkoutType.tempoRun    -> "Tempo Run"
-    WorkoutType.intervalRun -> "Interval Run"
-    WorkoutType.crossTrain  -> "Cross Train"
-    WorkoutType.rest        -> "Rest"
+    WorkoutType.easyRun     -> stringResource(R.string.workout_type_easy_run)
+    WorkoutType.longRun     -> stringResource(R.string.workout_type_long_run)
+    WorkoutType.tempoRun    -> stringResource(R.string.workout_type_tempo_run)
+    WorkoutType.intervalRun -> stringResource(R.string.workout_type_interval_run)
+    WorkoutType.crossTrain  -> stringResource(R.string.workout_type_cross_train)
+    WorkoutType.rest        -> stringResource(R.string.workout_type_rest)
 }

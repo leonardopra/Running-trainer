@@ -42,13 +42,13 @@ Recent Android verification:
 | Settings | Complete | Complete | Not started | Not started | P0 | Profile, units, API key (obscured), new plan, reset all with dialogs |
 | Pace calculator | Complete | Complete | Not started | Not started | P0 | Android ported, shown in WorkoutDetail |
 | Insights engine | Complete | Complete | Not started | Not started | P0 | Android ported, shown on HomeScreen |
-| Localization | Complete | Not started | Not started | Not started | P1 | Android still uses hardcoded strings |
+| Localization | Complete | Complete | Not started | Not started | P1 | Android: EN/IT/DE strings.xml + AppCompatDelegate locale switching |
 | Notifications | Partial | Not started | Not started | Not started | P1 | Android notifications still missing |
 | AI enrichment | Complete | Complete | Not started | Not started | P1 | Direct client integration via Anthropic API |
 | Post-workout AI coaching | Complete | Complete | Not started | Not started | P1 | |
 | Run history | Complete | Complete | Not started | Not started | P1 | Android RunHistoryScreen with type filters |
-| Stretching | Complete | Not started | Not started | Not started | P2 | |
-| Privacy screen | Complete | Not started | Not started | Not started | P2 | |
+| Stretching | Complete | Complete | Not started | Not started | P2 | |
+| Privacy screen | Complete | Complete | Not started | Not started | P2 | |
 
 ## Shared Foundation
 
@@ -104,6 +104,10 @@ Recent Android verification:
 - `[x] P0` Added JVM tests for plan generator parity
 - `[x] P0` Added JVM tests for progress stats
 
+### Completed (continued)
+- `[x] P2` Add stretching screen (expandable exercise list, pre/post run, YouTube tutorial links, EN/IT/DE strings)
+- `[x] P2` Add privacy screen (data storage, AI, notifications, deletion sections)
+
 ### In Progress
 - `[ ] P0` Full Android Day 1 parity with Flutter
 
@@ -119,10 +123,10 @@ Recent Android verification:
 - `[x] P1` Add local notifications scheduling
 - `[x] P1` Add AI week enrichment
 - `[x] P1` Add post-workout AI coaching
-- `[ ] P1` Add localization support
-- `[ ] P1` Add instrumentation/UI tests for onboarding and workout logging
-- `[ ] P2` Add stretching screen
-- `[ ] P2` Add privacy screen
+- `[x] P1` Add localization support
+- `[x] P1` Add instrumentation/UI tests for onboarding and workout logging
+- `[x] P2` Add stretching screen
+- `[x] P2` Add privacy screen
 
 ## Web
 

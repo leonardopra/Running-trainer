@@ -2,6 +2,7 @@ package com.runningtrainer.android.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.res.stringResource
+import androidx.core.os.LocaleListCompat
+import com.runningtrainer.android.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -47,9 +53,10 @@ import com.runningtrainer.android.ui.theme.TextMuted
 fun SettingsScreen(
     innerPadding: PaddingValues,
     preferences: UserPreferencesDto,
-    onSave: (name: String, age: String, weightKg: String, heightCm: String, useKilometers: Boolean, claudeApiKey: String, notificationsEnabled: Boolean, notificationHour: Int, notificationMinute: Int) -> Unit,
+    onSave: (name: String, age: String, weightKg: String, heightCm: String, useKilometers: Boolean, claudeApiKey: String, notificationsEnabled: Boolean, notificationHour: Int, notificationMinute: Int, localeCode: String) -> Unit,
     onStartNewPlan: () -> Unit,
     onResetAll: () -> Unit,
+    onOpenPrivacy: () -> Unit,
     onBack: () -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf(preferences.name.orEmpty()) }
@@ -62,21 +69,22 @@ fun SettingsScreen(
     var notificationsEnabled by rememberSaveable { mutableStateOf(preferences.notificationsEnabled) }
     var notificationHour by rememberSaveable { mutableStateOf(preferences.notificationHour.toString()) }
     var notificationMinute by rememberSaveable { mutableStateOf(preferences.notificationMinute.toString().padStart(2, '0')) }
+    var localeCode by rememberSaveable { mutableStateOf(preferences.localeCode) }
     var showNewPlanDialog by rememberSaveable { mutableStateOf(false) }
     var showResetDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showNewPlanDialog) {
         AlertDialog(
             onDismissRequest = { showNewPlanDialog = false },
-            title = { Text("Start a new plan?") },
-            text = { Text("This will replace your current training plan. Your workout history will be lost.") },
+            title = { Text(stringResource(R.string.dialog_new_plan_title)) },
+            text = { Text(stringResource(R.string.dialog_new_plan_body)) },
             confirmButton = {
                 TextButton(onClick = { showNewPlanDialog = false; onStartNewPlan() }) {
-                    Text("Start new plan", color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(R.string.btn_start_new_plan), color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showNewPlanDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showNewPlanDialog = false }) { Text(stringResource(R.string.btn_cancel)) }
             },
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -85,15 +93,15 @@ fun SettingsScreen(
     if (showResetDialog) {
         AlertDialog(
             onDismissRequest = { showResetDialog = false },
-            title = { Text("Reset all data?") },
-            text = { Text("All plans, workouts, and settings will be permanently deleted.") },
+            title = { Text(stringResource(R.string.dialog_reset_title)) },
+            text = { Text(stringResource(R.string.dialog_reset_body)) },
             confirmButton = {
                 TextButton(onClick = { showResetDialog = false; onResetAll() }) {
-                    Text("Reset", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.btn_reset), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showResetDialog = false }) { Text(stringResource(R.string.btn_cancel)) }
             },
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -108,43 +116,43 @@ fun SettingsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // ── Profile ───────────────────────────────────────────────────────────
-        SectionHeader("Profile")
+        SectionHeader(stringResource(R.string.section_profile))
         SettingsSection {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                SettingsField(value = name, onValueChange = { name = it }, label = "Name")
+                SettingsField(value = name, onValueChange = { name = it }, label = stringResource(R.string.field_name))
                 SettingsField(
-                    value = age, onValueChange = { age = it }, label = "Age",
+                    value = age, onValueChange = { age = it }, label = stringResource(R.string.field_age),
                     keyboardType = KeyboardType.Number
                 )
                 SettingsField(
-                    value = weight, onValueChange = { weight = it }, label = "Weight (kg)",
+                    value = weight, onValueChange = { weight = it }, label = stringResource(R.string.field_weight_kg),
                     keyboardType = KeyboardType.Decimal
                 )
                 SettingsField(
-                    value = height, onValueChange = { height = it }, label = "Height (cm)",
+                    value = height, onValueChange = { height = it }, label = stringResource(R.string.field_height_cm),
                     keyboardType = KeyboardType.Decimal
                 )
             }
         }
 
         // ── AI Coaching ───────────────────────────────────────────────────────
-        SectionHeader("AI Coaching")
+        SectionHeader(stringResource(R.string.section_ai_coaching))
         SettingsSection {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "Optional Claude API key for personalized tips.",
+                    stringResource(R.string.ai_coaching_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = TextMuted
                 )
                 SettingsField(
                     value = apiKey,
                     onValueChange = { apiKey = it },
-                    label = "Claude API key",
+                    label = stringResource(R.string.field_claude_api_key),
                     visualTransformation = if (obscureKey) PasswordVisualTransformation() else VisualTransformation.None,
                     trailingIcon = {
                         TextButton(onClick = { obscureKey = !obscureKey }) {
                             Text(
-                                if (obscureKey) "Show" else "Hide",
+                                if (obscureKey) stringResource(R.string.btn_show) else stringResource(R.string.btn_hide),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.primary
@@ -155,15 +163,46 @@ fun SettingsScreen(
             }
         }
 
+        // ── Language ──────────────────────────────────────────────────────────
+        SectionHeader(stringResource(R.string.section_language))
+        SettingsSection {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val langs = listOf("en" to stringResource(R.string.lang_english),
+                                   "it" to stringResource(R.string.lang_italian),
+                                   "de" to stringResource(R.string.lang_german))
+                langs.forEach { (code, label) ->
+                    val selected = localeCode == code
+                    val primary = MaterialTheme.colorScheme.primary
+                    val shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(shape)
+                            .background(if (selected) primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant, shape)
+                            .border(1.dp, if (selected) primary else SurfaceVar, shape)
+                            .clickable { localeCode = code }
+                            .padding(vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(label, style = MaterialTheme.typography.labelMedium,
+                            color = if (selected) primary else MaterialTheme.colorScheme.onSurface)
+                    }
+                }
+            }
+        }
+
         // ── Units ─────────────────────────────────────────────────────────────
-        SectionHeader("Units")
+        SectionHeader(stringResource(R.string.section_units))
         SettingsSection {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Use kilometers", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.use_kilometers), style = MaterialTheme.typography.bodyLarge)
                 Switch(
                     checked = useKm,
                     onCheckedChange = { useKm = it },
@@ -176,7 +215,7 @@ fun SettingsScreen(
         }
 
         // ── Notifications ─────────────────────────────────────────────────────
-        SectionHeader("Notifications")
+        SectionHeader(stringResource(R.string.section_notifications))
         SettingsSection {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(
@@ -184,7 +223,7 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Workout reminders", style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(R.string.workout_reminders), style = MaterialTheme.typography.bodyLarge)
                     Switch(
                         checked = notificationsEnabled,
                         onCheckedChange = { notificationsEnabled = it },
@@ -202,14 +241,14 @@ fun SettingsScreen(
                         SettingsField(
                             value = notificationHour,
                             onValueChange = { notificationHour = it },
-                            label = "Hour (0–23)",
+                            label = stringResource(R.string.field_hour),
                             keyboardType = KeyboardType.Number,
                             modifier = Modifier.weight(1f)
                         )
                         SettingsField(
                             value = notificationMinute,
                             onValueChange = { notificationMinute = it },
-                            label = "Minute (0–59)",
+                            label = stringResource(R.string.field_minute),
                             keyboardType = KeyboardType.Number,
                             modifier = Modifier.weight(1f)
                         )
@@ -219,11 +258,11 @@ fun SettingsScreen(
         }
 
         // ── Training Plan ─────────────────────────────────────────────────────
-        SectionHeader("Training Plan")
+        SectionHeader(stringResource(R.string.section_training_plan))
         SettingsSection {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "Generate a new plan based on updated goals or fitness level.",
+                    stringResource(R.string.training_plan_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = TextMuted
                 )
@@ -232,13 +271,13 @@ fun SettingsScreen(
                     modifier = Modifier.fillMaxWidth().height(48.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Start new plan")
+                    Text(stringResource(R.string.btn_start_new_plan))
                 }
             }
         }
 
         // ── Data ──────────────────────────────────────────────────────────────
-        SectionHeader("Data")
+        SectionHeader(stringResource(R.string.section_data))
         OutlinedButton(
             onClick = { showResetDialog = true },
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -246,7 +285,21 @@ fun SettingsScreen(
             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
             border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f))
         ) {
-            Text("Reset all data")
+            Text(stringResource(R.string.btn_reset_all_data))
+        }
+
+        // ── About ─────────────────────────────────────────────────────────────
+        SectionHeader(stringResource(R.string.section_about))
+        SettingsSection {
+            Text(
+                stringResource(R.string.privacy_policy),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onOpenPrivacy() }
+                    .padding(vertical = 4.dp)
+            )
         }
 
         // ── Save ──────────────────────────────────────────────────────────────
@@ -254,12 +307,13 @@ fun SettingsScreen(
             onClick = {
                 val hour = notificationHour.toIntOrNull()?.coerceIn(0, 23) ?: 8
                 val minute = notificationMinute.toIntOrNull()?.coerceIn(0, 59) ?: 0
-                onSave(name, age, weight, height, useKm, apiKey, notificationsEnabled, hour, minute)
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
+                onSave(name, age, weight, height, useKm, apiKey, notificationsEnabled, hour, minute, localeCode)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text("Save settings", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.btn_save_settings), style = MaterialTheme.typography.labelLarge)
         }
 
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))

@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.CoachingInsight
 import com.runningtrainer.android.domain.model.InsightType
 import com.runningtrainer.android.domain.model.TrainingPlan
@@ -62,11 +64,11 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                "No active plan",
+                stringResource(R.string.home_no_plan),
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                "Complete onboarding to generate your plan.",
+                stringResource(R.string.home_no_plan_desc),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -75,7 +77,7 @@ fun HomeScreen(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.height(52.dp)
             ) {
-                Text("Restart setup")
+                Text(stringResource(R.string.home_restart_setup))
             }
         }
         return
@@ -92,7 +94,8 @@ fun HomeScreen(
         item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = if (runnerName.isNullOrBlank()) "Welcome back" else "Hey, $runnerName",
+                    text = if (runnerName.isNullOrBlank()) stringResource(R.string.home_welcome_back)
+                           else stringResource(R.string.home_greeting, runnerName),
                     style = MaterialTheme.typography.displayLarge
                 )
                 Row(
@@ -119,7 +122,7 @@ fun HomeScreen(
 
         // Week cards
         item {
-            Text("Training Plan", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.home_training_plan), style = MaterialTheme.typography.titleLarge)
         }
 
         items(activePlan.weeks) { week ->
@@ -138,11 +141,11 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            "Week ${week.weekNumber}",
+                            stringResource(R.string.home_week_label, week.weekNumber),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
-                            "$completedCount / $plannedCount done",
+                            stringResource(R.string.home_done_label, completedCount, plannedCount),
                             style = MaterialTheme.typography.labelMedium,
                             color = TextMuted
                         )
@@ -155,7 +158,7 @@ fun HomeScreen(
                         )
                     }
                     Text(
-                        "${week.targetWeeklyKm} km target",
+                        stringResource(R.string.home_km_target, week.targetWeeklyKm.toString()),
                         style = MaterialTheme.typography.labelMedium,
                         color = TextMuted
                     )
@@ -164,7 +167,7 @@ fun HomeScreen(
                         week.workouts.forEach { workout ->
                             WorkoutTile(
                                 title = workout.title,
-                                subtitle = "Day ${workout.dayOfWeek}",
+                                subtitle = stringResource(R.string.home_day_label, workout.dayOfWeek),
                                 type = workout.type,
                                 isCompleted = workout.isCompleted,
                                 clickable = workout.type != WorkoutType.rest,
@@ -186,7 +189,7 @@ fun HomeScreen(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             ) {
-                Text("Reset local data")
+                Text(stringResource(R.string.home_reset_local_data))
             }
         }
     }
@@ -266,7 +269,7 @@ private fun WorkoutTile(
         }
         if (isCompleted) {
             Text(
-                "Done",
+                stringResource(R.string.home_done),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary
             )

@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.runningtrainer.android.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.runningtrainer.android.ui.navigation.AppDestination
@@ -33,8 +35,10 @@ import com.runningtrainer.android.ui.screens.HomeScreen
 import com.runningtrainer.android.ui.screens.ProgressScreen
 import com.runningtrainer.android.ui.screens.ProfileScreen
 import com.runningtrainer.android.ui.screens.RaceConfigScreen
+import com.runningtrainer.android.ui.screens.PrivacyScreen
 import com.runningtrainer.android.ui.screens.RunHistoryScreen
 import com.runningtrainer.android.ui.screens.SettingsScreen
+import com.runningtrainer.android.ui.screens.StretchingScreen
 import com.runningtrainer.android.ui.screens.TrainingDaysScreen
 import com.runningtrainer.android.ui.screens.WorkoutDetailScreen
 import com.runningtrainer.android.ui.theme.SurfaceVar
@@ -69,11 +73,16 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                     title = {
                         Text(
                             text = when (dest) {
-                                AppDestination.Home     -> "Running Trainer"
-                                AppDestination.Progress -> "Progress"
-                                AppDestination.Settings -> "Settings"
-                                AppDestination.WorkoutDetail -> "Workout"
-                                AppDestination.RunHistory    -> "Run History"
+                                AppDestination.Home          -> stringResource(R.string.app_name)
+                                AppDestination.Progress      -> stringResource(R.string.nav_progress)
+                                AppDestination.Settings      -> stringResource(R.string.nav_settings)
+                                AppDestination.WorkoutDetail -> stringResource(R.string.nav_workout)
+                                AppDestination.RunHistory    -> stringResource(R.string.nav_run_history)
+                                AppDestination.Stretching    -> stringResource(
+                                    if (uiState.isPreRunStretching) R.string.stretch_pre_run_title
+                                    else R.string.stretch_post_run_title
+                                )
+                                AppDestination.Privacy       -> stringResource(R.string.privacy_title)
                                 else -> ""
                             },
                             style = MaterialTheme.typography.titleLarge,
@@ -86,12 +95,14 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                                 when (dest) {
                                     AppDestination.WorkoutDetail -> viewModel.goHome()
                                     AppDestination.RunHistory    -> viewModel.openProgress()
+                                    AppDestination.Stretching    -> viewModel.goHome()
+                                    AppDestination.Privacy       -> viewModel.openSettings()
                                     else -> {}
                                 }
                             }) {
                                 Icon(
                                     Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back"
+                                    contentDescription = stringResource(R.string.cd_back)
                                 )
                             }
                         }
@@ -113,8 +124,8 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                     NavigationBarItem(
                         selected = dest == AppDestination.Home,
                         onClick = viewModel::goHome,
-                        icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-                        label = { Text("Home") },
+                        icon = { Icon(Icons.Default.Home, contentDescription = stringResource(R.string.cd_home)) },
+                        label = { Text(stringResource(R.string.nav_home)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor   = MaterialTheme.colorScheme.primary,
                             selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -126,8 +137,8 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                     NavigationBarItem(
                         selected = dest == AppDestination.Progress,
                         onClick = viewModel::openProgress,
-                        icon = { Icon(Icons.Default.DateRange, contentDescription = "Progress") },
-                        label = { Text("Progress") },
+                        icon = { Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.nav_progress)) },
+                        label = { Text(stringResource(R.string.nav_progress)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor   = MaterialTheme.colorScheme.primary,
                             selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -139,8 +150,8 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                     NavigationBarItem(
                         selected = dest == AppDestination.Settings,
                         onClick = viewModel::openSettings,
-                        icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
-                        label = { Text("Settings") },
+                        icon = { Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings)) },
+                        label = { Text(stringResource(R.string.nav_settings)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor   = MaterialTheme.colorScheme.primary,
                             selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -158,7 +169,7 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                 modifier = Modifier.fillMaxSize().padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Loading…", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.loading), style = MaterialTheme.typography.bodyLarge)
             }
             return@Scaffold
         }
@@ -207,6 +218,7 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                 paceZones = uiState.selectedWorkoutPaceZones,
                 onSave = viewModel::saveWorkoutLog,
                 onClear = viewModel::clearWorkoutLog,
+                onOpenStretching = viewModel::openStretching,
                 onBack = viewModel::goHome
             )
             AppDestination.Progress -> ProgressScreen(
@@ -223,12 +235,22 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
             AppDestination.Settings -> SettingsScreen(
                 innerPadding = innerPadding,
                 preferences = uiState.preferences,
-                onSave = { name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute ->
-                    viewModel.saveSettings(name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute)
+                onSave = { name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute, localeCode ->
+                    viewModel.saveSettings(name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute, localeCode)
                 },
                 onStartNewPlan = viewModel::startNewPlan,
                 onResetAll = viewModel::resetLocalData,
+                onOpenPrivacy = viewModel::openPrivacy,
                 onBack = viewModel::goHome
+            )
+            AppDestination.Stretching -> StretchingScreen(
+                innerPadding = innerPadding,
+                isPreRun = uiState.isPreRunStretching,
+                onBack = viewModel::goHome
+            )
+            AppDestination.Privacy -> PrivacyScreen(
+                innerPadding = innerPadding,
+                onBack = viewModel::openSettings
             )
         }
     }

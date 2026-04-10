@@ -11,5 +11,7 @@ enum class AppDestination {
     WorkoutDetail,
     Progress,
     RunHistory,
-    Settings
+    Settings,
+    Stretching,
+    Privacy
 }

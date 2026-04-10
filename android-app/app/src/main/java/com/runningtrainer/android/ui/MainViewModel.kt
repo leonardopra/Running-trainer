@@ -47,6 +47,7 @@ data class OnboardingFormState(
 data class MainUiState(
     val isBootstrapping: Boolean = true,
     val currentDestination: AppDestination = AppDestination.Goal,
+    val isPreRunStretching: Boolean = true,
     val onboarding: OnboardingFormState = OnboardingFormState(),
     val preferences: UserPreferencesDto = UserPreferencesDto(),
     val activePlan: TrainingPlan? = null,
@@ -69,6 +70,8 @@ class MainViewModel(
     private val claudeService: ClaudeService? = null
 ) : ViewModel() {
     private val currentDestination = MutableStateFlow(AppDestination.Goal)
+    private val isPreRunStretching = MutableStateFlow(true)
+    private val navState = combine(currentDestination, isPreRunStretching) { dest, pre -> dest to pre }
     private val onboarding = MutableStateFlow(OnboardingFormState())
     private val isGenerating = MutableStateFlow(false)
     private val generationError = MutableStateFlow<String?>(null)
@@ -103,11 +106,11 @@ class MainViewModel(
 
     val uiState: StateFlow<MainUiState> = combine(
         persistedUiState,
-        currentDestination,
+        navState,
         onboarding,
         generationUiState,
         enrichmentUiState
-    ) { persisted, destination, form, (generating, genError), (enriching, enrichError) ->
+    ) { persisted, (destination, preRunStretching), form, (generating, genError), (enriching, enrichError) ->
         val preferences = persisted.preferences
         val activePlan = persisted.activePlan
         val selectedWorkout = activePlan?.weeks?.flatMap { it.workouts }?.firstOrNull { it.id == persisted.selectedWorkoutId }
@@ -131,6 +134,7 @@ class MainViewModel(
             } else {
                 destination
             },
+            isPreRunStretching = preRunStretching,
             onboarding = form,
             preferences = preferences,
             activePlan = activePlan,
@@ -295,6 +299,15 @@ class MainViewModel(
         currentDestination.value = AppDestination.Home
     }
 
+    fun openStretching(isPreRun: Boolean) {
+        isPreRunStretching.value = isPreRun
+        currentDestination.value = AppDestination.Stretching
+    }
+
+    fun openPrivacy() {
+        currentDestination.value = AppDestination.Privacy
+    }
+
     fun saveWorkoutLog(
         workoutId: String,
         actualDistanceKm: String,
@@ -361,7 +374,8 @@ class MainViewModel(
         claudeApiKey: String,
         notificationsEnabled: Boolean,
         notificationHour: Int,
-        notificationMinute: Int
+        notificationMinute: Int,
+        localeCode: String = "en"
     ) {
         viewModelScope.launch {
             val updatedPrefs = uiState.value.preferences.copy(
@@ -373,7 +387,8 @@ class MainViewModel(
                 claudeApiKey = claudeApiKey.trim().ifBlank { null },
                 notificationsEnabled = notificationsEnabled,
                 notificationHour = notificationHour,
-                notificationMinute = notificationMinute
+                notificationMinute = notificationMinute,
+                localeCode = localeCode
             )
             settingsRepository.savePreferences(updatedPrefs)
 

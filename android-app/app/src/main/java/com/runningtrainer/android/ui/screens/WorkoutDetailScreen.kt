@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -39,8 +40,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.PaceZone
 import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutFeeling
@@ -55,6 +58,7 @@ fun WorkoutDetailScreen(
     paceZones: List<PaceZone> = emptyList(),
     onSave: (workoutId: String, distance: String, duration: String, notes: String, rpe: Int?, feeling: WorkoutFeeling?) -> Unit,
     onClear: (String) -> Unit,
+    onOpenStretching: ((isPreRun: Boolean) -> Unit)? = null,
     onBack: () -> Unit
 ) {
     if (workout == null) {
@@ -62,8 +66,8 @@ fun WorkoutDetailScreen(
             modifier = Modifier.fillMaxSize().padding(innerPadding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Workout not found", style = MaterialTheme.typography.headlineMedium)
-            Button(onClick = onBack, shape = RoundedCornerShape(12.dp)) { Text("Back") }
+            Text(stringResource(R.string.workout_not_found), style = MaterialTheme.typography.headlineMedium)
+            Button(onClick = onBack, shape = RoundedCornerShape(12.dp)) { Text(stringResource(R.string.btn_back)) }
         }
         return
     }
@@ -132,7 +136,7 @@ fun WorkoutDetailScreen(
                     .padding(16.dp)
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Target Pace Zone", style = MaterialTheme.typography.titleSmall, color = typeColor)
+                    Text(stringResource(R.string.target_pace_zone), style = MaterialTheme.typography.titleSmall, color = typeColor)
                     paceZones.forEach { zone ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -152,7 +156,7 @@ fun WorkoutDetailScreen(
         val plannedKm = workout.distanceKm
         if (distanceDouble != null && plannedKm != null && plannedKm > 0 && distanceDouble > plannedKm * 3) {
             Text(
-                "Note: logged distance is much higher than planned (${"%.1f".format(plannedKm)} km).",
+                stringResource(R.string.workout_note_high_distance, plannedKm),
                 style = MaterialTheme.typography.bodySmall,
                 color = Color(0xFFFF9800)
             )
@@ -161,13 +165,13 @@ fun WorkoutDetailScreen(
         // Log fields
         DetailField(
             value = distance, onValueChange = { distance = it },
-            label = "Actual distance (km)", keyboardType = KeyboardType.Decimal
+            label = stringResource(R.string.field_actual_distance), keyboardType = KeyboardType.Decimal
         )
         DetailField(
             value = duration, onValueChange = { duration = it },
-            label = "Actual duration (min)", keyboardType = KeyboardType.Number
+            label = stringResource(R.string.field_actual_duration), keyboardType = KeyboardType.Number
         )
-        DetailField(value = notes, onValueChange = { notes = it }, label = "Notes")
+        DetailField(value = notes, onValueChange = { notes = it }, label = stringResource(R.string.field_notes))
 
         // RPE
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -176,9 +180,9 @@ fun WorkoutDetailScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Perceived effort", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.perceived_effort), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    if (rpeSelected) "$rpe / 10" else "Not set",
+                    if (rpeSelected) stringResource(R.string.rpe_value, rpe) else stringResource(R.string.rpe_not_set),
                     style = MaterialTheme.typography.labelLarge,
                     color = if (rpeSelected) typeColor else TextMuted
                 )
@@ -198,7 +202,7 @@ fun WorkoutDetailScreen(
 
         // Feeling
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("How did you feel?", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.how_did_you_feel), style = MaterialTheme.typography.titleMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 WorkoutFeeling.entries.forEach { item ->
                     FeelingChip(
@@ -218,7 +222,7 @@ fun WorkoutDetailScreen(
             colors = ButtonDefaults.buttonColors(containerColor = typeColor, contentColor = Color.Black)
         ) {
             Text(
-                if (workout.isCompleted) "Update log" else "Mark done",
+                if (workout.isCompleted) stringResource(R.string.btn_update_log) else stringResource(R.string.btn_mark_done),
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -232,9 +236,28 @@ fun WorkoutDetailScreen(
                     contentColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("Clear log")
+                Text(stringResource(R.string.btn_clear_log))
             }
         }
+        // Stretching
+        if (onOpenStretching != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = { onOpenStretching(true) },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp)
+                ) { Text(stringResource(R.string.btn_pre_run_stretch)) }
+                OutlinedButton(
+                    onClick = { onOpenStretching(false) },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp)
+                ) { Text(stringResource(R.string.btn_post_run_stretch)) }
+            }
+        }
+
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
     }
 }
@@ -272,11 +295,11 @@ private fun DetailField(
 @Composable
 private fun FeelingChip(feeling: WorkoutFeeling, selected: Boolean, onClick: () -> Unit) {
     val label = when (feeling) {
-        WorkoutFeeling.great   -> "🙌 Great"
-        WorkoutFeeling.good    -> "😊 Good"
-        WorkoutFeeling.ok      -> "😐 Ok"
-        WorkoutFeeling.tired   -> "😓 Tired"
-        WorkoutFeeling.injured -> "🤕 Injured"
+        WorkoutFeeling.great   -> stringResource(R.string.feeling_great)
+        WorkoutFeeling.good    -> stringResource(R.string.feeling_good)
+        WorkoutFeeling.ok      -> stringResource(R.string.feeling_ok)
+        WorkoutFeeling.tired   -> stringResource(R.string.feeling_tired)
+        WorkoutFeeling.injured -> stringResource(R.string.feeling_injured)
     }
     val shape = RoundedCornerShape(20.dp)
     val primary = MaterialTheme.colorScheme.primary

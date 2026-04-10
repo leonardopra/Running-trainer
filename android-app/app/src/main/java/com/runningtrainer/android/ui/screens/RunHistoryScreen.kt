@@ -22,7 +22,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.TrainingPlan
 import com.runningtrainer.android.domain.model.WorkoutFeeling
 import com.runningtrainer.android.domain.model.WorkoutType
@@ -66,7 +68,7 @@ fun RunHistoryScreen(
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         item {
-            Text("Run History", style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.run_history), style = MaterialTheme.typography.headlineMedium)
         }
 
         item {
@@ -79,11 +81,11 @@ fun RunHistoryScreen(
                             Text(
                                 when (type) {
                                     null -> "All"
-                                    WorkoutType.easyRun -> "Easy"
-                                    WorkoutType.longRun -> "Long"
-                                    WorkoutType.tempoRun -> "Tempo"
-                                    WorkoutType.intervalRun -> "Interval"
-                                    WorkoutType.crossTrain -> "Cross"
+                                    WorkoutType.easyRun -> stringResource(R.string.workout_type_easy_run)
+                                    WorkoutType.longRun -> stringResource(R.string.workout_type_long_run)
+                                    WorkoutType.tempoRun -> stringResource(R.string.workout_type_tempo_run)
+                                    WorkoutType.intervalRun -> stringResource(R.string.workout_type_interval_run)
+                                    WorkoutType.crossTrain -> stringResource(R.string.workout_type_cross_train)
                                     else -> type.name
                                 }
                             )
@@ -96,7 +98,7 @@ fun RunHistoryScreen(
         if (filtered.isEmpty()) {
             item {
                 Text(
-                    "No completed workouts yet.",
+                    stringResource(R.string.no_data_yet),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 24.dp)
                 )
@@ -110,8 +112,8 @@ fun RunHistoryScreen(
                 val completed = LocalDate.of(d.year, d.monthNumber, d.dayOfMonth)
                 val daysAgo = ChronoUnit.DAYS.between(completed, today).toInt()
                 when (daysAgo) {
-                    0 -> "Today"
-                    1 -> "Yesterday"
+                    0 -> stringResource(R.string.today)
+                    1 -> stringResource(R.string.yesterday)
                     else -> "$daysAgo days ago"
                 }
             } ?: ""
@@ -125,7 +127,7 @@ fun RunHistoryScreen(
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(workout.title, style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            workoutTypeLabel(workout.type),
+                            workoutTypeLabelHistory(workout.type),
                             style = MaterialTheme.typography.labelMedium,
                             color = workoutTypeColor(workout.type)
                         )
@@ -154,7 +156,7 @@ fun RunHistoryScreen(
                     ) {
                         Text(relativeDate, style = MaterialTheme.typography.labelSmall)
                         workout.rpe?.let {
-                            Text("RPE $it", style = MaterialTheme.typography.labelSmall)
+                            Text(stringResource(R.string.rpe_label, it), style = MaterialTheme.typography.labelSmall)
                         }
                         workout.feeling?.let {
                             Text(feelingEmojiHistory(it), style = MaterialTheme.typography.titleMedium)
@@ -166,19 +168,20 @@ fun RunHistoryScreen(
 
         item {
             Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-                Text("Back")
+                Text(stringResource(R.string.btn_back))
             }
         }
     }
 }
 
-private fun workoutTypeLabel(type: WorkoutType): String = when (type) {
-    WorkoutType.easyRun -> "Easy Run"
-    WorkoutType.longRun -> "Long Run"
-    WorkoutType.tempoRun -> "Tempo Run"
-    WorkoutType.intervalRun -> "Interval Run"
-    WorkoutType.crossTrain -> "Cross Train"
-    WorkoutType.rest -> "Rest"
+@Composable
+private fun workoutTypeLabelHistory(type: WorkoutType): String = when (type) {
+    WorkoutType.easyRun -> stringResource(R.string.workout_type_easy_run)
+    WorkoutType.longRun -> stringResource(R.string.workout_type_long_run)
+    WorkoutType.tempoRun -> stringResource(R.string.workout_type_tempo_run)
+    WorkoutType.intervalRun -> stringResource(R.string.workout_type_interval_run)
+    WorkoutType.crossTrain -> stringResource(R.string.workout_type_cross_train)
+    WorkoutType.rest -> stringResource(R.string.workout_type_rest)
 }
 
 

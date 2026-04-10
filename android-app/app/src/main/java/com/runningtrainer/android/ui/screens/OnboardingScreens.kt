@@ -30,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.FitnessLevel
 import com.runningtrainer.android.domain.model.GoalType
 import com.runningtrainer.android.ui.MainUiState
@@ -121,11 +123,17 @@ fun GoalSelectionScreen(
     innerPadding: PaddingValues,
     onGoalSelected: (GoalType) -> Unit
 ) {
+    val sFiveK   = stringResource(R.string.goal_five_k)
+    val sTenK    = stringResource(R.string.goal_ten_k)
+    val sHalf    = stringResource(R.string.goal_half_marathon)
+    val sMarath  = stringResource(R.string.goal_marathon)
+    val sTrail   = stringResource(R.string.goal_trail_run)
+    val sFitness = stringResource(R.string.goal_general_fitness)
     SelectionListScreen(
         innerPadding = innerPadding,
         step = 1,
-        title = "What's your goal?",
-        subtitle = "We'll build your training plan around this target.",
+        title = stringResource(R.string.onboarding_goal_title),
+        subtitle = stringResource(R.string.onboarding_goal_subtitle),
         items = GoalType.entries,
         itemEmoji = {
             when (it) {
@@ -139,12 +147,12 @@ fun GoalSelectionScreen(
         },
         itemTitle = {
             when (it) {
-                GoalType.fiveK          -> "5K"
-                GoalType.tenK           -> "10K"
-                GoalType.halfMarathon   -> "Half Marathon"
-                GoalType.marathon       -> "Marathon"
-                GoalType.trailRun       -> "Trail Run"
-                GoalType.generalFitness -> "General Fitness"
+                GoalType.fiveK          -> sFiveK
+                GoalType.tenK           -> sTenK
+                GoalType.halfMarathon   -> sHalf
+                GoalType.marathon       -> sMarath
+                GoalType.trailRun       -> sTrail
+                GoalType.generalFitness -> sFitness
             }
         },
         onSelected = onGoalSelected
@@ -179,9 +187,9 @@ fun RaceConfigScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         OnboardingProgress(step = 2)
-        Text("Race setup", style = MaterialTheme.typography.displayLarge)
+        Text(stringResource(R.string.onboarding_race_setup_title), style = MaterialTheme.typography.displayLarge)
         Text(
-            "Choose a target date or a plan duration.",
+            stringResource(R.string.onboarding_race_setup_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -189,10 +197,10 @@ fun RaceConfigScreen(
         FilledField(
             value = form.raceDateInput,
             onValueChange = { onConfigChanged(it, if (it.isNotBlank()) null else form.durationWeeks) },
-            label = "Race date (YYYY-MM-DD)"
+            label = stringResource(R.string.onboarding_race_date_label)
         )
 
-        Text("Or choose a duration", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.onboarding_or_choose_duration), style = MaterialTheme.typography.titleMedium)
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -200,7 +208,7 @@ fun RaceConfigScreen(
             listOf(suggestedDuration, 8, 10, 12, 14, 16).distinct().forEach { weeks ->
                 val selected = form.durationWeeks == weeks && form.raceDateInput.isBlank()
                 DurationChip(
-                    label = "$weeks wks",
+                    label = stringResource(R.string.onboarding_weeks_chip, weeks),
                     selected = selected,
                     onClick = { onConfigChanged("", weeks) }
                 )
@@ -208,7 +216,7 @@ fun RaceConfigScreen(
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        ContinueButton(onClick = {
+        ContinueButton(text = stringResource(R.string.btn_continue), onClick = {
             if (form.raceDateInput.isBlank() && form.durationWeeks == null) {
                 onConfigChanged("", suggestedDuration)
             }
@@ -222,11 +230,17 @@ fun FitnessSelectionScreen(
     innerPadding: PaddingValues,
     onFitnessSelected: (FitnessLevel) -> Unit
 ) {
+    val sBeginner         = stringResource(R.string.fitness_beginner)
+    val sIntermediate     = stringResource(R.string.fitness_intermediate)
+    val sAdvanced         = stringResource(R.string.fitness_advanced)
+    val sBeginnerDesc     = stringResource(R.string.fitness_beginner_desc)
+    val sIntermediateDesc = stringResource(R.string.fitness_intermediate_desc)
+    val sAdvancedDesc     = stringResource(R.string.fitness_advanced_desc)
     SelectionListScreen(
         innerPadding = innerPadding,
         step = 3,
-        title = "Fitness level",
-        subtitle = "This drives your starting weekly mileage.",
+        title = stringResource(R.string.onboarding_fitness_title),
+        subtitle = stringResource(R.string.onboarding_fitness_subtitle),
         items = FitnessLevel.entries,
         itemEmoji = {
             when (it) {
@@ -237,16 +251,16 @@ fun FitnessSelectionScreen(
         },
         itemTitle = {
             when (it) {
-                FitnessLevel.beginner     -> "Beginner"
-                FitnessLevel.intermediate -> "Intermediate"
-                FitnessLevel.advanced     -> "Advanced"
+                FitnessLevel.beginner     -> sBeginner
+                FitnessLevel.intermediate -> sIntermediate
+                FitnessLevel.advanced     -> sAdvanced
             }
         },
         itemBody = {
             when (it) {
-                FitnessLevel.beginner     -> "Running less than 15 km/week or easing back in."
-                FitnessLevel.intermediate -> "A stable base between 20–40 km/week."
-                FitnessLevel.advanced     -> "Structured training with strong weekly mileage."
+                FitnessLevel.beginner     -> sBeginnerDesc
+                FitnessLevel.intermediate -> sIntermediateDesc
+                FitnessLevel.advanced     -> sAdvancedDesc
             }
         },
         onSelected = onFitnessSelected
@@ -269,9 +283,9 @@ fun TrainingDaysScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         OnboardingProgress(step = 4)
-        Text("Training days", style = MaterialTheme.typography.displayLarge)
+        Text(stringResource(R.string.onboarding_days_title), style = MaterialTheme.typography.displayLarge)
         Text(
-            "How many sessions per week can you commit to?",
+            stringResource(R.string.onboarding_days_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -281,14 +295,14 @@ fun TrainingDaysScreen(
         ) {
             (3..6).forEach { dayCount ->
                 DurationChip(
-                    label = "$dayCount days",
+                    label = stringResource(R.string.onboarding_days_chip, dayCount),
                     selected = selectedDays == dayCount,
                     onClick = { onDaysChanged(dayCount) }
                 )
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        ContinueButton(onClick = onContinue)
+        ContinueButton(text = stringResource(R.string.btn_continue), onClick = onContinue)
     }
 }
 
@@ -308,9 +322,9 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OnboardingProgress(step = 5)
-        Text("Runner profile", style = MaterialTheme.typography.displayLarge)
+        Text(stringResource(R.string.onboarding_profile_title), style = MaterialTheme.typography.displayLarge)
         Text(
-            "Your data stays on device and personalizes coaching.",
+            stringResource(R.string.onboarding_profile_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -318,24 +332,24 @@ fun ProfileScreen(
         FilledField(
             value = form.name,
             onValueChange = { onProfileChanged(it, form.age, form.weightKg, form.heightCm) },
-            label = "Name"
+            label = stringResource(R.string.field_name)
         )
         FilledField(
             value = form.age,
             onValueChange = { onProfileChanged(form.name, it, form.weightKg, form.heightCm) },
-            label = "Age",
+            label = stringResource(R.string.field_age),
             keyboardType = KeyboardType.Number
         )
         FilledField(
             value = form.weightKg,
             onValueChange = { onProfileChanged(form.name, form.age, it, form.heightCm) },
-            label = "Weight (kg)",
+            label = stringResource(R.string.field_weight_kg),
             keyboardType = KeyboardType.Decimal
         )
         FilledField(
             value = form.heightCm,
             onValueChange = { onProfileChanged(form.name, form.age, form.weightKg, it) },
-            label = "Height (cm)",
+            label = stringResource(R.string.field_height_cm),
             keyboardType = KeyboardType.Decimal
         )
 
@@ -345,7 +359,8 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.weight(1f))
         ContinueButton(
-            text = if (uiState.isGeneratingPlan) "Generating…" else "Generate Plan",
+            text = if (uiState.isGeneratingPlan) stringResource(R.string.btn_generating)
+                   else stringResource(R.string.btn_generate_plan),
             enabled = !uiState.isGeneratingPlan && form.goalType != null && form.fitnessLevel != null,
             onClick = onGeneratePlan
         )
@@ -362,10 +377,10 @@ fun GeneratingPlanScreen(innerPadding: PaddingValues) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Building your plan…", style = MaterialTheme.typography.displayLarge)
+        Text(stringResource(R.string.generating_title), style = MaterialTheme.typography.displayLarge)
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            "Generating a personalized plan based on your profile.",
+            stringResource(R.string.generating_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
