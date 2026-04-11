@@ -1,8 +1,8 @@
 package com.runningtrainer.android
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -14,7 +14,7 @@ import com.runningtrainer.android.ui.theme.RunningTrainerTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels {
         val container = (application as RunningTrainerApplication).container
         MainViewModel.factory(

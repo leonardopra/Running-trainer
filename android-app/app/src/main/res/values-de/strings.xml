@@ -10,6 +10,7 @@
     <string name="nav_settings">Einstellungen</string>
     <string name="nav_workout">Training</string>
     <string name="nav_run_history">Laufverlauf</string>
+    <string name="nav_pace">Tempo</string>
     <string name="cd_back">Zurück</string>
     <string name="cd_home">Home</string>
 
@@ -163,6 +164,22 @@
     <string name="lang_italian">Italiano</string>
     <string name="lang_german">Deutsch</string>
 
+    <!-- Pace calculator screen -->
+    <string name="pace_title">Tempozonen</string>
+    <string name="pace_race_distance">Wettkampfdistanz</string>
+    <string name="pace_goal_time">Zielzeit</string>
+    <string name="pace_goal_time_desc">Ziel-Finishzeit für %1$s</string>
+    <string name="pace_hours">h</string>
+    <string name="pace_minutes">min</string>
+    <string name="pace_seconds">sek</string>
+    <string name="pace_zone_easy_desc">Konversationstempo. Sollte sich leicht anfühlen — du könntest ein vollständiges Gespräch führen. Baut aerobe Basis auf.</string>
+    <string name="pace_zone_long_desc">Etwas langsamer als Easy. Für deinen Wochenend-Langen, um Ausdauer aufzubauen.</string>
+    <string name="pace_zone_tempo_desc">Angenehm hart. Du kannst in kurzen Sätzen sprechen. Erhöht die Laktatschwelle.</string>
+    <string name="pace_zone_interval_desc">Harte Anstrengung. Kurze hochintensive Intervalle im oder schneller als Wettkampftempo. Baut VO\u2082max auf.</string>
+    <string name="pace_no_time">Gib deine Zielzeit ein, um deine Trainingstempozonen zu sehen.</string>
+    <string name="pace_training_zones">Trainingszonen</string>
+    <string name="pace_training_zones_sub">Basierend auf %1$s-Ziel · %2$s</string>
+
     <!-- Stretching screen -->
     <string name="stretch_pre_run_title">Aufwärmen vor dem Lauf</string>
     <string name="stretch_post_run_title">Abkühlen nach dem Lauf</string>
@@ -172,6 +189,9 @@
     <string name="stretch_post_run_banner">Hilf dem Körper bei der Erholung und reduziere Muskelkater.</string>
     <string name="stretch_tip">Tippe auf eine Übung, um die Anleitung zu erweitern.</string>
     <string name="stretch_watch_tutorial">Tutorial ansehen</string>
+    <string name="workout_coach_note">Trainers Notiz</string>
+    <string name="workout_coaching_tip">Coaching-Tipp</string>
+    <string name="workout_post_coaching">Post-Workout-Coaching</string>
     <string name="btn_pre_run_stretch">Vor dem Lauf</string>
     <string name="btn_post_run_stretch">Nach dem Lauf</string>
 

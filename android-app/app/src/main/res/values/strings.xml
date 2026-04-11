@@ -10,6 +10,7 @@
     <string name="nav_settings">Settings</string>
     <string name="nav_workout">Workout</string>
     <string name="nav_run_history">Run History</string>
+    <string name="nav_pace">Pace</string>
     <string name="cd_back">Back</string>
     <string name="cd_home">Home</string>
 
@@ -163,6 +164,22 @@
     <string name="lang_italian">Italiano</string>
     <string name="lang_german">Deutsch</string>
 
+    <!-- Pace calculator screen -->
+    <string name="pace_title">Pace Zones</string>
+    <string name="pace_race_distance">Race Distance</string>
+    <string name="pace_goal_time">Goal Time</string>
+    <string name="pace_goal_time_desc">Target finish time for %1$s</string>
+    <string name="pace_hours">h</string>
+    <string name="pace_minutes">min</string>
+    <string name="pace_seconds">sec</string>
+    <string name="pace_zone_easy_desc">Conversational pace. Should feel easy — you could hold a full conversation. Builds aerobic base.</string>
+    <string name="pace_zone_long_desc">Slightly slower than easy. Used for your weekend long run to build endurance.</string>
+    <string name="pace_zone_tempo_desc">Comfortably hard. You can speak in short sentences. Raises lactate threshold.</string>
+    <string name="pace_zone_interval_desc">Hard effort. Brief high-intensity bursts at or faster than race pace. Builds VO\u2082max.</string>
+    <string name="pace_no_time">Enter your goal time above to see training pace zones.</string>
+    <string name="pace_training_zones">Training Zones</string>
+    <string name="pace_training_zones_sub">Based on %1$s goal · %2$s</string>
+
     <!-- Stretching screen -->
     <string name="stretch_pre_run_title">Pre-Run Warm-Up</string>
     <string name="stretch_post_run_title">Post-Run Cool-Down</string>
@@ -172,6 +189,9 @@
     <string name="stretch_post_run_banner">Help your body recover and reduce soreness after your run.</string>
     <string name="stretch_tip">Tap any exercise to expand instructions.</string>
     <string name="stretch_watch_tutorial">Watch tutorial</string>
+    <string name="workout_coach_note">Coach\'s Note</string>
+    <string name="workout_coaching_tip">Coaching Tip</string>
+    <string name="workout_post_coaching">Post-Workout Coaching</string>
     <string name="btn_pre_run_stretch">Pre-run</string>
     <string name="btn_post_run_stretch">Post-run</string>
 

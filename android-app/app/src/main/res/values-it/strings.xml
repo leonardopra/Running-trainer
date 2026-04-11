@@ -10,6 +10,7 @@
     <string name="nav_settings">Impostazioni</string>
     <string name="nav_workout">Allenamento</string>
     <string name="nav_run_history">Storico Corse</string>
+    <string name="nav_pace">Passo</string>
     <string name="cd_back">Indietro</string>
     <string name="cd_home">Home</string>
 
@@ -163,6 +164,22 @@
     <string name="lang_italian">Italiano</string>
     <string name="lang_german">Deutsch</string>
 
+    <!-- Pace calculator screen -->
+    <string name="pace_title">Zone di Passo</string>
+    <string name="pace_race_distance">Distanza Gara</string>
+    <string name="pace_goal_time">Tempo Obiettivo</string>
+    <string name="pace_goal_time_desc">Tempo d\'arrivo previsto per %1$s</string>
+    <string name="pace_hours">h</string>
+    <string name="pace_minutes">min</string>
+    <string name="pace_seconds">sec</string>
+    <string name="pace_zone_easy_desc">Ritmo conversazionale. Deve sembrare facile — potresti tenere una conversazione completa. Costruisce la base aerobica.</string>
+    <string name="pace_zone_long_desc">Leggermente più lento dell\'easy. Usato per il lungo del weekend per costruire resistenza.</string>
+    <string name="pace_zone_tempo_desc">Moderatamente duro. Riesci a parlare in frasi brevi. Aumenta la soglia del lattato.</string>
+    <string name="pace_zone_interval_desc">Sforzo duro. Brevi raffiche ad alta intensità a ritmo gara o più veloci. Costruisce il VO\u2082max.</string>
+    <string name="pace_no_time">Inserisci il tuo tempo obiettivo per vedere le zone di passo.</string>
+    <string name="pace_training_zones">Zone di Allenamento</string>
+    <string name="pace_training_zones_sub">Basato su obiettivo %1$s · %2$s</string>
+
     <!-- Stretching screen -->
     <string name="stretch_pre_run_title">Riscaldamento Pre-Corsa</string>
     <string name="stretch_post_run_title">Defaticamento Post-Corsa</string>
@@ -172,6 +189,9 @@
     <string name="stretch_post_run_banner">Aiuta il corpo a recuperare e riduci i dolori muscolari.</string>
     <string name="stretch_tip">Tocca un esercizio per espandere le istruzioni.</string>
     <string name="stretch_watch_tutorial">Guarda tutorial</string>
+    <string name="workout_coach_note">Nota Allenatore</string>
+    <string name="workout_coaching_tip">Consiglio Allenatore</string>
+    <string name="workout_post_coaching">Coaching Post-Allenamento</string>
     <string name="btn_pre_run_stretch">Pre-corsa</string>
     <string name="btn_post_run_stretch">Post-corsa</string>
 

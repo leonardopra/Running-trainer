@@ -105,7 +105,7 @@ fun WorkoutDetailScreen(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(workout.title, style = MaterialTheme.typography.headlineMedium)
                 Text(
-                    "Day ${workout.dayOfWeek} · ${workout.type.name.replace("([A-Z])".toRegex(), " $1").trim()}",
+                    stringResource(R.string.home_day_label, workout.dayOfWeek) + " · " + workout.type.typeLabel(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextMuted
                 )
@@ -142,11 +142,55 @@ fun WorkoutDetailScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(zone.label, style = MaterialTheme.typography.bodyMedium)
+                            Text(zone.type.typeLabel(), style = MaterialTheme.typography.bodyMedium)
                             Text(zone.paceRange, style = MaterialTheme.typography.labelLarge, color = typeColor)
                         }
-                        Text(zone.description, style = MaterialTheme.typography.bodySmall, color = TextMuted)
+                        Text(zone.type.zoneDescription(), style = MaterialTheme.typography.bodySmall, color = TextMuted)
                     }
+                }
+            }
+        }
+
+        // AI coach's note (from week enrichment)
+        if (!workout.description.isNullOrBlank()) {
+            val shape = RoundedCornerShape(16.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape)
+                    .background(MaterialTheme.colorScheme.surface, shape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), shape)
+                    .padding(16.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        stringResource(R.string.workout_coach_note),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(workout.description, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+
+        // AI coaching tip (from week enrichment)
+        if (!workout.coachingTip.isNullOrBlank()) {
+            val shape = RoundedCornerShape(16.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape)
+                    .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f), shape)
+                    .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.35f), shape)
+                    .padding(16.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        stringResource(R.string.workout_coaching_tip),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(workout.coachingTip, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }
@@ -239,6 +283,28 @@ fun WorkoutDetailScreen(
                 Text(stringResource(R.string.btn_clear_log))
             }
         }
+        // Post-workout AI coaching (shown after workout is completed)
+        if (workout.isCompleted && !workout.postWorkoutCoaching.isNullOrBlank()) {
+            val shape = RoundedCornerShape(16.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f), shape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), shape)
+                    .padding(16.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        stringResource(R.string.workout_post_coaching),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(workout.postWorkoutCoaching, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+
         // Stretching
         if (onOpenStretching != null) {
             Row(

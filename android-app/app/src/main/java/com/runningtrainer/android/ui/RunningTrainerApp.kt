@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +33,7 @@ import com.runningtrainer.android.ui.screens.FitnessSelectionScreen
 import com.runningtrainer.android.ui.screens.GeneratingPlanScreen
 import com.runningtrainer.android.ui.screens.GoalSelectionScreen
 import com.runningtrainer.android.ui.screens.HomeScreen
+import com.runningtrainer.android.ui.screens.PaceCalculatorScreen
 import com.runningtrainer.android.ui.screens.ProgressScreen
 import com.runningtrainer.android.ui.screens.ProfileScreen
 import com.runningtrainer.android.ui.screens.RaceConfigScreen
@@ -46,6 +48,7 @@ import com.runningtrainer.android.ui.theme.SurfaceVar
 private val mainNavDestinations = setOf(
     AppDestination.Home,
     AppDestination.Progress,
+    AppDestination.PaceCalc,
     AppDestination.Settings
 )
 
@@ -75,6 +78,7 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                             text = when (dest) {
                                 AppDestination.Home          -> stringResource(R.string.app_name)
                                 AppDestination.Progress      -> stringResource(R.string.nav_progress)
+                                AppDestination.PaceCalc      -> stringResource(R.string.nav_pace)
                                 AppDestination.Settings      -> stringResource(R.string.nav_settings)
                                 AppDestination.WorkoutDetail -> stringResource(R.string.nav_workout)
                                 AppDestination.RunHistory    -> stringResource(R.string.nav_run_history)
@@ -139,6 +143,19 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                         onClick = viewModel::openProgress,
                         icon = { Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.nav_progress)) },
                         label = { Text(stringResource(R.string.nav_progress)) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor   = MaterialTheme.colorScheme.primary,
+                            selectedTextColor   = MaterialTheme.colorScheme.primary,
+                            indicatorColor      = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = dest == AppDestination.PaceCalc,
+                        onClick = viewModel::openPaceCalc,
+                        icon = { Icon(Icons.Default.Speed, contentDescription = stringResource(R.string.nav_pace)) },
+                        label = { Text(stringResource(R.string.nav_pace)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor   = MaterialTheme.colorScheme.primary,
                             selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -231,6 +248,12 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                 innerPadding = innerPadding,
                 activePlan = uiState.activePlan,
                 onBack = viewModel::openProgress
+            )
+            AppDestination.PaceCalc -> PaceCalculatorScreen(
+                innerPadding = innerPadding,
+                activePlan = uiState.activePlan,
+                savedGoalTimeSeconds = uiState.preferences.goalTimeSeconds,
+                onSaveGoalTime = viewModel::saveGoalTime
             )
             AppDestination.Settings -> SettingsScreen(
                 innerPadding = innerPadding,

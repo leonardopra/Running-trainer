@@ -34,7 +34,7 @@ class PaceCalculatorService {
     companion object {
         private data class ZoneMult(val fast: Double, val slow: Double)
 
-        private fun distanceKm(goal: GoalType): Double = when (goal) {
+        fun distanceKm(goal: GoalType): Double = when (goal) {
             GoalType.fiveK -> 5.0
             GoalType.tenK -> 10.0
             GoalType.halfMarathon -> 21.0975

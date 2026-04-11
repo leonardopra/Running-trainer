@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import java.time.LocalDate
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -125,10 +126,13 @@ fun HomeScreen(
             Text(stringResource(R.string.home_training_plan), style = MaterialTheme.typography.titleLarge)
         }
 
+        val today = LocalDate.now()
         items(activePlan.weeks) { week ->
             val completedCount = week.workouts.count { it.isCompleted && it.type != WorkoutType.rest }
             val plannedCount   = week.workouts.count { it.type != WorkoutType.rest }
-            val isCurrentWeek  = false // TODO: derive from date
+            val weekStart = activePlan.startDate.plusDays(((week.weekNumber - 1) * 7).toLong())
+            val weekEnd   = weekStart.plusDays(7)
+            val isCurrentWeek = !today.isBefore(weekStart) && today.isBefore(weekEnd)
 
             SurfaceCard(
                 modifier = Modifier.fillMaxWidth(),
@@ -214,6 +218,25 @@ fun SurfaceCard(
     ) {
         content()
     }
+}
+
+@Composable
+fun WorkoutType.typeLabel(): String = when (this) {
+    WorkoutType.easyRun     -> stringResource(R.string.workout_type_easy_run)
+    WorkoutType.longRun     -> stringResource(R.string.workout_type_long_run)
+    WorkoutType.tempoRun    -> stringResource(R.string.workout_type_tempo_run)
+    WorkoutType.intervalRun -> stringResource(R.string.workout_type_interval_run)
+    WorkoutType.crossTrain  -> stringResource(R.string.workout_type_cross_train)
+    WorkoutType.rest        -> stringResource(R.string.workout_type_rest)
+}
+
+@Composable
+fun WorkoutType.zoneDescription(): String = when (this) {
+    WorkoutType.easyRun     -> stringResource(R.string.pace_zone_easy_desc)
+    WorkoutType.longRun     -> stringResource(R.string.pace_zone_long_desc)
+    WorkoutType.tempoRun    -> stringResource(R.string.pace_zone_tempo_desc)
+    WorkoutType.intervalRun -> stringResource(R.string.pace_zone_interval_desc)
+    else                    -> ""
 }
 
 @Composable

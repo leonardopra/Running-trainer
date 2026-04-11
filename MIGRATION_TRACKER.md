@@ -22,7 +22,8 @@ Native targets:
 - `[ ]` `backend-services/` implemented
 
 Recent Android verification:
-- `[x]` `env JAVA_HOME='/Applications/Android Studio.app/Contents/jbr/Contents/Home' ./gradlew testDebugUnitTest`
+- `[x]` `env JAVA_HOME='/Applications/Android Studio.app/Contents/jbr/Contents/Home' ./gradlew testDebugUnitTest` — all JVM unit tests pass
+- `[x]` `env JAVA_HOME='/Applications/Android Studio.app/Contents/jbr/Contents/Home' ./gradlew compileDebugKotlin` — clean compile after pace calculator + i18n fixes
 
 ## Parity Matrix
 
@@ -40,9 +41,9 @@ Recent Android verification:
 | Workout logging | Complete | Complete | Complete | Not started | P0 | Web: full log form with clear-log support |
 | Progress dashboard | Complete | Complete | Complete | Not started | P0 | Web: stat grid, weekly bars, feeling/type breakdown, recent activity |
 | Settings | Complete | Complete | Complete | Not started | P0 | Web: profile, units, API key (obscured), new plan, reset all with dialogs |
-| Pace calculator | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port, shown in WorkoutDetail |
+| Pace calculator | Complete | Complete | Complete | Not started | P0 | Android: dedicated 4th tab with goal selector + HH:MM:SS input; Web: TypeScript port, shown in WorkoutDetail |
 | Insights engine | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port, shown on HomeScreen |
-| Localization | Complete | Complete | Partial | Not started | P1 | Web: locale selector in Settings (no i18n framework yet) |
+| Localization | Complete | Complete | Partial | Not started | P1 | Android: EN/IT/DE, runtime switching via AppCompatDelegate; Web: locale selector in Settings (no i18n framework yet) |
 | Notifications | Complete | Complete | Not started | Not started | P1 | Web notifications not yet started |
 | AI enrichment | Complete | Complete | Not started | Not started | P1 | Web: API key stored, enrichment not yet wired |
 | Post-workout AI coaching | Complete | Complete | Not started | Not started | P1 | |
@@ -80,7 +81,7 @@ Recent Android verification:
   - Custom typography matching Flutter sizes/weights
   - Border-based card styling (no elevation), 16dp radius
   - Workout type color palette across all screens
-  - Bottom navigation bar for Home / Progress / Settings
+  - Bottom navigation bar for Home / Progress / Pace / Settings (4 tabs)
   - Onboarding: progress indicator, selection cards, filled text fields, 56dp CTA buttons
   - Insight chips and plan chips with primary color tint
   - Stat cards with per-metric accent borders
@@ -105,11 +106,16 @@ Recent Android verification:
 - `[x] P0` Added JVM tests for progress stats
 
 ### Completed (continued)
+- `[x] P0` Add dedicated pace calculator screen (4th bottom-nav tab: goal selector, HH:MM:SS input, expandable zone cards, auto-save goal time)
+- `[x] P0` Highlight current week in plan overview (derived from `plan.startDate`)
+- `[x] P0` Display AI enrichment fields in workout detail (`description`, `coachingTip`, `postWorkoutCoaching`)
+- `[x] P0` Full i18n: all UI strings via `stringResource()`; workout-type labels and pace-zone descriptions resolved at Composable layer
+- `[x] P1` Fix language switching (`MainActivity` extends `AppCompatActivity` so `AppCompatDelegate.setApplicationLocales()` applies on all API levels)
 - `[x] P2` Add stretching screen (expandable exercise list, pre/post run, YouTube tutorial links, EN/IT/DE strings)
 - `[x] P2` Add privacy screen (data storage, AI, notifications, deletion sections)
 
 ### In Progress
-- `[ ] P0` Full Android Day 1 parity with Flutter
+- none
 
 ### Next
 - `[x] P0` Add race-date and duration selection to onboarding

@@ -405,6 +405,17 @@ class MainViewModel(
         }
     }
 
+    fun openPaceCalc() {
+        currentDestination.value = AppDestination.PaceCalc
+    }
+
+    fun saveGoalTime(goalTimeSeconds: Int) {
+        viewModelScope.launch {
+            val updatedPrefs = uiState.value.preferences.copy(goalTimeSeconds = goalTimeSeconds)
+            settingsRepository.savePreferences(updatedPrefs)
+        }
+    }
+
     private suspend fun runEnrichment(apiKey: String, prefs: UserPreferencesDto) {
         val plan = trainingPlanRepository.observeActivePlan().firstOrNull() ?: return
         if (plan.isClaudeEnriched) return
