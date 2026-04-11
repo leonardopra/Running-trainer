@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct ProgressView: View {
+struct ProgressDashboardView: View {
     @Bindable var vm: AppViewModel
 
     var body: some View {
         ZStack {
             Color.appBackground.ignoresSafeArea()
             if let stats = vm.progressStats {
-                ProgressContent(vm: vm, stats: stats)
+                ProgressDashboardContent(vm: vm, stats: stats)
             } else {
                 VStack {
                     Text("No progress data yet.")
@@ -20,7 +20,7 @@ struct ProgressView: View {
     }
 }
 
-private struct ProgressContent: View {
+private struct ProgressDashboardContent: View {
     @Bindable var vm: AppViewModel
     let stats: ProgressStats
 

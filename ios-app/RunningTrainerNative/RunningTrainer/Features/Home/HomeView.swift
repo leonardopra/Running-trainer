@@ -50,9 +50,9 @@ private struct PlanHomeContent: View {
                         .foregroundColor(.appOnDark)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            PlanChip("\(plan.totalWeeks) weeks")
-                            PlanChip("\(plan.trainingDaysPerWeek) days/week")
-                            PlanChip(plan.goalType.displayName)
+                            PlanChip(label: "\(plan.totalWeeks) weeks")
+                            PlanChip(label: "\(plan.trainingDaysPerWeek) days/week")
+                            PlanChip(label: plan.goalType.displayName)
                         }
                     }
                 }
@@ -60,7 +60,7 @@ private struct PlanHomeContent: View {
                 // Enrichment banner
                 if vm.isEnrichingPlan {
                     HStack(spacing: 10) {
-                        ProgressView().tint(.appPrimary)
+                        SwiftUI.ProgressView().tint(.appPrimary)
                         Text("AI is enriching your plan…")
                             .font(.system(size: 14))
                             .foregroundColor(.appTextMuted)

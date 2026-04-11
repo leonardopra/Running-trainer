@@ -138,7 +138,7 @@ private struct ProgressOrHistoryView: View {
                             }
                         }
                 } else {
-                    ProgressView(vm: vm)
+                    ProgressDashboardView(vm: vm)
                         .navigationTitle("")
                         .navigationBarHidden(true)
                 }

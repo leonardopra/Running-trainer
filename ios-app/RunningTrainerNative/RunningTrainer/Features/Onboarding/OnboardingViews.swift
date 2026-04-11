@@ -250,7 +250,7 @@ struct GeneratingView: View {
             Color.appBackground.ignoresSafeArea()
             VStack(spacing: 24) {
                 Spacer()
-                ProgressView()
+                SwiftUI.ProgressView()
                     .scaleEffect(1.5)
                     .tint(.appPrimary)
                 Text("Building your plan...")
