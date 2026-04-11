@@ -18,7 +18,7 @@ Reference baseline:
 Native targets:
 - `[x]` `android-app/` started
 - `[x]` `web-app/` bootstrapped (domain layer + full UI in progress)
-- `[ ]` `ios-app/` implemented
+- `[x]` `ios-app/` implemented (P0 feature set + AI + stretching + privacy)
 - `[ ]` `backend-services/` implemented
 
 Recent Android verification:
@@ -30,26 +30,26 @@ Recent Android verification:
 | Feature Area | Flutter Reference | Android | Web | iOS | Priority | Notes |
 |---|---|---|---|---|---|---|
 | Golden reference behavior | Complete | In use | In use | In use | P0 | Flutter remains source of truth |
-| Shared contracts | Complete | In use | In use | Planned | P0 | `product-spec/` |
-| Fixture-driven parity tests | Complete | Complete | Complete | Planned | P0 | Web: vitest fixture parity tests |
-| Onboarding core flow | Complete | Complete | Complete | Not started | P0 | Web: goal→race-config→fitness→days→profile→generating |
-| Local plan generation | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port matched to fixtures |
-| Local plan persistence | Complete | Complete | Complete | Not started | P0 | Web: Dexie/IndexedDB + localStorage for prefs |
-| Home screen | Complete | Complete | Complete | Not started | P0 | Web: greeting, insight strip, all-week plan overview with type bars |
-| Plan overview | Complete | Complete | Complete | Not started | P0 | Web: all weeks shown with color-coded type bars |
-| Workout detail | Complete | Complete | Complete | Not started | P0 | Web: type-colored header, pace zones, feeling chips, RPE slider |
-| Workout logging | Complete | Complete | Complete | Not started | P0 | Web: full log form with clear-log support |
-| Progress dashboard | Complete | Complete | Complete | Not started | P0 | Web: stat grid, weekly bars, feeling/type breakdown, recent activity |
-| Settings | Complete | Complete | Complete | Not started | P0 | Web: profile, units, API key (obscured), new plan, reset all with dialogs |
-| Pace calculator | Complete | Complete | Complete | Not started | P0 | Android: dedicated 4th tab with goal selector + HH:MM:SS input; Web: TypeScript port, shown in WorkoutDetail |
-| Insights engine | Complete | Complete | Complete | Not started | P0 | Web: TypeScript port, shown on HomeScreen |
-| Localization | Complete | Complete | Partial | Not started | P1 | Android: EN/IT/DE, runtime switching via AppCompatDelegate; Web: locale selector in Settings (no i18n framework yet) |
-| Notifications | Complete | Complete | Not started | Not started | P1 | Web notifications not yet started |
-| AI enrichment | Complete | Complete | Not started | Not started | P1 | Web: API key stored, enrichment not yet wired |
-| Post-workout AI coaching | Complete | Complete | Not started | Not started | P1 | |
-| Run history | Complete | Complete | Not started | Not started | P1 | Web: accessible via Progress > recent activity |
-| Stretching | Complete | Complete | Not started | Not started | P2 | |
-| Privacy screen | Complete | Complete | Not started | Not started | P2 | |
+| Shared contracts | Complete | In use | In use | In use | P0 | `product-spec/` |
+| Fixture-driven parity tests | Complete | Complete | Complete | Complete | P0 | iOS: XCTest fixture parity tests |
+| Onboarding core flow | Complete | Complete | Complete | Complete | P0 | iOS: goal→race-config→fitness→days→profile→generating |
+| Local plan generation | Complete | Complete | Complete | Complete | P0 | iOS: Swift port matched to fixtures |
+| Local plan persistence | Complete | Complete | Complete | Complete | P0 | iOS: UserDefaults JSON blob + Keychain for API key |
+| Home screen | Complete | Complete | Complete | Complete | P0 | iOS: greeting, insight strip, all-week plan overview with type bars |
+| Plan overview | Complete | Complete | Complete | Complete | P0 | iOS: all weeks with color-coded type bars + current week highlight |
+| Workout detail | Complete | Complete | Complete | Complete | P0 | iOS: type badge, AI fields, pace zones, feeling chips, RPE slider |
+| Workout logging | Complete | Complete | Complete | Complete | P0 | iOS: full log form with clear-log support |
+| Progress dashboard | Complete | Complete | Complete | Complete | P0 | iOS: stat grid, weekly bars, feeling/type breakdown, recent activity |
+| Settings | Complete | Complete | Complete | Complete | P0 | iOS: profile, units, language, API key (secure), new plan, reset all |
+| Pace calculator | Complete | Complete | Complete | Complete | P0 | iOS: dedicated 4th tab, wheel picker HH:MM:SS, expandable zone cards |
+| Insights engine | Complete | Complete | Complete | Complete | P0 | iOS: Swift port, 13 rule categories, shown on HomeScreen |
+| Localization | Complete | Complete | Partial | Partial | P1 | iOS: language selector in Settings, full i18n pending |
+| Notifications | Complete | Complete | Not started | Not started | P1 | iOS: UNUserNotificationCenter not yet wired |
+| AI enrichment | Complete | Complete | Not started | Complete | P1 | iOS: ClaudeService.enrichPlan() async |
+| Post-workout AI coaching | Complete | Complete | Not started | Complete | P1 | iOS: ClaudeService.generatePostWorkoutCoaching() |
+| Run history | Complete | Complete | Not started | Complete | P1 | iOS: RunHistoryView with full log details |
+| Stretching | Complete | Complete | Not started | Complete | P2 | iOS: StretchingView, pre/post run, expandable |
+| Privacy screen | Complete | Complete | Not started | Complete | P2 | iOS: PrivacyView with delete-all action |
 
 ## Shared Foundation
 
@@ -168,23 +168,30 @@ Recent Android verification:
 ### Completed
 - `[x] P0` Created `ios-app/` scaffold folder
 - `[x] P0` Added initial migration documentation for iOS
+- `[x] P0` Created SwiftUI app project (source + `project.yml` for xcodegen)
+- `[x] P0` Ported DTOs and domain models to Swift (`Workout`, `TrainingWeek`, `TrainingPlan`, `UserPreferences`, enums)
+- `[x] P0` Ported local plan generator to Swift (age-aware progression, taper, 7-per-week constraint)
+- `[x] P0` Added local persistence (`TrainingPlanStore` via UserDefaults JSON blob, `SettingsStore` with Keychain for API key)
+- `[x] P0` Implemented onboarding flow (goal → race config → fitness → days → profile → generating → home)
+- `[x] P0` Implemented home screen (greeting, insight strip, week cards with type bars, workout rows)
+- `[x] P0` Implemented workout detail (AI fields, pace zones, log form, feeling chips, RPE slider, clear log)
+- `[x] P0` Implemented workout logging (full log with actual distance/duration/notes/RPE/feeling)
+- `[x] P0` Implemented progress dashboard (stat grid, weekly bars, type breakdown, feeling breakdown, recent activity)
+- `[x] P0` Implemented run history screen
+- `[x] P0` Implemented settings (profile, units, language selector, notifications, API key, new plan, reset)
+- `[x] P0` Added fixture-driven parity tests (`PlanGeneratorFixtureTests`)
+- `[x] P1` Added pace calculator (goal selector, HH:MM:SS wheel picker, expandable zone cards, save goal time)
+- `[x] P1` Added insights engine port (`InsightsService.swift`, 13 rule categories)
+- `[x] P1` Added secure storage — Keychain for API key
+- `[x] P1` Added AI integration (plan enrichment + post-workout coaching via `ClaudeService.swift`)
+- `[x] P2` Added stretching screen (pre/post run, expandable exercise list)
+- `[x] P2` Added privacy screen (data storage, AI, notifications, delete data sections)
 
 ### Next
-- `[ ] P0` Create SwiftUI app project
-- `[ ] P0` Port DTOs and domain models
-- `[ ] P0` Port local plan generator to Swift
-- `[ ] P0` Add local persistence
-- `[ ] P0` Implement onboarding
-- `[ ] P0` Implement home, plan, workout detail
-- `[ ] P0` Implement workout logging
-- `[ ] P0` Implement progress and settings
-- `[ ] P0` Add fixture-driven parity tests
-- `[ ] P1` Add pace calculator
-- `[ ] P1` Add insights
-- `[ ] P1` Add notifications
-- `[ ] P1` Add secure storage and AI integration
-- `[ ] P1` Add localization
-- `[ ] P2` Add stretching and privacy screens
+- `[ ] P1` Add local notifications scheduling (UNUserNotificationCenter)
+- `[ ] P1` Add full localization (EN/IT/DE via String Catalog or .strings files)
+- `[ ] P1` Add `xcodegen generate` to CI / verify clean build
+- `[ ] P2` Add instrumentation/UI tests for onboarding and workout logging
 
 ## Backend Services
 
