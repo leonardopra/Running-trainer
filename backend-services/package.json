@@ -1,0 +1,10 @@
+{
+  "name": "running-trainer-backend-services",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Optional backend services for AI enrichment and future sync support.",
+  "scripts": {
+    "dev": "echo \"Scaffold only: implement server entrypoint next\"",
+    "test": "echo \"Add contract and endpoint tests\""
+  }
+}

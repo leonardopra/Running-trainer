@@ -13,7 +13,9 @@ import '../../../providers/training_plan_provider.dart';
 import '../widgets/feeling_distribution.dart';
 import '../widgets/pace_trend_chart.dart';
 import '../widgets/rpe_trend_chart.dart';
+import '../widgets/completion_rate_chart.dart';
 import '../widgets/weekly_bar_chart.dart';
+import '../widgets/workout_type_distribution_chart.dart';
 
 class ProgressDashboardScreen extends ConsumerWidget {
   const ProgressDashboardScreen({super.key});
@@ -105,6 +107,34 @@ class ProgressDashboardScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: WeeklyBarChart(weeks: stats.weeklyProgress, useKilometers: useKm),
+                    ),
+                    const SizedBox(height: 32),
+
+                    Text(l10n.progressWeeklyCompletionRate, style: AppTextStyles.heading3),
+                    const SizedBox(height: 4),
+                    Text(l10n.progressWeeklyCompletionRateDesc, style: AppTextStyles.bodyMuted),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: CompletionRateChart(weeks: stats.weeklyProgress),
+                    ),
+
+                    const SizedBox(height: 32),
+                    Text(l10n.progressWorkoutDistribution, style: AppTextStyles.heading3),
+                    const SizedBox(height: 4),
+                    Text(l10n.progressWorkoutDistributionDesc, style: AppTextStyles.bodyMuted),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: WorkoutTypeDistributionChart(counts: stats.workoutTypeCounts),
                     ),
                     // ── Pace Trend ────────────────────────────────────────
                     const SizedBox(height: 32),
@@ -242,7 +272,7 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,9 +328,13 @@ class _ActivityTile extends StatelessWidget {
     String dateStr = '';
     if (date != null) {
       final diff = DateTime.now().difference(date).inDays;
-      if (diff == 0) dateStr = l10n.progressToday;
-      else if (diff == 1) dateStr = l10n.progressYesterday;
-      else dateStr = l10n.progressDaysAgo(diff);
+      if (diff == 0) {
+        dateStr = l10n.progressToday;
+      } else if (diff == 1) {
+        dateStr = l10n.progressYesterday;
+      } else {
+        dateStr = l10n.progressDaysAgo(diff);
+      }
     }
 
     return Container(
@@ -316,7 +350,7 @@ class _ActivityTile extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.15),
+              color: AppColors.secondary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.check, color: AppColors.secondary, size: 18),

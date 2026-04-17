@@ -1,0 +1,280 @@
+package com.runningtrainer.android.ui
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.runningtrainer.android.R
+import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.runningtrainer.android.ui.navigation.AppDestination
+import com.runningtrainer.android.ui.screens.FitnessSelectionScreen
+import com.runningtrainer.android.ui.screens.GeneratingPlanScreen
+import com.runningtrainer.android.ui.screens.GoalSelectionScreen
+import com.runningtrainer.android.ui.screens.HomeScreen
+import com.runningtrainer.android.ui.screens.PaceCalculatorScreen
+import com.runningtrainer.android.ui.screens.ProgressScreen
+import com.runningtrainer.android.ui.screens.ProfileScreen
+import com.runningtrainer.android.ui.screens.RaceConfigScreen
+import com.runningtrainer.android.ui.screens.PrivacyScreen
+import com.runningtrainer.android.ui.screens.RunHistoryScreen
+import com.runningtrainer.android.ui.screens.SettingsScreen
+import com.runningtrainer.android.ui.screens.StretchingScreen
+import com.runningtrainer.android.ui.screens.TrainingDaysScreen
+import com.runningtrainer.android.ui.screens.WorkoutDetailScreen
+import com.runningtrainer.android.ui.theme.SurfaceVar
+
+private val mainNavDestinations = setOf(
+    AppDestination.Home,
+    AppDestination.Progress,
+    AppDestination.PaceCalc,
+    AppDestination.Settings
+)
+
+private val onboardingDestinations = setOf(
+    AppDestination.Goal,
+    AppDestination.RaceConfig,
+    AppDestination.Fitness,
+    AppDestination.Days,
+    AppDestination.Profile,
+    AppDestination.Generating
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RunningTrainerApp(viewModel: MainViewModel) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val dest = uiState.currentDestination
+    val isOnboarding = dest in onboardingDestinations
+    val isMainNav = dest in mainNavDestinations
+
+    Scaffold(
+        topBar = {
+            if (!isOnboarding) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = when (dest) {
+                                AppDestination.Home          -> stringResource(R.string.app_name)
+                                AppDestination.Progress      -> stringResource(R.string.nav_progress)
+                                AppDestination.PaceCalc      -> stringResource(R.string.nav_pace)
+                                AppDestination.Settings      -> stringResource(R.string.nav_settings)
+                                AppDestination.WorkoutDetail -> stringResource(R.string.nav_workout)
+                                AppDestination.RunHistory    -> stringResource(R.string.nav_run_history)
+                                AppDestination.Stretching    -> stringResource(
+                                    if (uiState.isPreRunStretching) R.string.stretch_pre_run_title
+                                    else R.string.stretch_post_run_title
+                                )
+                                AppDestination.Privacy       -> stringResource(R.string.privacy_title)
+                                else -> ""
+                            },
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    navigationIcon = {
+                        if (!isMainNav) {
+                            IconButton(onClick = {
+                                when (dest) {
+                                    AppDestination.WorkoutDetail -> viewModel.goHome()
+                                    AppDestination.RunHistory    -> viewModel.openProgress()
+                                    AppDestination.Stretching    -> viewModel.goHome()
+                                    AppDestination.Privacy       -> viewModel.openSettings()
+                                    else -> {}
+                                }
+                            }) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.cd_back)
+                                )
+                            }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            }
+        },
+        bottomBar = {
+            if (isMainNav) {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = androidx.compose.ui.unit.Dp.Unspecified
+                ) {
+                    NavigationBarItem(
+                        selected = dest == AppDestination.Home,
+                        onClick = viewModel::goHome,
+                        icon = { Icon(Icons.Default.Home, contentDescription = stringResource(R.string.cd_home)) },
+                        label = { Text(stringResource(R.string.nav_home)) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor   = MaterialTheme.colorScheme.primary,
+                            selectedTextColor   = MaterialTheme.colorScheme.primary,
+                            indicatorColor      = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = dest == AppDestination.Progress,
+                        onClick = viewModel::openProgress,
+                        icon = { Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.nav_progress)) },
+                        label = { Text(stringResource(R.string.nav_progress)) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor   = MaterialTheme.colorScheme.primary,
+                            selectedTextColor   = MaterialTheme.colorScheme.primary,
+                            indicatorColor      = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = dest == AppDestination.PaceCalc,
+                        onClick = viewModel::openPaceCalc,
+                        icon = { Icon(Icons.Default.Speed, contentDescription = stringResource(R.string.nav_pace)) },
+                        label = { Text(stringResource(R.string.nav_pace)) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor   = MaterialTheme.colorScheme.primary,
+                            selectedTextColor   = MaterialTheme.colorScheme.primary,
+                            indicatorColor      = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = dest == AppDestination.Settings,
+                        onClick = viewModel::openSettings,
+                        icon = { Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings)) },
+                        label = { Text(stringResource(R.string.nav_settings)) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor   = MaterialTheme.colorScheme.primary,
+                            selectedTextColor   = MaterialTheme.colorScheme.primary,
+                            indicatorColor      = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        if (uiState.isBootstrapping) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(stringResource(R.string.loading), style = MaterialTheme.typography.bodyLarge)
+            }
+            return@Scaffold
+        }
+
+        when (dest) {
+            AppDestination.Goal -> GoalSelectionScreen(
+                innerPadding = innerPadding,
+                onGoalSelected = viewModel::selectGoal
+            )
+            AppDestination.RaceConfig -> RaceConfigScreen(
+                innerPadding = innerPadding,
+                uiState = uiState,
+                onConfigChanged = viewModel::updateRaceConfig,
+                onContinue = viewModel::continueFromRaceConfig
+            )
+            AppDestination.Fitness -> FitnessSelectionScreen(
+                innerPadding = innerPadding,
+                onFitnessSelected = viewModel::selectFitnessLevel
+            )
+            AppDestination.Days -> TrainingDaysScreen(
+                innerPadding = innerPadding,
+                selectedDays = uiState.onboarding.trainingDaysPerWeek,
+                onDaysChanged = viewModel::updateTrainingDays,
+                onContinue = viewModel::continueFromDays
+            )
+            AppDestination.Profile -> ProfileScreen(
+                innerPadding = innerPadding,
+                uiState = uiState,
+                onProfileChanged = viewModel::updateProfile,
+                onGeneratePlan = viewModel::generatePlan
+            )
+            AppDestination.Generating -> GeneratingPlanScreen(innerPadding)
+            AppDestination.Home -> HomeScreen(
+                innerPadding = innerPadding,
+                activePlan = uiState.activePlan,
+                runnerName = uiState.preferences.name,
+                insights = uiState.insights,
+                onResetData = viewModel::resetLocalData,
+                onOpenWorkout = viewModel::openWorkoutDetail,
+                onOpenProgress = viewModel::openProgress,
+                onOpenSettings = viewModel::openSettings
+            )
+            AppDestination.WorkoutDetail -> WorkoutDetailScreen(
+                innerPadding = innerPadding,
+                workout = uiState.selectedWorkout,
+                paceZones = uiState.selectedWorkoutPaceZones,
+                onSave = viewModel::saveWorkoutLog,
+                onClear = viewModel::clearWorkoutLog,
+                onOpenStretching = viewModel::openStretching,
+                onBack = viewModel::goHome
+            )
+            AppDestination.Progress -> ProgressScreen(
+                innerPadding = innerPadding,
+                progressStats = uiState.progressStats,
+                onBack = viewModel::goHome,
+                onViewAllHistory = viewModel::openRunHistory
+            )
+            AppDestination.RunHistory -> RunHistoryScreen(
+                innerPadding = innerPadding,
+                activePlan = uiState.activePlan,
+                onBack = viewModel::openProgress
+            )
+            AppDestination.PaceCalc -> PaceCalculatorScreen(
+                innerPadding = innerPadding,
+                activePlan = uiState.activePlan,
+                savedGoalTimeSeconds = uiState.preferences.goalTimeSeconds,
+                onSaveGoalTime = viewModel::saveGoalTime
+            )
+            AppDestination.Settings -> SettingsScreen(
+                innerPadding = innerPadding,
+                preferences = uiState.preferences,
+                onSave = { name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute, localeCode ->
+                    viewModel.saveSettings(name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute, localeCode)
+                },
+                onStartNewPlan = viewModel::startNewPlan,
+                onResetAll = viewModel::resetLocalData,
+                onOpenPrivacy = viewModel::openPrivacy,
+                onBack = viewModel::goHome
+            )
+            AppDestination.Stretching -> StretchingScreen(
+                innerPadding = innerPadding,
+                isPreRun = uiState.isPreRunStretching,
+                onBack = viewModel::goHome
+            )
+            AppDestination.Privacy -> PrivacyScreen(
+                innerPadding = innerPadding,
+                onBack = viewModel::openSettings
+            )
+        }
+    }
+}

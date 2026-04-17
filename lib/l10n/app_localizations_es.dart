@@ -475,6 +475,21 @@ class AppLocalizationsEs extends AppLocalizations {
       'Kilómetros planificados vs registrados por semana.';
 
   @override
+  String get progressWeeklyCompletionRate => 'Tasa de finalizacion semanal';
+
+  @override
+  String get progressWeeklyCompletionRateDesc =>
+      'Porcentaje de entrenamientos completados por cada semana ya iniciada.';
+
+  @override
+  String get progressWorkoutDistribution =>
+      'Distribucion de tipos de entrenamiento';
+
+  @override
+  String get progressWorkoutDistributionDesc =>
+      'Mezcla de entrenamientos no de descanso en las semanas que ya has comenzado.';
+
+  @override
   String get progressPlanned => 'Planificado';
 
   @override

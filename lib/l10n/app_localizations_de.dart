@@ -478,6 +478,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Geplante vs. protokollierte Kilometer pro Woche.';
 
   @override
+  String get progressWeeklyCompletionRate => 'Wöchentliche Abschlussquote';
+
+  @override
+  String get progressWeeklyCompletionRateDesc =>
+      'Prozentsatz der absolvierten Workouts pro bereits begonnener Woche.';
+
+  @override
+  String get progressWorkoutDistribution => 'Verteilung der Workout-Typen';
+
+  @override
+  String get progressWorkoutDistributionDesc =>
+      'Mix der Nicht-Ruhetag-Workouts in den Wochen, die du bereits begonnen hast.';
+
+  @override
   String get progressPlanned => 'Geplant';
 
   @override

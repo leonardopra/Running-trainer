@@ -1,5 +1,15 @@
 import 'enums.dart';
 
+class WorkoutTypeCount {
+  final WorkoutType type;
+  final int count;
+
+  const WorkoutTypeCount({
+    required this.type,
+    required this.count,
+  });
+}
+
 class PaceDataPoint {
   final double paceMinPerKm;
   final WorkoutType type;
@@ -46,6 +56,7 @@ class ProgressStats {
   final List<RpeDataPoint> rpeDataPoints;
   final Map<WorkoutFeeling, int> feelingCounts;
   final List<PaceDataPoint> paceDataPoints;
+  final List<WorkoutTypeCount> workoutTypeCounts;
 
   const ProgressStats({
     required this.totalNonRestWorkouts,
@@ -57,6 +68,7 @@ class ProgressStats {
     required this.rpeDataPoints,
     required this.feelingCounts,
     this.paceDataPoints = const [],
+    this.workoutTypeCounts = const [],
   });
 
   double get completionRate =>

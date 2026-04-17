@@ -1,0 +1,437 @@
+:root {
+  --bg:          #0A0A0F;
+  --surface:     #13131A;
+  --surface-var: #1E1E2A;
+  --border:      #2A2A3E;
+  --primary:     #00E5FF;
+  --secondary:   #76FF03;
+  --text:        #E8E8F0;
+  --text-muted:  #8888AA;
+  --error:       #FF5252;
+  --radius:      16px;
+  --radius-sm:   8px;
+
+  --c-easy:      #4CAF50;
+  --c-long:      #9C27B0;
+  --c-tempo:     #FF9800;
+  --c-interval:  #F44336;
+  --c-cross:     #2196F3;
+  --c-rest:      #607D8B;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout helpers ──────────────────────────────────────────────────────── */
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-content {
+  flex: 1;
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Main screens with bottom nav */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.main-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 72px;
+}
+
+/* ── Bottom navigation ───────────────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 11px;
+  border: none;
+  background: none;
+  transition: color 0.15s;
+}
+
+.nav-item.active { color: var(--primary); }
+.nav-item svg { width: 22px; height: 22px; }
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+.display-large { font-size: 28px; font-weight: 700; line-height: 1.2; }
+.title-large   { font-size: 20px; font-weight: 600; }
+.title-medium  { font-size: 16px; font-weight: 600; }
+.body-large    { font-size: 16px; }
+.body-medium   { font-size: 14px; }
+.body-small    { font-size: 12px; }
+.label-large   { font-size: 14px; font-weight: 600; }
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.card-interactive {
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.card-interactive:hover { border-color: var(--primary); }
+
+/* ── Button ──────────────────────────────────────────────────────────────── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 56px;
+  width: 100%;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.btn-outlined {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  height: 48px;
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--error);
+  color: var(--error);
+  height: 48px;
+}
+
+.btn-sm {
+  height: 40px;
+  width: auto;
+  padding: 0 16px;
+}
+
+/* ── Text field ──────────────────────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.field input,
+.field textarea,
+.field select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 15px;
+  padding: 12px 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus { border-color: var(--primary); }
+
+.field textarea { resize: vertical; min-height: 80px; }
+
+/* ── Progress bar (onboarding) ───────────────────────────────────────────── */
+.progress-bar {
+  display: flex;
+  gap: 6px;
+}
+.progress-segment {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--surface-var);
+}
+.progress-segment.done { background: var(--primary); }
+
+/* ── Selection card ──────────────────────────────────────────────────────── */
+.selection-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  text-align: left;
+  width: 100%;
+}
+.selection-card:hover { border-color: var(--primary); }
+
+.selection-card .emoji { font-size: 24px; }
+
+/* ── Chip ────────────────────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip.selected {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ── Insight chip ────────────────────────────────────────────────────────── */
+.insight-chip {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  min-width: 160px;
+  max-width: 220px;
+  flex-shrink: 0;
+}
+
+.insight-chip.INFO       { border-color: var(--primary); }
+.insight-chip.POSITIVE   { border-color: var(--secondary); }
+.insight-chip.WARNING    { border-color: #FF9800; }
+.insight-chip.MOTIVATION { border-color: #9C27B0; }
+
+.insight-title { font-size: 12px; font-weight: 600; }
+.insight-body  { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+/* ── Stat card ───────────────────────────────────────────────────────────── */
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-value { font-size: 28px; font-weight: 700; }
+.stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── Workout type badge ──────────────────────────────────────────────────── */
+.workout-badge {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── RPE slider ──────────────────────────────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+}
+
+/* ── Switch toggle ───────────────────────────────────────────────────────── */
+.switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.switch-track::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform 0.2s, background 0.2s;
+}
+.switch input:checked + .switch-track { background: rgba(0, 229, 255, 0.3); }
+.switch input:checked + .switch-track::after {
+  transform: translateX(20px);
+  background: var(--primary);
+}
+
+/* ── Section header ──────────────────────────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* ── Divider ─────────────────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* ── Alert dialog ────────────────────────────────────────────────────────── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.dialog {
+  background: var(--surface-var);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.dialog h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.dialog p  { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.dialog-actions button {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.dialog-cancel {
+  background: var(--border);
+  color: var(--text);
+}
+
+.dialog-confirm {
+  background: var(--error);
+  color: white;
+}
+
+/* ── Utility ─────────────────────────────────────────────────────────────── */
+.row    { display: flex; align-items: center; }
+.col    { display: flex; flex-direction: column; }
+.gap-4  { gap: 4px; }
+.gap-8  { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.gap-20 { gap: 20px; }
+.gap-24 { gap: 24px; }
+.mt-8   { margin-top: 8px; }
+.mt-12  { margin-top: 12px; }
+.mt-16  { margin-top: 16px; }
+.mt-24  { margin-top: 24px; }
+.mb-8   { margin-bottom: 8px; }
+.mb-12  { margin-bottom: 12px; }
+.mb-16  { margin-bottom: 16px; }
+.flex-1 { flex: 1; }
+.text-muted   { color: var(--text-muted); }
+.text-primary { color: var(--primary); }
+.text-error   { color: var(--error); }
+.text-center  { text-align: center; }
+.fw-700 { font-weight: 700; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Horizontal scroll strip ─────────────────────────────────────────────── */
+.scroll-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.scroll-strip::-webkit-scrollbar { display: none; }
+
+/* ── Workout type color bars ─────────────────────────────────────────────── */
+.type-bar {
+  height: 4px;
+  border-radius: 2px;
+  flex: 1;
+}

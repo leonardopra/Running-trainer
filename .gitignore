@@ -18,10 +18,10 @@ macos/.symlinks/
 macos/Flutter/ephemeral/
 
 # Android (scaffolded at CI time via `flutter create . --platforms android`, not committed)
-android/
+/android/
 # Android signing secrets — NEVER commit these
-android/key.properties
-android/app/upload-keystore.jks
+/android/key.properties
+/android/app/upload-keystore.jks
 *.jks
 *.keystore
 
