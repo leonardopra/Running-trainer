@@ -2,7 +2,21 @@
 
 A cross-platform running training app (iOS, Android, Web) that generates personalised multi-week training plans using a rule-based engine, then enriches each workout with descriptions and coaching tips from Claude AI.
 
-Built with Flutter. All data stays on-device — no account, no backend, no subscription.
+All data stays on-device — no account, no backend, no subscription.
+
+---
+
+## Repository structure
+
+| Folder | Description |
+|---|---|
+| *(root)* | Flutter app — golden reference during migration |
+| `android-app/` | Native Android (Kotlin + Jetpack Compose) — full P0+P1 |
+| `ios-app/` | Native iOS (Swift + SwiftUI) — full P0+P1 |
+| `web-app/` | Web frontend |
+| `backend-services/` | Backend services |
+| `product-spec/` | Shared fixtures and contracts (parity contract for all platforms) |
+| `flutter-reference/` | Documents the Flutter root as the intentional migration reference |
 
 ---
 
@@ -67,6 +81,8 @@ Default plan lengths: 5K = 8 weeks, 10K = 10 weeks, Half Marathon = 12 weeks, Ma
 
 ## Stack
 
+### Flutter (reference app)
+
 | Layer | Choice |
 |---|---|
 | Framework | Flutter 3 |
@@ -76,6 +92,25 @@ Default plan lengths: 5K = 8 weeks, 10K = 10 weeks, Half Marathon = 12 weeks, Ma
 | Routing | go_router (ShellRoute with persistent bottom nav) |
 | AI | Anthropic Claude API (`claude-sonnet-4-6`) |
 | Localisation | Flutter ARB (en, it, de) |
+
+### Android (native)
+
+| Layer | Choice |
+|---|---|
+| Language | Kotlin 2.0.21 |
+| UI | Jetpack Compose (BOM 2024.09.03) + Material3 |
+| Storage | Room 2.6.1 (JSON blob), DataStore Preferences |
+| AI | Anthropic Claude API (`claude-sonnet-4-6`) |
+| Localisation | Android string resources (en, it, de) |
+
+### iOS (native)
+
+| Layer | Choice |
+|---|---|
+| Language | Swift |
+| UI | SwiftUI |
+| Storage | UserDefaults (JSON blob), Keychain (API key) |
+| AI | Anthropic Claude API (`claude-sonnet-4-6`) |
 
 ---
 
