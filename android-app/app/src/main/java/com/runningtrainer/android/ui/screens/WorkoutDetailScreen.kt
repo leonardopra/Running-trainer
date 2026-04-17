@@ -79,7 +79,7 @@ fun WorkoutDetailScreen(
     var notes by rememberSaveable(workout.id) { mutableStateOf(workout.notes.orEmpty()) }
     var rpe by rememberSaveable(workout.id) { mutableIntStateOf(workout.rpe ?: 5) }
     var rpeSelected by rememberSaveable(workout.id) { mutableStateOf(workout.rpe != null) }
-    var feeling by remember(workout.id) { mutableStateOf(workout.feeling) }
+    var feeling by rememberSaveable(workout.id) { mutableStateOf(workout.feeling) }
 
     Column(
         modifier = Modifier

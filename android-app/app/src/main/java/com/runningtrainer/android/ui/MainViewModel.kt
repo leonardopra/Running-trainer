@@ -421,15 +421,18 @@ class MainViewModel(
         if (plan.isClaudeEnriched) return
         isEnriching.value = true
         enrichmentError.value = null
-        val result = claudeService!!.enrichPlan(plan, apiKey, prefs)
-        if (result.isAuthError) {
-            enrichmentError.value = "Invalid API key. Check Settings."
-        } else {
-            trainingPlanRepository.updatePlan(
-                plan.copy(weeks = result.enrichedWeeks, isClaudeEnriched = true)
-            )
+        try {
+            val result = claudeService!!.enrichPlan(plan, apiKey, prefs)
+            if (result.isAuthError) {
+                enrichmentError.value = "Invalid API key. Check Settings."
+            } else {
+                trainingPlanRepository.updatePlan(
+                    plan.copy(weeks = result.enrichedWeeks, isClaudeEnriched = true)
+                )
+            }
+        } finally {
+            isEnriching.value = false
         }
-        isEnriching.value = false
     }
 
     companion object {

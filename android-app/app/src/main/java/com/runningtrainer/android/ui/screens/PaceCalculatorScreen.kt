@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -58,7 +59,7 @@ fun PaceCalculatorScreen(
     savedGoalTimeSeconds: Int?,
     onSaveGoalTime: (Int) -> Unit
 ) {
-    val service = PaceCalculatorService()
+    val service = remember { PaceCalculatorService() }
 
     // Pre-fill goal type from active plan, fall back to 10K
     var selectedGoal by rememberSaveable {
@@ -346,14 +347,3 @@ private fun PaceZoneCard(zone: PaceZone) {
     }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-@Composable
-private fun GoalType.label(): String = when (this) {
-    GoalType.fiveK          -> stringResource(R.string.goal_five_k)
-    GoalType.tenK           -> stringResource(R.string.goal_ten_k)
-    GoalType.halfMarathon   -> stringResource(R.string.goal_half_marathon)
-    GoalType.marathon       -> stringResource(R.string.goal_marathon)
-    GoalType.trailRun       -> stringResource(R.string.goal_trail_run)
-    GoalType.generalFitness -> stringResource(R.string.goal_general_fitness)
-}

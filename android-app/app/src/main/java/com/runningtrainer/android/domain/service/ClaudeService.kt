@@ -8,6 +8,7 @@ import com.runningtrainer.android.domain.model.UserPreferencesDto
 import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonArray
@@ -159,7 +160,7 @@ class ClaudeService {
             if (status == 401) throw ClaudeApiException("Invalid API key. Check your key in Settings.", isAuthError = true)
             if (status == 429) {
                 if (attempt < MAX_RETRIES) {
-                    Thread.sleep(2_000L * (attempt + 1))
+                    delay(2_000L * (attempt + 1))
                     return@withContext callWithRetry(apiKey, prompt, systemPrompt, maxTokens, attempt + 1)
                 }
                 throw ClaudeApiException("Rate limited by Claude API.")

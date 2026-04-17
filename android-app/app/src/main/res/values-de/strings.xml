@@ -132,6 +132,7 @@
     <string name="rpe_label">RPE %1$d</string>
     <string name="today">Heute</string>
     <string name="yesterday">Gestern</string>
+    <string name="days_ago">vor %1$d Tagen</string>
     <string name="km_logged">%1$s km</string>
     <string name="week_progress_km">%1$.1f / %2$.1f km</string>
 

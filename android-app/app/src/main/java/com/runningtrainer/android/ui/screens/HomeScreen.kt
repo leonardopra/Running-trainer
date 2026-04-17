@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.CoachingInsight
+import com.runningtrainer.android.domain.model.GoalType
 import com.runningtrainer.android.domain.model.InsightType
 import com.runningtrainer.android.domain.model.TrainingPlan
 import com.runningtrainer.android.domain.model.WorkoutType
@@ -105,7 +106,7 @@ fun HomeScreen(
                 ) {
                     PlanChip("${activePlan.totalWeeks} weeks")
                     PlanChip("${activePlan.trainingDaysPerWeek} days/week")
-                    PlanChip(activePlan.goalType.name.replace("([A-Z])".toRegex(), " $1").trim())
+                    PlanChip(activePlan.goalType.label())
                 }
             }
         }
@@ -237,6 +238,16 @@ fun WorkoutType.zoneDescription(): String = when (this) {
     WorkoutType.tempoRun    -> stringResource(R.string.pace_zone_tempo_desc)
     WorkoutType.intervalRun -> stringResource(R.string.pace_zone_interval_desc)
     else                    -> ""
+}
+
+@Composable
+fun GoalType.label(): String = when (this) {
+    GoalType.fiveK          -> stringResource(R.string.goal_five_k)
+    GoalType.tenK           -> stringResource(R.string.goal_ten_k)
+    GoalType.halfMarathon   -> stringResource(R.string.goal_half_marathon)
+    GoalType.marathon       -> stringResource(R.string.goal_marathon)
+    GoalType.trailRun       -> stringResource(R.string.goal_trail_run)
+    GoalType.generalFitness -> stringResource(R.string.goal_general_fitness)
 }
 
 @Composable

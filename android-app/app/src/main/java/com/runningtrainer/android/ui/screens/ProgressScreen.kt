@@ -269,7 +269,7 @@ fun ProgressScreen(
                     when (daysAgo) {
                         0    -> todayStr
                         1    -> yesterdayStr
-                        else -> "$daysAgo days ago"
+                        else -> stringResource(R.string.days_ago, daysAgo)
                     }
                 } ?: ""
                 SurfaceCard(modifier = Modifier.fillMaxWidth()) {

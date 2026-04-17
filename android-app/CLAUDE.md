@@ -67,3 +67,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Room stores the plan as a JSON blob (not normalized rows) — this is intentional to keep schema migrations simple during the pilot phase.
 - Do not re-add `hive_generator` or add Robolectric — see root-level memory for dependency constraints.
 - `PaceZone.label` and `PaceZone.description` are domain-level English strings kept for serialization/testing. Always resolve display labels through `WorkoutType.typeLabel()` / `WorkoutType.zoneDescription()` in the UI layer, never directly.
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
