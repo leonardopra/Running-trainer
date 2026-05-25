@@ -6,20 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.runningtrainer.android.data.repository.SettingsRepository
 import com.runningtrainer.android.data.repository.TrainingPlanRepository
 import com.runningtrainer.android.domain.contracts.PlanGenerationRequest
-import com.runningtrainer.android.domain.model.CoachingInsight
 import com.runningtrainer.android.domain.model.FitnessLevel
 import com.runningtrainer.android.domain.model.GoalType
-import com.runningtrainer.android.domain.model.PaceZone
-import com.runningtrainer.android.domain.model.ProgressStats
 import com.runningtrainer.android.domain.model.TrainingPlan
 import com.runningtrainer.android.domain.model.UserPreferencesDto
-import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutFeeling
 import com.runningtrainer.android.domain.model.WorkoutLogInput
-import com.runningtrainer.android.domain.model.WorkoutType
 import com.runningtrainer.android.domain.service.ClaudeService
-import com.runningtrainer.android.domain.service.InsightsService
-import com.runningtrainer.android.domain.service.PaceCalculatorService
 import com.runningtrainer.android.notifications.NotificationService
 import com.runningtrainer.android.ui.navigation.AppDestination
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,80 +44,32 @@ data class MainUiState(
     val onboarding: OnboardingFormState = OnboardingFormState(),
     val preferences: UserPreferencesDto = UserPreferencesDto(),
     val activePlan: TrainingPlan? = null,
-    val selectedWorkout: Workout? = null,
-    val progressStats: ProgressStats? = null,
-    val insights: List<CoachingInsight> = emptyList(),
-    val selectedWorkoutPaceZones: List<PaceZone> = emptyList(),
     val isGeneratingPlan: Boolean = false,
-    val generationError: String? = null,
-    val isEnrichingPlan: Boolean = false,
-    val enrichmentError: String? = null
+    val generationError: String? = null
 )
 
 class MainViewModel(
     private val trainingPlanRepository: TrainingPlanRepository,
     private val settingsRepository: SettingsRepository,
-    private val insightsService: InsightsService = InsightsService(),
-    private val paceCalculatorService: PaceCalculatorService = PaceCalculatorService(),
     private val notificationService: NotificationService? = null,
     private val claudeService: ClaudeService? = null
 ) : ViewModel() {
+
     private val currentDestination = MutableStateFlow(AppDestination.Goal)
     private val isPreRunStretching = MutableStateFlow(true)
     private val navState = combine(currentDestination, isPreRunStretching) { dest, pre -> dest to pre }
     private val onboarding = MutableStateFlow(OnboardingFormState())
     private val isGenerating = MutableStateFlow(false)
     private val generationError = MutableStateFlow<String?>(null)
-    private val isEnriching = MutableStateFlow(false)
-    private val enrichmentError = MutableStateFlow<String?>(null)
-    private val selectedWorkoutId = MutableStateFlow<String?>(null)
-    private val persistedState = combine(
-        settingsRepository.observePreferences(),
-        trainingPlanRepository.observeActivePlan()
-    ) { preferences, activePlan ->
-        preferences to activePlan
-    }
-    private val persistedUiState = combine(
-        persistedState,
-        trainingPlanRepository.observeProgressStats(),
-        selectedWorkoutId
-    ) { persisted, progressStats, workoutId ->
-        PersistedUiState(
-            preferences = persisted.first,
-            activePlan = persisted.second,
-            progressStats = progressStats,
-            selectedWorkoutId = workoutId
-        )
-    }
-
-    private val generationUiState = combine(isGenerating, generationError) { generating, error ->
-        generating to error
-    }
-    private val enrichmentUiState = combine(isEnriching, enrichmentError) { enriching, error ->
-        enriching to error
-    }
+    private val generationUiState = combine(isGenerating, generationError) { g, e -> g to e }
 
     val uiState: StateFlow<MainUiState> = combine(
-        persistedUiState,
+        settingsRepository.observePreferences(),
+        trainingPlanRepository.observeActivePlan(),
         navState,
         onboarding,
-        generationUiState,
-        enrichmentUiState
-    ) { persisted, (destination, preRunStretching), form, (generating, genError), (enriching, enrichError) ->
-        val preferences = persisted.preferences
-        val activePlan = persisted.activePlan
-        val selectedWorkout = activePlan?.weeks?.flatMap { it.workouts }?.firstOrNull { it.id == persisted.selectedWorkoutId }
-        val insights = if (activePlan != null) {
-            insightsService.generate(activePlan, LocalDate.now()).take(5)
-        } else emptyList()
-        val paceZones = if (selectedWorkout != null &&
-            selectedWorkout.type != WorkoutType.rest &&
-            selectedWorkout.type != WorkoutType.crossTrain &&
-            preferences.goalTimeSeconds != null
-        ) {
-            paceCalculatorService.calculate(activePlan!!.goalType, preferences.goalTimeSeconds)
-                .filter { it.type == selectedWorkout.type }
-        } else emptyList()
+        generationUiState
+    ) { preferences, activePlan, (destination, preRunStretching), form, (generating, genError) ->
         MainUiState(
             isBootstrapping = false,
             currentDestination = if (preferences.hasCompletedOnboarding && activePlan != null &&
@@ -138,20 +83,16 @@ class MainViewModel(
             onboarding = form,
             preferences = preferences,
             activePlan = activePlan,
-            selectedWorkout = selectedWorkout,
-            progressStats = persisted.progressStats,
-            insights = insights,
-            selectedWorkoutPaceZones = paceZones,
             isGeneratingPlan = generating,
-            generationError = genError,
-            isEnrichingPlan = enriching,
-            enrichmentError = enrichError
+            generationError = genError
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = MainUiState()
     )
+
+    // ── Onboarding ────────────────────────────────────────────────────────────
 
     fun selectGoal(goalType: GoalType) {
         onboarding.value = onboarding.value.copy(
@@ -215,13 +156,13 @@ class MainViewModel(
                         heightCm = form.heightCm.toDoubleOrNull()
                     )
                 )
-
                 trainingPlanRepository.generateAndSavePlan(
                     PlanGenerationRequest(
                         goalType = goal,
                         fitnessLevel = fitness,
                         trainingDaysPerWeek = form.trainingDaysPerWeek,
-                        raceDate = form.raceDateInput.takeIf { it.isNotBlank() }?.let { java.time.LocalDate.parse(it) },
+                        raceDate = form.raceDateInput.takeIf { it.isNotBlank() }
+                            ?.let { LocalDate.parse(it) },
                         durationWeeks = form.durationWeeks,
                         age = form.age.toIntOrNull()
                     )
@@ -235,10 +176,7 @@ class MainViewModel(
                     }
                 }
                 currentDestination.value = AppDestination.Home
-                val apiKey = prefs.claudeApiKey
-                if (!apiKey.isNullOrBlank() && claudeService != null) {
-                    viewModelScope.launch { runEnrichment(apiKey, prefs) }
-                }
+                // Enrichment is triggered automatically by PlanViewModel observing the new plan.
             }.onFailure { throwable ->
                 generationError.value = throwable.message ?: "Unable to generate plan."
                 currentDestination.value = AppDestination.Profile
@@ -248,6 +186,8 @@ class MainViewModel(
         }
     }
 
+    // ── Plan lifecycle ────────────────────────────────────────────────────────
+
     fun resetLocalData() {
         viewModelScope.launch {
             val plan = uiState.value.activePlan
@@ -255,7 +195,6 @@ class MainViewModel(
             trainingPlanRepository.clearAllPlans()
             settingsRepository.clear()
             onboarding.value = OnboardingFormState()
-            selectedWorkoutId.value = null
             generationError.value = null
             isGenerating.value = false
             currentDestination.value = AppDestination.Goal
@@ -271,47 +210,13 @@ class MainViewModel(
                 uiState.value.preferences.copy(hasCompletedOnboarding = false)
             )
             onboarding.value = OnboardingFormState()
-            selectedWorkoutId.value = null
             generationError.value = null
             isGenerating.value = false
             currentDestination.value = AppDestination.Goal
         }
     }
 
-    fun openWorkoutDetail(workoutId: String) {
-        selectedWorkoutId.value = workoutId
-        currentDestination.value = AppDestination.WorkoutDetail
-    }
-
-    fun openProgress() {
-        currentDestination.value = AppDestination.Progress
-    }
-
-    fun openRunHistory() {
-        currentDestination.value = AppDestination.RunHistory
-    }
-
-    fun openSettings() {
-        currentDestination.value = AppDestination.Settings
-    }
-
-    fun goHome() {
-        currentDestination.value = AppDestination.Home
-    }
-
-    /** Used by MainActivity to forward navigation events from other ViewModels. */
-    fun navigateTo(destination: AppDestination) {
-        currentDestination.value = destination
-    }
-
-    fun openStretching(isPreRun: Boolean) {
-        isPreRunStretching.value = isPreRun
-        currentDestination.value = AppDestination.Stretching
-    }
-
-    fun openPrivacy() {
-        currentDestination.value = AppDestination.Privacy
-    }
+    // ── Workout logging ───────────────────────────────────────────────────────
 
     fun saveWorkoutLog(
         workoutId: String,
@@ -370,49 +275,44 @@ class MainViewModel(
         }
     }
 
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    fun goHome() {
+        currentDestination.value = AppDestination.Home
+    }
+
+    /** Used by MainActivity to forward navigation events from other ViewModels. */
+    fun navigateTo(destination: AppDestination) {
+        currentDestination.value = destination
+    }
+
+    fun openSettings() {
+        currentDestination.value = AppDestination.Settings
+    }
+
     fun openPaceCalc() {
         currentDestination.value = AppDestination.PaceCalc
     }
 
-    private suspend fun runEnrichment(apiKey: String, prefs: UserPreferencesDto) {
-        val plan = trainingPlanRepository.observeActivePlan().firstOrNull() ?: return
-        if (plan.isClaudeEnriched) return
-        isEnriching.value = true
-        enrichmentError.value = null
-        try {
-            val result = claudeService!!.enrichPlan(plan, apiKey, prefs)
-            if (result.isAuthError) {
-                enrichmentError.value = "Invalid API key. Check Settings."
-            } else {
-                trainingPlanRepository.updatePlan(
-                    plan.copy(weeks = result.enrichedWeeks, isClaudeEnriched = true)
-                )
-            }
-        } finally {
-            isEnriching.value = false
-        }
+    fun openStretching(isPreRun: Boolean) {
+        isPreRunStretching.value = isPreRun
+        currentDestination.value = AppDestination.Stretching
+    }
+
+    fun openPrivacy() {
+        currentDestination.value = AppDestination.Privacy
     }
 
     companion object {
         fun factory(
             trainingPlanRepository: TrainingPlanRepository,
             settingsRepository: SettingsRepository,
-            insightsService: InsightsService = InsightsService(),
-            paceCalculatorService: PaceCalculatorService = PaceCalculatorService(),
             notificationService: NotificationService? = null,
             claudeService: ClaudeService? = null
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainViewModel(trainingPlanRepository, settingsRepository, insightsService, paceCalculatorService, notificationService, claudeService) as T
-            }
+            override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                MainViewModel(trainingPlanRepository, settingsRepository, notificationService, claudeService) as T
         }
     }
 }
-
-private data class PersistedUiState(
-    val preferences: UserPreferencesDto,
-    val activePlan: TrainingPlan?,
-    val progressStats: ProgressStats?,
-    val selectedWorkoutId: String?
-)

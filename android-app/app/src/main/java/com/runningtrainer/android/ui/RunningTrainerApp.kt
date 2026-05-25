@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import com.runningtrainer.android.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.runningtrainer.android.ui.SettingsViewModel
 import com.runningtrainer.android.ui.navigation.AppDestination
 import com.runningtrainer.android.ui.screens.FitnessSelectionScreen
 import com.runningtrainer.android.ui.screens.GeneratingPlanScreen
@@ -64,8 +63,13 @@ private val onboardingDestinations = setOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewModel) {
+fun RunningTrainerApp(
+    viewModel: MainViewModel,
+    planViewModel: PlanViewModel,
+    settingsViewModel: SettingsViewModel
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val planUiState by planViewModel.uiState.collectAsStateWithLifecycle()
     val dest = uiState.currentDestination
     val isOnboarding = dest in onboardingDestinations
     val isMainNav = dest in mainNavDestinations
@@ -99,7 +103,7 @@ fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewM
                             IconButton(onClick = {
                                 when (dest) {
                                     AppDestination.WorkoutDetail -> viewModel.goHome()
-                                    AppDestination.RunHistory    -> viewModel.openProgress()
+                                    AppDestination.RunHistory    -> viewModel.navigateTo(AppDestination.Progress)
                                     AppDestination.Stretching    -> viewModel.goHome()
                                     AppDestination.Privacy       -> viewModel.openSettings()
                                     else -> {}
@@ -141,7 +145,7 @@ fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewM
                     )
                     NavigationBarItem(
                         selected = dest == AppDestination.Progress,
-                        onClick = viewModel::openProgress,
+                        onClick = { viewModel.navigateTo(AppDestination.Progress) },
                         icon = { Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.nav_progress)) },
                         label = { Text(stringResource(R.string.nav_progress)) },
                         colors = NavigationBarItemDefaults.colors(
@@ -222,18 +226,18 @@ fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewM
             AppDestination.Generating -> GeneratingPlanScreen(innerPadding)
             AppDestination.Home -> HomeScreen(
                 innerPadding = innerPadding,
-                activePlan = uiState.activePlan,
+                activePlan = planUiState.activePlan,
                 runnerName = uiState.preferences.name,
-                insights = uiState.insights,
+                insights = planUiState.insights,
                 onResetData = viewModel::resetLocalData,
-                onOpenWorkout = viewModel::openWorkoutDetail,
-                onOpenProgress = viewModel::openProgress,
+                onOpenWorkout = planViewModel::openWorkoutDetail,
+                onOpenProgress = planViewModel::openProgress,
                 onOpenSettings = viewModel::openSettings
             )
             AppDestination.WorkoutDetail -> WorkoutDetailScreen(
                 innerPadding = innerPadding,
-                workout = uiState.selectedWorkout,
-                paceZones = uiState.selectedWorkoutPaceZones,
+                workout = planUiState.selectedWorkout,
+                paceZones = planUiState.selectedWorkoutPaceZones,
                 onSave = viewModel::saveWorkoutLog,
                 onClear = viewModel::clearWorkoutLog,
                 onOpenStretching = viewModel::openStretching,
@@ -241,18 +245,18 @@ fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewM
             )
             AppDestination.Progress -> ProgressScreen(
                 innerPadding = innerPadding,
-                progressStats = uiState.progressStats,
+                progressStats = planUiState.progressStats,
                 onBack = viewModel::goHome,
-                onViewAllHistory = viewModel::openRunHistory
+                onViewAllHistory = planViewModel::openRunHistory
             )
             AppDestination.RunHistory -> RunHistoryScreen(
                 innerPadding = innerPadding,
-                activePlan = uiState.activePlan,
-                onBack = viewModel::openProgress
+                activePlan = planUiState.activePlan,
+                onBack = { viewModel.navigateTo(AppDestination.Progress) }
             )
             AppDestination.PaceCalc -> PaceCalculatorScreen(
                 innerPadding = innerPadding,
-                activePlan = uiState.activePlan,
+                activePlan = planUiState.activePlan,
                 savedGoalTimeSeconds = uiState.preferences.goalTimeSeconds,
                 onSaveGoalTime = settingsViewModel::saveGoalTime
             )
@@ -263,7 +267,7 @@ fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewM
                     settingsViewModel.saveSettings(
                         name, age, weightKg, heightCm, useKm, apiKey,
                         notifEnabled, notifHour, notifMinute, localeCode,
-                        activePlan = uiState.activePlan
+                        activePlan = planUiState.activePlan
                     )
                 },
                 onStartNewPlan = viewModel::startNewPlan,

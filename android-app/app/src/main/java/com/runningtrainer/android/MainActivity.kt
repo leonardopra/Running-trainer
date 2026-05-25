@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.runningtrainer.android.app.RunningTrainerApplication
 import com.runningtrainer.android.ui.MainViewModel
+import com.runningtrainer.android.ui.PlanViewModel
 import com.runningtrainer.android.ui.RunningTrainerApp
 import com.runningtrainer.android.ui.SettingsViewModel
 import com.runningtrainer.android.ui.theme.RunningTrainerTheme
@@ -23,9 +24,18 @@ class MainActivity : AppCompatActivity() {
         MainViewModel.factory(
             trainingPlanRepository = container.trainingPlanRepository,
             settingsRepository = container.settingsRepository,
+            notificationService = container.notificationService,
+            claudeService = container.claudeService
+        )
+    }
+
+    private val planViewModel: PlanViewModel by viewModels {
+        val container = (application as RunningTrainerApplication).container
+        PlanViewModel.factory(
+            trainingPlanRepository = container.trainingPlanRepository,
+            settingsRepository = container.settingsRepository,
             insightsService = container.insightsService,
             paceCalculatorService = container.paceCalculatorService,
-            notificationService = container.notificationService,
             claudeService = container.claudeService
         )
     }
@@ -54,18 +64,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Bridge SettingsViewModel navigation events → MainViewModel.
+        // Bridge navigation events from sub-ViewModels → MainViewModel.
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                settingsViewModel.navigationEvent.collect { dest ->
-                    viewModel.navigateTo(dest)
-                }
+                launch { planViewModel.navigationEvent.collect(viewModel::navigateTo) }
+                launch { settingsViewModel.navigationEvent.collect(viewModel::navigateTo) }
             }
         }
 
         setContent {
             RunningTrainerTheme {
-                RunningTrainerApp(viewModel, settingsViewModel)
+                RunningTrainerApp(viewModel, planViewModel, settingsViewModel)
             }
         }
     }
