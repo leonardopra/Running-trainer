@@ -65,6 +65,7 @@ private val onboardingDestinations = setOf(
 @Composable
 fun RunningTrainerApp(
     viewModel: MainViewModel,
+    onboardingViewModel: OnboardingViewModel,
     planViewModel: PlanViewModel,
     settingsViewModel: SettingsViewModel
 ) {
@@ -199,29 +200,29 @@ fun RunningTrainerApp(
         when (dest) {
             AppDestination.Goal -> GoalSelectionScreen(
                 innerPadding = innerPadding,
-                onGoalSelected = viewModel::selectGoal
+                onGoalSelected = onboardingViewModel::selectGoal
             )
             AppDestination.RaceConfig -> RaceConfigScreen(
                 innerPadding = innerPadding,
                 uiState = uiState,
-                onConfigChanged = viewModel::updateRaceConfig,
-                onContinue = viewModel::continueFromRaceConfig
+                onConfigChanged = onboardingViewModel::updateRaceConfig,
+                onContinue = onboardingViewModel::continueFromRaceConfig
             )
             AppDestination.Fitness -> FitnessSelectionScreen(
                 innerPadding = innerPadding,
-                onFitnessSelected = viewModel::selectFitnessLevel
+                onFitnessSelected = onboardingViewModel::selectFitnessLevel
             )
             AppDestination.Days -> TrainingDaysScreen(
                 innerPadding = innerPadding,
                 selectedDays = uiState.onboarding.trainingDaysPerWeek,
-                onDaysChanged = viewModel::updateTrainingDays,
-                onContinue = viewModel::continueFromDays
+                onDaysChanged = onboardingViewModel::updateTrainingDays,
+                onContinue = onboardingViewModel::continueFromDays
             )
             AppDestination.Profile -> ProfileScreen(
                 innerPadding = innerPadding,
                 uiState = uiState,
-                onProfileChanged = viewModel::updateProfile,
-                onGeneratePlan = viewModel::generatePlan
+                onProfileChanged = onboardingViewModel::updateProfile,
+                onGeneratePlan = onboardingViewModel::generatePlan
             )
             AppDestination.Generating -> GeneratingPlanScreen(innerPadding)
             AppDestination.Home -> HomeScreen(
@@ -229,7 +230,7 @@ fun RunningTrainerApp(
                 activePlan = planUiState.activePlan,
                 runnerName = uiState.preferences.name,
                 insights = planUiState.insights,
-                onResetData = viewModel::resetLocalData,
+                onResetData = onboardingViewModel::resetLocalData,
                 onOpenWorkout = planViewModel::openWorkoutDetail,
                 onOpenProgress = planViewModel::openProgress,
                 onOpenSettings = viewModel::openSettings
@@ -270,8 +271,8 @@ fun RunningTrainerApp(
                         activePlan = planUiState.activePlan
                     )
                 },
-                onStartNewPlan = viewModel::startNewPlan,
-                onResetAll = viewModel::resetLocalData,
+                onStartNewPlan = onboardingViewModel::startNewPlan,
+                onResetAll = onboardingViewModel::resetLocalData,
                 onOpenPrivacy = viewModel::openPrivacy,
                 onBack = viewModel::goHome
             )

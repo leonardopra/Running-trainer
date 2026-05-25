@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.runningtrainer.android.app.RunningTrainerApplication
 import com.runningtrainer.android.ui.MainViewModel
+import com.runningtrainer.android.ui.OnboardingViewModel
 import com.runningtrainer.android.ui.PlanViewModel
 import com.runningtrainer.android.ui.RunningTrainerApp
 import com.runningtrainer.android.ui.SettingsViewModel
@@ -19,13 +20,25 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    // OnboardingViewModel declared first; its uiState StateFlow is injected into MainViewModel.
+    private val onboardingViewModel: OnboardingViewModel by viewModels {
+        val container = (application as RunningTrainerApplication).container
+        OnboardingViewModel.factory(
+            trainingPlanRepository = container.trainingPlanRepository,
+            settingsRepository = container.settingsRepository,
+            notificationService = container.notificationService
+        )
+    }
+
     private val viewModel: MainViewModel by viewModels {
         val container = (application as RunningTrainerApplication).container
         MainViewModel.factory(
             trainingPlanRepository = container.trainingPlanRepository,
             settingsRepository = container.settingsRepository,
             notificationService = container.notificationService,
-            claudeService = container.claudeService
+            claudeService = container.claudeService,
+            onboardingState = onboardingViewModel.uiState
         )
     }
 
@@ -67,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         // Bridge navigation events from sub-ViewModels → MainViewModel.
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { onboardingViewModel.navigationEvent.collect(viewModel::navigateTo) }
                 launch { planViewModel.navigationEvent.collect(viewModel::navigateTo) }
                 launch { settingsViewModel.navigationEvent.collect(viewModel::navigateTo) }
             }
@@ -74,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             RunningTrainerTheme {
-                RunningTrainerApp(viewModel, planViewModel, settingsViewModel)
+                RunningTrainerApp(viewModel, onboardingViewModel, planViewModel, settingsViewModel)
             }
         }
     }
