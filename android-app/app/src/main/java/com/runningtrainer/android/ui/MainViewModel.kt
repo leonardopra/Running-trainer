@@ -299,6 +299,11 @@ class MainViewModel(
         currentDestination.value = AppDestination.Home
     }
 
+    /** Used by MainActivity to forward navigation events from other ViewModels. */
+    fun navigateTo(destination: AppDestination) {
+        currentDestination.value = destination
+    }
+
     fun openStretching(isPreRun: Boolean) {
         isPreRunStretching.value = isPreRun
         currentDestination.value = AppDestination.Stretching
@@ -365,55 +370,8 @@ class MainViewModel(
         }
     }
 
-    fun saveSettings(
-        name: String,
-        age: String,
-        weightKg: String,
-        heightCm: String,
-        useKilometers: Boolean,
-        claudeApiKey: String,
-        notificationsEnabled: Boolean,
-        notificationHour: Int,
-        notificationMinute: Int,
-        localeCode: String = "en"
-    ) {
-        viewModelScope.launch {
-            val updatedPrefs = uiState.value.preferences.copy(
-                name = name.trim().ifBlank { null },
-                age = age.toIntOrNull(),
-                weightKg = weightKg.toDoubleOrNull(),
-                heightCm = heightCm.toDoubleOrNull(),
-                useKilometers = useKilometers,
-                claudeApiKey = claudeApiKey.trim().ifBlank { null },
-                notificationsEnabled = notificationsEnabled,
-                notificationHour = notificationHour,
-                notificationMinute = notificationMinute,
-                localeCode = localeCode
-            )
-            settingsRepository.savePreferences(updatedPrefs)
-
-            val plan = uiState.value.activePlan
-            if (plan != null) {
-                if (notificationsEnabled) {
-                    notificationService?.scheduleForPlan(plan, notificationHour, notificationMinute)
-                } else {
-                    notificationService?.cancelAll(plan.weeks.size)
-                }
-            }
-
-            currentDestination.value = AppDestination.Home
-        }
-    }
-
     fun openPaceCalc() {
         currentDestination.value = AppDestination.PaceCalc
-    }
-
-    fun saveGoalTime(goalTimeSeconds: Int) {
-        viewModelScope.launch {
-            val updatedPrefs = uiState.value.preferences.copy(goalTimeSeconds = goalTimeSeconds)
-            settingsRepository.savePreferences(updatedPrefs)
-        }
     }
 
     private suspend fun runEnrichment(apiKey: String, prefs: UserPreferencesDto) {

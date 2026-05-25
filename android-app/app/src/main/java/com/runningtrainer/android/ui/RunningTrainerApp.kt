@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import com.runningtrainer.android.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.runningtrainer.android.ui.SettingsViewModel
 import com.runningtrainer.android.ui.navigation.AppDestination
 import com.runningtrainer.android.ui.screens.FitnessSelectionScreen
 import com.runningtrainer.android.ui.screens.GeneratingPlanScreen
@@ -63,7 +64,7 @@ private val onboardingDestinations = setOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RunningTrainerApp(viewModel: MainViewModel) {
+fun RunningTrainerApp(viewModel: MainViewModel, settingsViewModel: SettingsViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dest = uiState.currentDestination
     val isOnboarding = dest in onboardingDestinations
@@ -253,13 +254,17 @@ fun RunningTrainerApp(viewModel: MainViewModel) {
                 innerPadding = innerPadding,
                 activePlan = uiState.activePlan,
                 savedGoalTimeSeconds = uiState.preferences.goalTimeSeconds,
-                onSaveGoalTime = viewModel::saveGoalTime
+                onSaveGoalTime = settingsViewModel::saveGoalTime
             )
             AppDestination.Settings -> SettingsScreen(
                 innerPadding = innerPadding,
                 preferences = uiState.preferences,
                 onSave = { name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute, localeCode ->
-                    viewModel.saveSettings(name, age, weightKg, heightCm, useKm, apiKey, notifEnabled, notifHour, notifMinute, localeCode)
+                    settingsViewModel.saveSettings(
+                        name, age, weightKg, heightCm, useKm, apiKey,
+                        notifEnabled, notifHour, notifMinute, localeCode,
+                        activePlan = uiState.activePlan
+                    )
                 },
                 onStartNewPlan = viewModel::startNewPlan,
                 onResetAll = viewModel::resetLocalData,
