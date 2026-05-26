@@ -193,6 +193,7 @@
     <string name="workout_coach_note">Coach\'s Note</string>
     <string name="workout_coaching_tip">Coaching Tip</string>
     <string name="workout_post_coaching">Post-Workout Coaching</string>
+    <string name="coaching_auth_error">Invalid Claude API key. Check your key in Settings.</string>
     <string name="btn_pre_run_stretch">Pre-run</string>
     <string name="btn_post_run_stretch">Post-run</string>
 

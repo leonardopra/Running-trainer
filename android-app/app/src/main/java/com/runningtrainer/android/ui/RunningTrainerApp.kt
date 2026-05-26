@@ -72,6 +72,7 @@ fun RunningTrainerApp(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val planUiState by planViewModel.uiState.collectAsStateWithLifecycle()
+    val workoutLogUiState by workoutLogViewModel.uiState.collectAsStateWithLifecycle()
     val dest = uiState.currentDestination
     val isOnboarding = dest in onboardingDestinations
     val isMainNav = dest in mainNavDestinations
@@ -240,6 +241,7 @@ fun RunningTrainerApp(
                 innerPadding = innerPadding,
                 workout = planUiState.selectedWorkout,
                 paceZones = planUiState.selectedWorkoutPaceZones,
+                workoutLogUiState = workoutLogUiState,
                 onSave = workoutLogViewModel::saveWorkoutLog,
                 onClear = workoutLogViewModel::clearWorkoutLog,
                 onOpenStretching = viewModel::openStretching,

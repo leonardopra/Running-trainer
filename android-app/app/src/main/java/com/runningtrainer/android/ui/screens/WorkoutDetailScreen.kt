@@ -1,5 +1,10 @@
 package com.runningtrainer.android.ui.screens
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,6 +27,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -41,12 +47,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.PaceZone
 import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutFeeling
+import com.runningtrainer.android.ui.WorkoutLogUiState
 import com.runningtrainer.android.ui.theme.SurfaceVar
 import com.runningtrainer.android.ui.theme.TextMuted
 
@@ -56,6 +67,7 @@ fun WorkoutDetailScreen(
     innerPadding: PaddingValues,
     workout: Workout?,
     paceZones: List<PaceZone> = emptyList(),
+    workoutLogUiState: WorkoutLogUiState = WorkoutLogUiState(),
     onSave: (workoutId: String, distance: String, duration: String, notes: String, rpe: Int?, feeling: WorkoutFeeling?) -> Unit,
     onClear: (String) -> Unit,
     onOpenStretching: ((isPreRun: Boolean) -> Unit)? = null,
@@ -283,8 +295,14 @@ fun WorkoutDetailScreen(
                 Text(stringResource(R.string.btn_clear_log))
             }
         }
-        // Post-workout AI coaching (shown after workout is completed)
-        if (workout.isCompleted && !workout.postWorkoutCoaching.isNullOrBlank()) {
+        // Post-workout AI coaching (streaming or static)
+        val showCoaching = workout.isCompleted && (
+            workoutLogUiState.isStreaming ||
+            workoutLogUiState.streamingCoaching.isNotBlank() ||
+            workoutLogUiState.coachingAuthError ||
+            !workout.postWorkoutCoaching.isNullOrBlank()
+        )
+        if (showCoaching) {
             val shape = RoundedCornerShape(16.dp)
             Box(
                 modifier = Modifier
@@ -300,7 +318,40 @@ fun WorkoutDetailScreen(
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Text(workout.postWorkoutCoaching, style = MaterialTheme.typography.bodyMedium)
+                    when {
+                        workoutLogUiState.coachingAuthError -> Text(
+                            stringResource(R.string.coaching_auth_error),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        workoutLogUiState.isStreaming || workoutLogUiState.streamingCoaching.isNotBlank() -> {
+                            val cursorAlpha by rememberInfiniteTransition(label = "cursor")
+                                .animateFloat(
+                                    initialValue = 1f,
+                                    targetValue = 0f,
+                                    animationSpec = infiniteRepeatable(
+                                        animation = tween(durationMillis = 500),
+                                        repeatMode = RepeatMode.Reverse
+                                    ),
+                                    label = "cursorAlpha"
+                                )
+                            val displayText = if (workoutLogUiState.isStreaming) {
+                                buildAnnotatedString {
+                                    append(workoutLogUiState.streamingCoaching)
+                                    withStyle(SpanStyle(color = LocalContentColor.current.copy(alpha = cursorAlpha))) {
+                                        append("|")
+                                    }
+                                }
+                            } else {
+                                AnnotatedString(workoutLogUiState.streamingCoaching)
+                            }
+                            Text(text = displayText, style = MaterialTheme.typography.bodyMedium)
+                        }
+                        !workout.postWorkoutCoaching.isNullOrBlank() -> Text(
+                            workout.postWorkoutCoaching,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
         }
