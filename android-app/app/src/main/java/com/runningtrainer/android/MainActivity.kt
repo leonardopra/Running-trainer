@@ -15,6 +15,7 @@ import com.runningtrainer.android.ui.OnboardingViewModel
 import com.runningtrainer.android.ui.PlanViewModel
 import com.runningtrainer.android.ui.RunningTrainerApp
 import com.runningtrainer.android.ui.SettingsViewModel
+import com.runningtrainer.android.ui.WorkoutLogViewModel
 import com.runningtrainer.android.ui.theme.RunningTrainerTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -37,8 +38,16 @@ class MainActivity : AppCompatActivity() {
             trainingPlanRepository = container.trainingPlanRepository,
             settingsRepository = container.settingsRepository,
             notificationService = container.notificationService,
-            claudeService = container.claudeService,
             onboardingState = onboardingViewModel.uiState
+        )
+    }
+
+    private val workoutLogViewModel: WorkoutLogViewModel by viewModels {
+        val container = (application as RunningTrainerApplication).container
+        WorkoutLogViewModel.factory(
+            trainingPlanRepository = container.trainingPlanRepository,
+            settingsRepository = container.settingsRepository,
+            claudeService = container.claudeService
         )
     }
 
@@ -83,12 +92,13 @@ class MainActivity : AppCompatActivity() {
                 launch { onboardingViewModel.navigationEvent.collect(viewModel::navigateTo) }
                 launch { planViewModel.navigationEvent.collect(viewModel::navigateTo) }
                 launch { settingsViewModel.navigationEvent.collect(viewModel::navigateTo) }
+                launch { workoutLogViewModel.navigationEvent.collect(viewModel::navigateTo) }
             }
         }
 
         setContent {
             RunningTrainerTheme {
-                RunningTrainerApp(viewModel, onboardingViewModel, planViewModel, settingsViewModel)
+                RunningTrainerApp(viewModel, onboardingViewModel, planViewModel, settingsViewModel, workoutLogViewModel)
             }
         }
     }
