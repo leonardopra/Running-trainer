@@ -55,13 +55,13 @@ object ClaudePromptBuilder {
         workout: Workout,
         age: Int?
     ): ClaudeRequest {
-        val distStr = workout.actualDistanceKm?.let { "%.2f km".format(it) } ?: "unknown distance"
+        val distStr = workout.actualDistanceKm?.let { String.format(java.util.Locale.US, "%.2f km", it) } ?: "unknown distance"
         val durStr = workout.actualDurationMinutes?.let { "$it min" } ?: "unknown duration"
         val rpeStr = workout.rpe?.let { "$it/10" } ?: "not logged"
         val feelingStr = workout.feeling?.name ?: "not logged"
         val notesStr = workout.notes?.takeIf { it.isNotBlank() } ?: "none"
         val ageStr = if (age != null) ", age $age" else ""
-        val typeLabel = workout.type.name.replace(Regex("(?<=[a-z])(?=[A-Z])"), " ")
+        val typeLabel = workout.type.name
 
         val prompt = "Athlete$ageStr completed a $typeLabel " +
             "(planned: ${workout.distanceKm?.let { "%.1f".format(it) } ?: "?"} km). " +
