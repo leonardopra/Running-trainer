@@ -2,6 +2,8 @@ package com.runningtrainer.android.domain.service
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonArray
@@ -78,6 +80,61 @@ class ClaudeHttpClient {
                 ?: throw ClaudeApiException("Unexpected response structure.")
         } finally {
             conn.disconnect()
+        }
+    }
+
+    fun streamRequest(apiKey: String, request: ClaudeRequest): Flow<String> = flow {
+        val body = buildJsonObject {
+            put("model", MODEL)
+            put("max_tokens", request.maxTokens)
+            put("system", request.systemPrompt)
+            put("stream", true)
+            put("messages", buildJsonArray {
+                add(buildJsonObject {
+                    put("role", "user")
+                    put("content", request.prompt)
+                })
+            })
+        }.toString()
+
+        val conn = withContext(Dispatchers.IO) {
+            (URL(API_URL).openConnection() as HttpURLConnection).apply {
+                requestMethod = "POST"
+                connectTimeout = 30_000
+                readTimeout = 120_000
+                doOutput = true
+                setRequestProperty("x-api-key", apiKey)
+                setRequestProperty("anthropic-version", "2023-06-01")
+                setRequestProperty("content-type", "application/json")
+                OutputStreamWriter(outputStream, Charsets.UTF_8).use { it.write(body) }
+            }
+        }
+
+        try {
+            val status = withContext(Dispatchers.IO) { conn.responseCode }
+            if (status == 401) throw ClaudeApiException("Invalid API key. Check your key in Settings.", isAuthError = true)
+            if (status !in 200..299) throw ClaudeApiException("Claude API error: HTTP $status")
+
+            val reader = withContext(Dispatchers.IO) { conn.inputStream.bufferedReader(Charsets.UTF_8) }
+            reader.use {
+                for (line in it.lineSequence()) {
+                    when {
+                        line.isEmpty() -> continue
+                        line == "data: [DONE]" -> return@flow
+                        line.startsWith("data: ") -> {
+                            val payload = line.removePrefix("data: ")
+                            val delta = runCatching {
+                                json.parseToJsonElement(payload).jsonObject
+                                    .get("delta")?.jsonObject
+                                    ?.get("text")?.jsonPrimitive?.content
+                            }.getOrNull()
+                            if (!delta.isNullOrEmpty()) emit(delta)
+                        }
+                    }
+                }
+            }
+        } finally {
+            withContext(Dispatchers.IO) { conn.disconnect() }
         }
     }
 
