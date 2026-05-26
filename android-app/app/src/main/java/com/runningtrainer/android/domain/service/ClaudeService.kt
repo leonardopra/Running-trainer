@@ -7,9 +7,6 @@ import com.runningtrainer.android.domain.model.TrainingWeek
 import com.runningtrainer.android.domain.model.UserPreferencesDto
 import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
@@ -17,11 +14,10 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
 
-class ClaudeService {
+class ClaudeService(
+    private val httpClient: ClaudeHttpClient = ClaudeHttpClient()
+) {
     private val json = Json { ignoreUnknownKeys = true }
 
     data class EnrichmentResult(
@@ -93,7 +89,7 @@ class ClaudeService {
             "[{\"id\": \"...\", \"description\": \"...\", \"coachingTip\": \"...\"}]\n\n" +
             "Rules: max 60 words per description, direct/practical tone, no markdown."
 
-        val response = callWithRetry(apiKey = apiKey, prompt = prompt)
+        val response = httpClient.call(apiKey, ClaudeRequest(prompt = prompt))
         return applyEnrichments(week, parseEnrichments(response))
     }
 
@@ -115,64 +111,16 @@ class ClaudeService {
             "Give 2-3 sentences of honest, practical coaching feedback. Be concise, no markdown."
 
         return try {
-            callWithRetry(
-                apiKey = apiKey,
-                prompt = prompt,
-                systemPrompt = "You are an experienced running coach. Give concise, honest, actionable post-workout feedback. Plain text only, no markdown, max 80 words.",
-                maxTokens = 256
+            httpClient.call(
+                apiKey,
+                ClaudeRequest(
+                    prompt = prompt,
+                    systemPrompt = "You are an experienced running coach. Give concise, honest, actionable post-workout feedback. Plain text only, no markdown, max 80 words.",
+                    maxTokens = 256
+                )
             ).trim()
         } catch (e: Exception) {
             null
-        }
-    }
-
-    private suspend fun callWithRetry(
-        apiKey: String,
-        prompt: String,
-        systemPrompt: String = "You are an expert running coach. Provide concise, practical workout guidance. Always respond with valid JSON only — no markdown, no code fences.",
-        maxTokens: Int = 1024,
-        attempt: Int = 0
-    ): String = withContext(Dispatchers.IO) {
-        val body = buildJsonObject {
-            put("model", MODEL)
-            put("max_tokens", maxTokens)
-            put("system", systemPrompt)
-            put("messages", buildJsonArray {
-                add(buildJsonObject {
-                    put("role", "user")
-                    put("content", prompt)
-                })
-            })
-        }.toString()
-
-        val conn = URL(API_URL).openConnection() as HttpURLConnection
-        try {
-            conn.requestMethod = "POST"
-            conn.connectTimeout = 30_000
-            conn.readTimeout = 60_000
-            conn.doOutput = true
-            conn.setRequestProperty("x-api-key", apiKey)
-            conn.setRequestProperty("anthropic-version", "2023-06-01")
-            conn.setRequestProperty("content-type", "application/json")
-            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(body) }
-
-            val status = conn.responseCode
-            if (status == 401) throw ClaudeApiException("Invalid API key. Check your key in Settings.", isAuthError = true)
-            if (status == 429) {
-                if (attempt < MAX_RETRIES) {
-                    delay(2_000L * (attempt + 1))
-                    return@withContext callWithRetry(apiKey, prompt, systemPrompt, maxTokens, attempt + 1)
-                }
-                throw ClaudeApiException("Rate limited by Claude API.")
-            }
-            if (status !in 200..299) throw ClaudeApiException("Claude API error: HTTP $status")
-
-            val responseBody = conn.inputStream.bufferedReader(Charsets.UTF_8).readText()
-            val parsed = json.parseToJsonElement(responseBody).jsonObject
-            parsed["content"]?.jsonArray?.firstOrNull()?.jsonObject?.get("text")?.jsonPrimitive?.content
-                ?: throw ClaudeApiException("Unexpected response structure.")
-        } finally {
-            conn.disconnect()
         }
     }
 
@@ -196,12 +144,6 @@ class ClaudeService {
                 workout.copy(description = description, coachingTip = coachingTip)
             }
         )
-    }
-
-    companion object {
-        private const val API_URL = "https://api.anthropic.com/v1/messages"
-        private const val MODEL = "claude-sonnet-4-6"
-        private const val MAX_RETRIES = 3
     }
 }
 
