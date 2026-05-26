@@ -7,16 +7,11 @@ import com.runningtrainer.android.domain.model.TrainingWeek
 import com.runningtrainer.android.domain.model.UserPreferencesDto
 import com.runningtrainer.android.domain.model.Workout
 import com.runningtrainer.android.domain.model.WorkoutType
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 
 class ClaudeService(
-    private val httpClient: ClaudeHttpClient = ClaudeHttpClient()
+    private val httpClient: ClaudeHttpClient = ClaudeHttpClient(),
+    private val responseParser: ClaudeResponseParser = ClaudeResponseParser()
 ) {
-    private val json = Json { ignoreUnknownKeys = true }
-
     data class EnrichmentResult(
         val enrichedWeeks: List<TrainingWeek>,
         val isAuthError: Boolean = false
@@ -57,7 +52,7 @@ class ClaudeService(
         if (week.workouts.none { it.type != WorkoutType.rest }) return week
         val request = ClaudePromptBuilder.buildEnrichmentPrompt(week, goalType, fitnessLevel, preferences)
         val response = httpClient.call(apiKey, request)
-        return applyEnrichments(week, parseEnrichments(response))
+        return responseParser.applyEnrichments(week, responseParser.parseEnrichments(response))
     }
 
     suspend fun generatePostWorkoutCoaching(
@@ -70,28 +65,6 @@ class ClaudeService(
         } catch (e: Exception) {
             null
         }
-    }
-
-    private fun parseEnrichments(response: String): Map<String, Pair<String?, String?>> {
-        val cleaned = response.trim().replace(Regex("```[a-z]*\\n?"), "").trim()
-        return try {
-            json.parseToJsonElement(cleaned).jsonArray.associate { element ->
-                val obj = element.jsonObject
-                val id = obj["id"]?.jsonPrimitive?.content ?: return@associate "" to (null to null)
-                id to (obj["description"]?.jsonPrimitive?.content to obj["coachingTip"]?.jsonPrimitive?.content)
-            }.filterKeys { it.isNotEmpty() }
-        } catch (e: Exception) {
-            emptyMap()
-        }
-    }
-
-    private fun applyEnrichments(week: TrainingWeek, enrichments: Map<String, Pair<String?, String?>>): TrainingWeek {
-        return week.copy(
-            workouts = week.workouts.map { workout ->
-                val (description, coachingTip) = enrichments[workout.id] ?: return@map workout
-                workout.copy(description = description, coachingTip = coachingTip)
-            }
-        )
     }
 }
 
