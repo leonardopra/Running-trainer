@@ -1,19 +1,19 @@
 package com.runningtrainer.android.ui
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.runningtrainer.android.data.repository.SettingsRepository
 import com.runningtrainer.android.data.repository.TrainingPlanRepository
 import com.runningtrainer.android.domain.model.TrainingPlan
 import com.runningtrainer.android.domain.model.UserPreferencesDto
-import com.runningtrainer.android.notifications.NotificationService
 import com.runningtrainer.android.ui.navigation.AppDestination
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 data class MainUiState(
     val isBootstrapping: Boolean = true,
@@ -28,24 +28,28 @@ data class MainUiState(
     val activePlan: TrainingPlan? = null
 )
 
-class MainViewModel(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val trainingPlanRepository: TrainingPlanRepository,
-    private val settingsRepository: SettingsRepository,
-    private val notificationService: NotificationService? = null,
-    // Injected from OnboardingViewModel so MainUiState can mirror onboarding state
-    // without a direct VM-to-VM dependency.
-    private val onboardingState: StateFlow<OnboardingUiState> = MutableStateFlow(OnboardingUiState())
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val currentDestination = MutableStateFlow(AppDestination.Goal)
     private val isPreRunStretching = MutableStateFlow(true)
     private val navState = combine(currentDestination, isPreRunStretching) { dest, pre -> dest to pre }
 
+    // Kept as internal MutableStateFlow; MainActivity bridges OnboardingViewModel.uiState here.
+    private val _onboardingState = MutableStateFlow(OnboardingUiState())
+
+    fun updateOnboardingState(state: OnboardingUiState) {
+        _onboardingState.value = state
+    }
+
     val uiState: StateFlow<MainUiState> = combine(
         settingsRepository.observePreferences(),
         trainingPlanRepository.observeActivePlan(),
         navState,
-        onboardingState
+        _onboardingState
     ) { preferences, activePlan, (destination, preRunStretching), onboarding ->
         MainUiState(
             isBootstrapping = false,
@@ -95,21 +99,5 @@ class MainViewModel(
 
     fun openPrivacy() {
         currentDestination.value = AppDestination.Privacy
-    }
-
-    companion object {
-        fun factory(
-            trainingPlanRepository: TrainingPlanRepository,
-            settingsRepository: SettingsRepository,
-            notificationService: NotificationService? = null,
-            onboardingState: StateFlow<OnboardingUiState> = MutableStateFlow(OnboardingUiState())
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                MainViewModel(
-                    trainingPlanRepository, settingsRepository,
-                    notificationService, onboardingState
-                ) as T
-        }
     }
 }

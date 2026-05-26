@@ -1,7 +1,6 @@
 package com.runningtrainer.android.ui
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.runningtrainer.android.data.repository.SettingsRepository
 import com.runningtrainer.android.data.repository.TrainingPlanRepository
@@ -16,6 +15,7 @@ import com.runningtrainer.android.domain.service.ClaudeService
 import com.runningtrainer.android.domain.service.InsightsService
 import com.runningtrainer.android.domain.service.PaceCalculatorService
 import com.runningtrainer.android.ui.navigation.AppDestination
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
 data class PlanUiState(
     val activePlan: TrainingPlan? = null,
@@ -44,12 +45,13 @@ data class PlanUiState(
  * Observes repositories directly — no dependency on MainViewModel.
  * Navigation intent is published via [navigationEvent]; MainActivity bridges it to MainViewModel.
  */
-class PlanViewModel(
+@HiltViewModel
+class PlanViewModel @Inject constructor(
     private val trainingPlanRepository: TrainingPlanRepository,
     private val settingsRepository: SettingsRepository,
-    private val insightsService: InsightsService = InsightsService(),
-    private val paceCalculatorService: PaceCalculatorService = PaceCalculatorService(),
-    private val claudeService: ClaudeService? = null
+    private val insightsService: InsightsService,
+    private val paceCalculatorService: PaceCalculatorService,
+    private val claudeService: ClaudeService
 ) : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<AppDestination>(extraBufferCapacity = 1)
@@ -101,7 +103,7 @@ class PlanViewModel(
             trainingPlanRepository.observeActivePlan().collect { plan ->
                 if (plan == null) {
                     selectedWorkoutId.value = null
-                } else if (!plan.isClaudeEnriched && !isEnriching.value && claudeService != null) {
+                } else if (!plan.isClaudeEnriched && !isEnriching.value) {
                     val prefs = settingsRepository.observePreferences().first()
                     val apiKey = prefs.claudeApiKey
                     if (!apiKey.isNullOrBlank()) runEnrichment(apiKey, prefs)
@@ -129,7 +131,7 @@ class PlanViewModel(
         isEnriching.value = true
         enrichmentError.value = null
         try {
-            val result = claudeService!!.enrichPlan(plan, apiKey, prefs)
+            val result = claudeService.enrichPlan(plan, apiKey, prefs)
             if (result.isAuthError) {
                 enrichmentError.value = "Invalid API key. Check Settings."
             } else {
@@ -139,20 +141,6 @@ class PlanViewModel(
             }
         } finally {
             isEnriching.value = false
-        }
-    }
-
-    companion object {
-        fun factory(
-            trainingPlanRepository: TrainingPlanRepository,
-            settingsRepository: SettingsRepository,
-            insightsService: InsightsService = InsightsService(),
-            paceCalculatorService: PaceCalculatorService = PaceCalculatorService(),
-            claudeService: ClaudeService? = null
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                PlanViewModel(trainingPlanRepository, settingsRepository, insightsService, paceCalculatorService, claudeService) as T
         }
     }
 }

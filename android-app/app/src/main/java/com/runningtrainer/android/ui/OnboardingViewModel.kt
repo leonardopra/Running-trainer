@@ -1,7 +1,6 @@
 package com.runningtrainer.android.ui
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.runningtrainer.android.data.repository.SettingsRepository
 import com.runningtrainer.android.data.repository.TrainingPlanRepository
@@ -10,6 +9,7 @@ import com.runningtrainer.android.domain.model.FitnessLevel
 import com.runningtrainer.android.domain.model.GoalType
 import com.runningtrainer.android.notifications.NotificationService
 import com.runningtrainer.android.ui.navigation.AppDestination
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
 data class OnboardingFormState(
     val goalType: GoalType? = null,
@@ -45,10 +46,11 @@ data class OnboardingUiState(
  * Owns onboarding form state, plan generation, and data-reset operations.
  * Navigation intent is published via [navigationEvent]; MainActivity bridges it to MainViewModel.
  */
-class OnboardingViewModel(
+@HiltViewModel
+class OnboardingViewModel @Inject constructor(
     private val trainingPlanRepository: TrainingPlanRepository,
     private val settingsRepository: SettingsRepository,
-    private val notificationService: NotificationService? = null
+    private val notificationService: NotificationService
 ) : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<AppDestination>(extraBufferCapacity = 1)
@@ -140,7 +142,7 @@ class OnboardingViewModel(
                 if (prefs.notificationsEnabled) {
                     val plan = trainingPlanRepository.observeActivePlan().firstOrNull()
                     if (plan != null) {
-                        notificationService?.scheduleForPlan(plan, prefs.notificationHour, prefs.notificationMinute)
+                        notificationService.scheduleForPlan(plan, prefs.notificationHour, prefs.notificationMinute)
                     }
                 }
                 // PlanViewModel auto-triggers enrichment on observing the new plan.
@@ -159,7 +161,7 @@ class OnboardingViewModel(
     fun resetLocalData() {
         viewModelScope.launch {
             val plan = trainingPlanRepository.observeActivePlan().firstOrNull()
-            if (plan != null) notificationService?.cancelAll(plan.weeks.size)
+            if (plan != null) notificationService.cancelAll(plan.weeks.size)
             trainingPlanRepository.clearAllPlans()
             settingsRepository.clear()
             form.value = OnboardingFormState()
@@ -172,7 +174,7 @@ class OnboardingViewModel(
     fun startNewPlan() {
         viewModelScope.launch {
             val plan = trainingPlanRepository.observeActivePlan().firstOrNull()
-            if (plan != null) notificationService?.cancelAll(plan.weeks.size)
+            if (plan != null) notificationService.cancelAll(plan.weeks.size)
             trainingPlanRepository.clearAllPlans()
             val currentPrefs = settingsRepository.observePreferences().first()
             settingsRepository.savePreferences(currentPrefs.copy(hasCompletedOnboarding = false))
@@ -180,18 +182,6 @@ class OnboardingViewModel(
             generationError.value = null
             isGenerating.value = false
             _navigationEvent.emit(AppDestination.Goal)
-        }
-    }
-
-    companion object {
-        fun factory(
-            trainingPlanRepository: TrainingPlanRepository,
-            settingsRepository: SettingsRepository,
-            notificationService: NotificationService? = null
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                OnboardingViewModel(trainingPlanRepository, settingsRepository, notificationService) as T
         }
     }
 }

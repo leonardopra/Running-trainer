@@ -1,26 +1,27 @@
 package com.runningtrainer.android.ui
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.runningtrainer.android.data.repository.SettingsRepository
 import com.runningtrainer.android.domain.model.TrainingPlan
 import com.runningtrainer.android.notifications.NotificationService
 import com.runningtrainer.android.ui.navigation.AppDestination
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Owns all write operations on user preferences/settings.
- * Single dependency: [SettingsRepository] (+ optional [NotificationService] for scheduling).
  * Navigation intent after save is published via [navigationEvent]; MainActivity bridges it to MainViewModel.
  */
-class SettingsViewModel(
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val notificationService: NotificationService? = null
+    private val notificationService: NotificationService
 ) : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<AppDestination>(extraBufferCapacity = 1)
@@ -57,9 +58,9 @@ class SettingsViewModel(
 
             if (activePlan != null) {
                 if (notificationsEnabled) {
-                    notificationService?.scheduleForPlan(activePlan, notificationHour, notificationMinute)
+                    notificationService.scheduleForPlan(activePlan, notificationHour, notificationMinute)
                 } else {
-                    notificationService?.cancelAll(activePlan.weeks.size)
+                    notificationService.cancelAll(activePlan.weeks.size)
                 }
             }
 
@@ -71,17 +72,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             val current = settingsRepository.observePreferences().first()
             settingsRepository.savePreferences(current.copy(goalTimeSeconds = goalTimeSeconds))
-        }
-    }
-
-    companion object {
-        fun factory(
-            settingsRepository: SettingsRepository,
-            notificationService: NotificationService? = null
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                SettingsViewModel(settingsRepository, notificationService) as T
         }
     }
 }
