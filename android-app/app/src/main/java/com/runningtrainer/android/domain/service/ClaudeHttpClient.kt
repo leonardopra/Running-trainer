@@ -122,19 +122,28 @@ class ClaudeHttpClient {
                         line.isEmpty() -> continue
                         line == "data: [DONE]" -> return@flow
                         line.startsWith("data: ") -> {
-                            val payload = line.removePrefix("data: ")
-                            val delta = runCatching {
-                                json.parseToJsonElement(payload).jsonObject
-                                    .get("delta")?.jsonObject
-                                    ?.get("text")?.jsonPrimitive?.content
-                            }.getOrNull()
-                            if (!delta.isNullOrEmpty()) emit(delta)
+                            val text = parseSSEChunk(line)
+                            if (text != null) emit(text)
                         }
                     }
                 }
             }
         } finally {
             withContext(Dispatchers.IO) { conn.disconnect() }
+        }
+    }
+
+    /** Parses one SSE data line and returns the text delta to emit, or null to skip. */
+    internal fun parseSSEChunk(line: String): String? {
+        if (line.isBlank() || !line.startsWith("data: ") || line == "data: [DONE]") return null
+        val payload = line.removePrefix("data: ")
+        return try {
+            json.parseToJsonElement(payload).jsonObject
+                .get("delta")?.jsonObject
+                ?.get("text")?.jsonPrimitive?.content
+                ?.takeIf { it.isNotEmpty() }
+        } catch (e: Exception) {
+            null
         }
     }
 
