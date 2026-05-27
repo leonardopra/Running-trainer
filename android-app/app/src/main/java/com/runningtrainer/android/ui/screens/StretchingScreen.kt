@@ -45,7 +45,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.StretchExercise
 import com.runningtrainer.android.domain.model.postRunRoutine
@@ -145,7 +144,7 @@ private fun StretchExerciseCard(exercise: StretchExercise, accentColor: Color) {
                         .clip(RoundedCornerShape(6.dp))
                         .border(1.dp, accentColor.copy(alpha = 0.25f), RoundedCornerShape(6.dp))
                         .padding(horizontal = 8.dp, vertical = 3.dp),
-                    fontSize = 11.sp,
+                    style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Medium,
                     color = accentColor
                 )

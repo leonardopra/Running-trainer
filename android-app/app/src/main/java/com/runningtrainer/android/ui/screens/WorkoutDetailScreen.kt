@@ -215,7 +215,7 @@ fun WorkoutDetailScreen(
             Text(
                 stringResource(R.string.workout_note_high_distance, plannedKm),
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFFFF9800)
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
 
@@ -424,8 +424,8 @@ private fun DetailField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = SurfaceVar,
+            unfocusedContainerColor = SurfaceVar,
             focusedIndicatorColor = primary,
             unfocusedIndicatorColor = SurfaceVar,
             focusedTextColor = MaterialTheme.colorScheme.onSurface,

@@ -104,8 +104,8 @@ private fun FilledField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = SurfaceVar,
+            unfocusedContainerColor = SurfaceVar,
             focusedIndicatorColor = primary,
             unfocusedIndicatorColor = SurfaceVar,
             focusedTextColor = MaterialTheme.colorScheme.onSurface,

@@ -1,5 +1,6 @@
 package com.runningtrainer.android.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,7 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.domain.model.ProgressStats
 import com.runningtrainer.android.domain.model.WorkoutFeeling
@@ -33,6 +36,11 @@ import com.runningtrainer.android.domain.model.WorkoutType
 import androidx.compose.ui.res.stringResource
 import com.runningtrainer.android.R
 import com.runningtrainer.android.ui.theme.ColorEasyRun
+import com.runningtrainer.android.ui.theme.ColorFeelingGreat
+import com.runningtrainer.android.ui.theme.ColorFeelingGood
+import com.runningtrainer.android.ui.theme.ColorFeelingInjured
+import com.runningtrainer.android.ui.theme.ColorFeelingOk
+import com.runningtrainer.android.ui.theme.ColorFeelingTired
 import com.runningtrainer.android.ui.theme.ColorIntervalRun
 import com.runningtrainer.android.ui.theme.Secondary
 import com.runningtrainer.android.ui.theme.SurfaceVar
@@ -119,6 +127,19 @@ fun ProgressScreen(
                     value = "$weeksCompleted",
                     sub = stringResource(R.string.progress_of_started, progressStats.weeklyProgress.size),
                     accentColor = ColorEasyRun
+                )
+            }
+        }
+
+        // Weekly km chart
+        if (progressStats.weeklyKmHistory.isNotEmpty()) {
+            item {
+                val avgGoalKm = if (progressStats.weeklyProgress.isNotEmpty())
+                    progressStats.weeklyProgress.map { it.plannedKm.toFloat() }.average().toFloat()
+                    else 0f
+                WeeklyKmChart(
+                    data = progressStats.weeklyKmHistory,
+                    goalKm = avgGoalKm
                 )
             }
         }
@@ -344,11 +365,11 @@ private fun feelingEmoji(feeling: WorkoutFeeling): String = when (feeling) {
 }
 
 private fun feelingColor(feeling: WorkoutFeeling): Color = when (feeling) {
-    WorkoutFeeling.great   -> Color(0xFF81C784)
-    WorkoutFeeling.good    -> Color(0xFFA5D6A7)
-    WorkoutFeeling.ok      -> Color(0xFFFFE082)
-    WorkoutFeeling.tired   -> Color(0xFFFFB74D)
-    WorkoutFeeling.injured -> Color(0xFFEF9A9A)
+    WorkoutFeeling.great   -> ColorFeelingGreat
+    WorkoutFeeling.good    -> ColorFeelingGood
+    WorkoutFeeling.ok      -> ColorFeelingOk
+    WorkoutFeeling.tired   -> ColorFeelingTired
+    WorkoutFeeling.injured -> ColorFeelingInjured
 }
 
 @Composable
@@ -359,4 +380,106 @@ private fun workoutTypeLabel(type: WorkoutType): String = when (type) {
     WorkoutType.intervalRun -> stringResource(R.string.workout_type_interval_run)
     WorkoutType.crossTrain  -> stringResource(R.string.workout_type_cross_train)
     WorkoutType.rest        -> stringResource(R.string.workout_type_rest)
+}
+
+// ── Weekly km chart ───────────────────────────────────────────────────────────
+
+@Composable
+fun WeeklyKmChart(data: List<Pair<String, Float>>, goalKm: Float) {
+    if (data.isEmpty()) return
+
+    val primary = MaterialTheme.colorScheme.primary
+    val textMutedColor = TextMuted
+
+    // Compute delta vs previous week
+    val deltaText: String? = if (data.size >= 2) {
+        val prev = data[data.size - 2].second
+        val curr = data[data.size - 1].second
+        if (prev > 0f) {
+            val pct = ((curr - prev) / prev * 100).toInt()
+            if (pct >= 0) "+$pct% vs prev. week" else "$pct% vs prev. week"
+        } else null
+    } else null
+
+    SurfaceCard(modifier = Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    stringResource(R.string.weekly_progress),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = TextMuted
+                )
+                if (deltaText != null) {
+                    Text(
+                        deltaText,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+
+            val maxKm = maxOf(data.maxOf { it.second }, goalKm, 0.01f)
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+            ) {
+                val n = data.size
+                val totalSlots = n * 1.5f + 0.5f
+                val slotWidth = size.width / totalSlots
+                val barWidth = slotWidth
+                val spacing = slotWidth * 0.5f
+                val availableHeight = size.height - 4.dp.toPx()
+                val scaleY = availableHeight / maxKm
+
+                data.forEachIndexed { i, (_, km) ->
+                    val x = spacing + i * (barWidth + spacing)
+                    val barHeight = (km * scaleY).coerceAtLeast(0f)
+                    val y = size.height - barHeight
+                    val isCurrentWeek = i == n - 1
+
+                    drawRect(
+                        color = if (isCurrentWeek) primary.copy(alpha = 0.55f) else primary.copy(alpha = 0.25f),
+                        topLeft = Offset(x, y),
+                        size = Size(barWidth, barHeight)
+                    )
+                    if (!isCurrentWeek && barHeight > 0f) {
+                        drawLine(
+                            color = primary.copy(alpha = 0.7f),
+                            start = Offset(x, y),
+                            end = Offset(x + barWidth, y),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                    }
+                }
+
+                if (goalKm > 0f) {
+                    val goalY = (size.height - goalKm * scaleY).coerceIn(0f, size.height)
+                    drawLine(
+                        color = textMutedColor.copy(alpha = 0.6f),
+                        start = Offset(0f, goalY),
+                        end = Offset(size.width, goalY),
+                        strokeWidth = 1.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 4f), 0f)
+                    )
+                }
+            }
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                data.forEach { (label, _) ->
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextMuted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
 }

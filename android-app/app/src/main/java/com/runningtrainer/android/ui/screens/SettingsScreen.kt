@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +21,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -71,7 +70,7 @@ fun SettingsScreen(
     var notificationMinute by rememberSaveable { mutableStateOf(preferences.notificationMinute.toString().padStart(2, '0')) }
     var localeCode by rememberSaveable { mutableStateOf(preferences.localeCode) }
     var showNewPlanDialog by rememberSaveable { mutableStateOf(false) }
-    var showResetDialog by rememberSaveable { mutableStateOf(false) }
+    var resetConfirmVisible by rememberSaveable { mutableStateOf(false) }
 
     if (showNewPlanDialog) {
         AlertDialog(
@@ -90,20 +89,10 @@ fun SettingsScreen(
         )
     }
 
-    if (showResetDialog) {
-        AlertDialog(
-            onDismissRequest = { showResetDialog = false },
-            title = { Text(stringResource(R.string.dialog_reset_title)) },
-            text = { Text(stringResource(R.string.dialog_reset_body)) },
-            confirmButton = {
-                TextButton(onClick = { showResetDialog = false; onResetAll() }) {
-                    Text(stringResource(R.string.btn_reset), color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) { Text(stringResource(R.string.btn_cancel)) }
-            },
-            containerColor = MaterialTheme.colorScheme.surface
+    if (resetConfirmVisible) {
+        ResetConfirmDialog(
+            onConfirm = { resetConfirmVisible = false; onResetAll() },
+            onDismiss = { resetConfirmVisible = false }
         )
     }
 
@@ -117,7 +106,7 @@ fun SettingsScreen(
     ) {
         // ── Profile ───────────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_profile))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 SettingsField(value = name, onValueChange = { name = it }, label = stringResource(R.string.field_name))
                 SettingsField(
@@ -137,7 +126,7 @@ fun SettingsScreen(
 
         // ── AI Coaching ───────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_ai_coaching))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     stringResource(R.string.ai_coaching_desc),
@@ -165,7 +154,7 @@ fun SettingsScreen(
 
         // ── Language ──────────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_language))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -176,7 +165,7 @@ fun SettingsScreen(
                 langs.forEach { (code, label) ->
                     val selected = localeCode == code
                     val primary = MaterialTheme.colorScheme.primary
-                    val shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp)
+                    val shape = RoundedCornerShape(20.dp)
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -196,7 +185,7 @@ fun SettingsScreen(
 
         // ── Units ─────────────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_units))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -216,7 +205,7 @@ fun SettingsScreen(
 
         // ── Notifications ─────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_notifications))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -259,7 +248,7 @@ fun SettingsScreen(
 
         // ── Training Plan ─────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_training_plan))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     stringResource(R.string.training_plan_desc),
@@ -276,21 +265,9 @@ fun SettingsScreen(
             }
         }
 
-        // ── Data ──────────────────────────────────────────────────────────────
-        SectionHeader(stringResource(R.string.section_data))
-        OutlinedButton(
-            onClick = { showResetDialog = true },
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f))
-        ) {
-            Text(stringResource(R.string.btn_reset_all_data))
-        }
-
         // ── About ─────────────────────────────────────────────────────────────
         SectionHeader(stringResource(R.string.section_about))
-        SettingsSection {
+        SurfaceCard(modifier = Modifier.fillMaxWidth()) {
             Text(
                 stringResource(R.string.privacy_policy),
                 style = MaterialTheme.typography.bodyLarge,
@@ -316,8 +293,46 @@ fun SettingsScreen(
             Text(stringResource(R.string.btn_save_settings), style = MaterialTheme.typography.labelLarge)
         }
 
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
+        // ── Destructive action ────────────────────────────────────────────────
+        TextButton(
+            onClick = { resetConfirmVisible = true },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = MaterialTheme.colorScheme.error
+            )
+        ) {
+            Text(stringResource(R.string.btn_reset_all_data), style = MaterialTheme.typography.labelMedium)
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
+}
+
+// ── Dialogs ───────────────────────────────────────────────────────────────────
+
+@Composable
+fun ResetConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.dialog_reset_title)) },
+        text = { Text(stringResource(R.string.dialog_reset_body)) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
+                    contentColor = MaterialTheme.colorScheme.error
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(stringResource(R.string.btn_reset))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.btn_cancel)) }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
+    )
 }
 
 // ── Private components ────────────────────────────────────────────────────────
@@ -329,19 +344,6 @@ private fun SectionHeader(title: String) {
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(top = 4.dp)
     )
-}
-
-@Composable
-private fun SettingsSection(content: @Composable () -> Unit) {
-    val shape = RoundedCornerShape(16.dp)
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape)
-            .background(MaterialTheme.colorScheme.surface, shape)
-            .border(1.dp, SurfaceVar, shape)
-            .padding(16.dp)
-    ) { content() }
 }
 
 @Composable
@@ -365,8 +367,8 @@ private fun SettingsField(
         trailingIcon = trailingIcon,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            focusedContainerColor = SurfaceVar,
+            unfocusedContainerColor = SurfaceVar,
             focusedIndicatorColor = primary,
             unfocusedIndicatorColor = SurfaceVar,
             focusedTextColor = MaterialTheme.colorScheme.onSurface,

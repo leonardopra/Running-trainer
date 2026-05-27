@@ -243,14 +243,14 @@ private fun TimeField(
             onValueChange = onValueChange,
             textStyle = MaterialTheme.typography.headlineMedium.copy(
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Medium
             ),
             placeholder = {
                 Text(
                     "00",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Medium
                     ),
                     color = SurfaceVar,
                     modifier = Modifier.fillMaxWidth()
@@ -260,10 +260,10 @@ private fun TimeField(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = SurfaceVar,
+                unfocusedContainerColor = SurfaceVar,
                 focusedIndicatorColor = primary,
-                unfocusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = SurfaceVar,
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 cursorColor = primary
@@ -279,7 +279,7 @@ private fun TimeSeparator() {
     Text(
         ":",
         style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Medium,
         color = TextMuted,
         modifier = Modifier.padding(bottom = 28.dp)
     )
@@ -324,7 +324,7 @@ private fun PaceZoneCard(zone: PaceZone) {
                     Text(
                         zone.paceRange,
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         color = typeColor
                     )
                 }

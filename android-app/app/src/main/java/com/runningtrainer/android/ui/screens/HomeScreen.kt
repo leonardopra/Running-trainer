@@ -1,5 +1,10 @@
 package com.runningtrainer.android.ui.screens
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,22 +19,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import java.time.LocalDate
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.runningtrainer.android.R
 import com.runningtrainer.android.domain.model.CoachingInsight
@@ -45,6 +56,7 @@ import com.runningtrainer.android.ui.theme.ColorRest
 import com.runningtrainer.android.ui.theme.ColorTempoRun
 import com.runningtrainer.android.ui.theme.SurfaceVar
 import com.runningtrainer.android.ui.theme.TextMuted
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
@@ -52,36 +64,13 @@ fun HomeScreen(
     activePlan: TrainingPlan?,
     runnerName: String?,
     insights: List<CoachingInsight> = emptyList(),
-    onResetData: () -> Unit,
+    onStartSetup: () -> Unit,
     onOpenWorkout: (String) -> Unit,
     onOpenProgress: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
     if (activePlan == null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                stringResource(R.string.home_no_plan),
-                style = MaterialTheme.typography.displayLarge
-            )
-            Text(
-                stringResource(R.string.home_no_plan_desc),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Button(
-                onClick = onResetData,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.height(52.dp)
-            ) {
-                Text(stringResource(R.string.home_restart_setup))
-            }
-        }
+        NoPlanEmptyState(innerPadding = innerPadding, onStartSetup = onStartSetup)
         return
     }
 
@@ -183,18 +172,125 @@ fun HomeScreen(
                 }
             }
         }
+    }
+}
 
+// ── Empty state ───────────────────────────────────────────────────────────────
+
+@Composable
+private fun NoPlanEmptyState(innerPadding: PaddingValues, onStartSetup: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Default.DirectionsRun,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            stringResource(R.string.home_no_plan),
+            style = MaterialTheme.typography.headlineSmall
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.home_no_plan_desc),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = onStartSetup,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.height(52.dp)
+        ) {
+            Text(stringResource(R.string.home_restart_setup))
+        }
+    }
+}
+
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+
+@Composable
+fun HomeScreenSkeleton(innerPadding: PaddingValues) {
+    val infiniteTransition = rememberInfiniteTransition(label = "skeleton")
+    val animatedAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(900),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "skeletonAlpha"
+    )
+
+    @Composable
+    fun SkeletonBox(widthFraction: Float, height: Int) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(widthFraction)
+                .height(height.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(SurfaceVar)
+                .graphicsLayer { alpha = animatedAlpha }
+        )
+    }
+
+    val tileWidths = listOf(0.65f, 0.55f, 0.45f)
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // Greeting skeleton
         item {
-            Button(
-                onClick = onResetData,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
-                    contentColor = MaterialTheme.colorScheme.error
-                ),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().height(48.dp)
-            ) {
-                Text(stringResource(R.string.home_reset_local_data))
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                SkeletonBox(widthFraction = 0.55f, height = 20)
+                SkeletonBox(widthFraction = 0.35f, height = 12)
+            }
+        }
+
+        // Two SurfaceCard skeletons
+        repeat(2) { cardIdx ->
+            item {
+                SurfaceCard(modifier = Modifier.fillMaxWidth()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        SkeletonBox(widthFraction = 0.4f, height = 12)
+                        SkeletonBox(widthFraction = 0.7f, height = 16)
+                        tileWidths.forEachIndexed { i, w ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(SurfaceVar)
+                                        .graphicsLayer { alpha = animatedAlpha }
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth(w - (cardIdx * 0.05f).coerceAtLeast(0f))
+                                        .height(12.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(SurfaceVar)
+                                        .graphicsLayer { alpha = animatedAlpha }
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -347,9 +443,10 @@ private fun InsightChip(insight: CoachingInsight) {
     }
 }
 
+@Composable
 private fun insightColors(type: InsightType): Pair<Color, Color> = when (type) {
-    InsightType.WARNING    -> Color(0xFFFF9800).copy(alpha = 0.15f) to Color(0xFFFF9800)
-    InsightType.POSITIVE   -> Color(0xFF76FF03).copy(alpha = 0.15f) to Color(0xFF76FF03)
-    InsightType.MOTIVATION -> Color(0xFF9C27B0).copy(alpha = 0.15f) to Color(0xFFCE93D8)
-    InsightType.INFO       -> Color(0xFF00E5FF).copy(alpha = 0.15f) to Color(0xFF00E5FF)
+    InsightType.WARNING    -> MaterialTheme.colorScheme.errorContainer    to MaterialTheme.colorScheme.error
+    InsightType.POSITIVE   -> MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.secondary
+    InsightType.MOTIVATION -> MaterialTheme.colorScheme.tertiaryContainer  to MaterialTheme.colorScheme.tertiary
+    InsightType.INFO       -> MaterialTheme.colorScheme.primaryContainer   to MaterialTheme.colorScheme.primary
 }

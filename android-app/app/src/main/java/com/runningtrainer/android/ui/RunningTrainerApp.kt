@@ -1,6 +1,5 @@
 package com.runningtrainer.android.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -22,7 +21,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.runningtrainer.android.R
@@ -33,6 +31,7 @@ import com.runningtrainer.android.ui.screens.FitnessSelectionScreen
 import com.runningtrainer.android.ui.screens.GeneratingPlanScreen
 import com.runningtrainer.android.ui.screens.GoalSelectionScreen
 import com.runningtrainer.android.ui.screens.HomeScreen
+import com.runningtrainer.android.ui.screens.HomeScreenSkeleton
 import com.runningtrainer.android.ui.screens.PaceCalculatorScreen
 import com.runningtrainer.android.ui.screens.ProgressScreen
 import com.runningtrainer.android.ui.screens.ProfileScreen
@@ -190,12 +189,7 @@ fun RunningTrainerApp(
         }
     ) { innerPadding ->
         if (uiState.isBootstrapping) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(stringResource(R.string.loading), style = MaterialTheme.typography.bodyLarge)
-            }
+            HomeScreenSkeleton(innerPadding = innerPadding)
             return@Scaffold
         }
 
@@ -232,7 +226,7 @@ fun RunningTrainerApp(
                 activePlan = planUiState.activePlan,
                 runnerName = uiState.preferences.name,
                 insights = planUiState.insights,
-                onResetData = onboardingViewModel::resetLocalData,
+                onStartSetup = onboardingViewModel::startNewPlan,
                 onOpenWorkout = planViewModel::openWorkoutDetail,
                 onOpenProgress = planViewModel::openProgress,
                 onOpenSettings = viewModel::openSettings

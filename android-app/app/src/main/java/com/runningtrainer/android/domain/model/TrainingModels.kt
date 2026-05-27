@@ -152,4 +152,7 @@ data class ProgressStats(
 
     val loggedRate: Double
         get() = if (totalPlannedKm == 0.0) 0.0 else totalLoggedKm / totalPlannedKm
+
+    val weeklyKmHistory: List<Pair<String, Float>>
+        get() = weeklyProgress.map { "W${it.weekNumber}" to it.loggedKm.toFloat() }
 }
