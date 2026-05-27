@@ -244,6 +244,7 @@ fun RunningTrainerApp(
                 workoutLogUiState = workoutLogUiState,
                 onSave = workoutLogViewModel::saveWorkoutLog,
                 onClear = workoutLogViewModel::clearWorkoutLog,
+                onCoachingDismissed = workoutLogViewModel::onCoachingDismissed,
                 onOpenStretching = viewModel::openStretching,
                 onBack = viewModel::goHome
             )

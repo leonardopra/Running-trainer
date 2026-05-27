@@ -15,7 +15,6 @@
     <string name="cd_home">Home</string>
 
     <!-- Buttons (shared) -->
-    <string name="btn_continue">Continue</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_reset">Reset</string>
     <string name="btn_back">Back</string>
@@ -194,6 +193,7 @@
     <string name="workout_coaching_tip">Coaching Tip</string>
     <string name="workout_post_coaching">Post-Workout Coaching</string>
     <string name="coaching_auth_error">Invalid Claude API key. Check your key in Settings.</string>
+    <string name="btn_continue">Continue</string>
     <string name="btn_pre_run_stretch">Pre-run</string>
     <string name="btn_post_run_stretch">Post-run</string>
 

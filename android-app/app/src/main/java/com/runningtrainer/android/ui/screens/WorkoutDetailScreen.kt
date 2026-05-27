@@ -70,6 +70,7 @@ fun WorkoutDetailScreen(
     workoutLogUiState: WorkoutLogUiState = WorkoutLogUiState(),
     onSave: (workoutId: String, distance: String, duration: String, notes: String, rpe: Int?, feeling: WorkoutFeeling?) -> Unit,
     onClear: (String) -> Unit,
+    onCoachingDismissed: () -> Unit = {},
     onOpenStretching: ((isPreRun: Boolean) -> Unit)? = null,
     onBack: () -> Unit
 ) {
@@ -295,14 +296,11 @@ fun WorkoutDetailScreen(
                 Text(stringResource(R.string.btn_clear_log))
             }
         }
-        // Post-workout AI coaching (streaming or static)
-        val showCoaching = workout.isCompleted && (
-            workoutLogUiState.isStreaming ||
+        // Post-workout AI coaching — streaming section (shown immediately after saving)
+        val showStreaming = workoutLogUiState.isStreaming ||
             workoutLogUiState.streamingCoaching.isNotBlank() ||
-            workoutLogUiState.coachingAuthError ||
-            !workout.postWorkoutCoaching.isNullOrBlank()
-        )
-        if (showCoaching) {
+            workoutLogUiState.coachingAuthError
+        if (showStreaming) {
             val shape = RoundedCornerShape(16.dp)
             Box(
                 modifier = Modifier
@@ -324,7 +322,7 @@ fun WorkoutDetailScreen(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.error
                         )
-                        workoutLogUiState.isStreaming || workoutLogUiState.streamingCoaching.isNotBlank() -> {
+                        else -> {
                             val cursorAlpha by rememberInfiniteTransition(label = "cursor")
                                 .animateFloat(
                                     initialValue = 1f,
@@ -347,11 +345,38 @@ fun WorkoutDetailScreen(
                             }
                             Text(text = displayText, style = MaterialTheme.typography.bodyMedium)
                         }
-                        !workout.postWorkoutCoaching.isNullOrBlank() -> Text(
-                            workout.postWorkoutCoaching,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
                     }
+                }
+            }
+            if (!workoutLogUiState.isStreaming) {
+                Button(
+                    onClick = onCoachingDismissed,
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(stringResource(R.string.btn_continue))
+                }
+            }
+        }
+
+        // Post-workout AI coaching — static section (re-opened completed workout, no active stream)
+        if (!showStreaming && workout.isCompleted && !workout.postWorkoutCoaching.isNullOrBlank()) {
+            val shape = RoundedCornerShape(16.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f), shape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), shape)
+                    .padding(16.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        stringResource(R.string.workout_post_coaching),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(workout.postWorkoutCoaching, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

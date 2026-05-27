@@ -15,7 +15,6 @@
     <string name="cd_home">Home</string>
 
     <!-- Buttons (shared) -->
-    <string name="btn_continue">Continua</string>
     <string name="btn_cancel">Annulla</string>
     <string name="btn_reset">Reimposta</string>
     <string name="btn_back">Indietro</string>
@@ -194,6 +193,7 @@
     <string name="workout_coaching_tip">Consiglio Allenatore</string>
     <string name="workout_post_coaching">Coaching Post-Allenamento</string>
     <string name="coaching_auth_error">Chiave API Claude non valida. Controlla la chiave nelle Impostazioni.</string>
+    <string name="btn_continue">Continua</string>
     <string name="btn_pre_run_stretch">Pre-corsa</string>
     <string name="btn_post_run_stretch">Post-corsa</string>
 

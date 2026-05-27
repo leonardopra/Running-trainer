@@ -1,5 +1,6 @@
 package com.runningtrainer.android.domain.service
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,8 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
@@ -115,9 +118,12 @@ class ClaudeHttpClient {
             if (status == 401) throw ClaudeApiException("Invalid API key. Check your key in Settings.", isAuthError = true)
             if (status !in 200..299) throw ClaudeApiException("Claude API error: HTTP $status")
 
-            val reader = withContext(Dispatchers.IO) { conn.inputStream.bufferedReader(Charsets.UTF_8) }
+            val reader = BufferedReader(
+                InputStreamReader(conn.inputStream, Charsets.UTF_8)
+            )
             reader.use {
-                for (line in it.lineSequence()) {
+                while (true) {
+                    val line = withContext(Dispatchers.IO) { it.readLine() } ?: break
                     when {
                         line.isEmpty() -> continue
                         line == "data: [DONE]" -> return@flow
