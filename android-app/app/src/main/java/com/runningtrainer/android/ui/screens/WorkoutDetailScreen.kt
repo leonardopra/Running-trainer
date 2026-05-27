@@ -297,9 +297,11 @@ fun WorkoutDetailScreen(
             }
         }
         // Post-workout AI coaching — streaming section (shown immediately after saving)
-        val showStreaming = workoutLogUiState.isStreaming ||
+        val showStreaming = workoutLogUiState.currentWorkoutId == workout.id && (
+            workoutLogUiState.isStreaming ||
             workoutLogUiState.streamingCoaching.isNotBlank() ||
             workoutLogUiState.coachingAuthError
+        )
         if (showStreaming) {
             val shape = RoundedCornerShape(16.dp)
             Box(
