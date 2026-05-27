@@ -18,19 +18,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.leopra.runningtrainer.R
@@ -39,6 +56,9 @@ import com.leopra.runningtrainer.domain.model.GoalType
 import com.leopra.runningtrainer.ui.MainUiState
 import com.leopra.runningtrainer.ui.theme.SurfaceVar
 import com.leopra.runningtrainer.ui.theme.TextMuted
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 // ── Onboarding progress indicator ────────────────────────────────────────────
 
@@ -114,6 +134,92 @@ private fun FilledField(
             cursorColor = primary
         )
     )
+}
+
+// ── Race date field with calendar picker ─────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RaceDateField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    val focusManager = LocalFocusManager.current
+    var showPicker by remember { mutableStateOf(false) }
+
+    val initialMillis = remember(value) {
+        value.takeIf { it.isNotBlank() }
+            ?.let { runCatching { LocalDate.parse(it).toEpochDay() * 86_400_000L }.getOrNull() }
+    }
+    val today = LocalDate.now().toEpochDay() * 86_400_000L
+
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(label, color = TextMuted) },
+        placeholder = { Text("YYYY-MM-DD", color = TextMuted) },
+        trailingIcon = {
+            IconButton(onClick = { showPicker = true }) {
+                Icon(
+                    imageVector = Icons.Default.CalendarToday,
+                    contentDescription = null,
+                    tint = primary
+                )
+            }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() }
+        ),
+        shape = RoundedCornerShape(12.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = SurfaceVar,
+            unfocusedContainerColor = SurfaceVar,
+            focusedIndicatorColor = primary,
+            unfocusedIndicatorColor = SurfaceVar,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedLabelColor = primary,
+            cursorColor = primary
+        )
+    )
+
+    if (showPicker) {
+        val state = rememberDatePickerState(
+            initialSelectedDateMillis = initialMillis ?: today,
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis >= today
+            }
+        )
+        DatePickerDialog(
+            onDismissRequest = { showPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    state.selectedDateMillis?.let { millis ->
+                        val date = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneOffset.UTC)
+                            .toLocalDate()
+                            .toString()
+                        onValueChange(date)
+                    }
+                    showPicker = false
+                }) { Text(stringResource(android.R.string.ok)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPicker = false }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            }
+        ) {
+            DatePicker(state = state)
+        }
+    }
 }
 
 // ── Screens ───────────────────────────────────────────────────────────────────
@@ -194,7 +300,7 @@ fun RaceConfigScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        FilledField(
+        RaceDateField(
             value = form.raceDateInput,
             onValueChange = { onConfigChanged(it, if (it.isNotBlank()) null else form.durationWeeks) },
             label = stringResource(R.string.onboarding_race_date_label)
