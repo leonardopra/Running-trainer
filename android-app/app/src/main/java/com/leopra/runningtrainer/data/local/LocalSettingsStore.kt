@@ -31,7 +31,10 @@ class LocalSettingsStore(context: Context) {
             notificationHour = prefs[Keys.NOTIFICATION_HOUR] ?: 8,
             notificationMinute = prefs[Keys.NOTIFICATION_MINUTE] ?: 0,
             goalTimeSeconds = prefs[Keys.GOAL_TIME_SECONDS],
-            localeCode = prefs[Keys.LOCALE_CODE] ?: "en"
+            localeCode = prefs[Keys.LOCALE_CODE]
+                ?: context.resources.configuration.locales[0].language
+                    .takeIf { it in setOf("en", "it", "de") }
+                ?: "en"
         )
     }
 
