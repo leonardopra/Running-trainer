@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.runningtrainer.android"
+    namespace = "com.leopra.runningtrainer"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.runningtrainer.android"
+        applicationId = "com.leopra.runningtrainer"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
