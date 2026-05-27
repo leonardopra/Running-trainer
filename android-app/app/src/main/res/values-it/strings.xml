@@ -115,6 +115,8 @@
     <string name="workout_type_rest">Riposo</string>
 
     <!-- Progress screen -->
+    <string name="progress_weekly_km_chart">Km per settimana</string>
+    <string name="progress_weekly_km_delta">%1$+.0f%% vs sett. prec.</string>
     <string name="no_data_yet">Nessun dato ancora</string>
     <string name="progress_no_plan_desc">Completa alcuni allenamenti per vedere i tuoi progressi.</string>
     <string name="progress_completion">Completamento</string>

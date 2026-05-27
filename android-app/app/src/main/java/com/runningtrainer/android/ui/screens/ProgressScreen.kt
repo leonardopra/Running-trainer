@@ -392,14 +392,12 @@ fun WeeklyKmChart(data: List<Pair<String, Float>>, goalKm: Float) {
     val textMutedColor = TextMuted
 
     // Compute delta vs previous week
-    val deltaText: String? = if (data.size >= 2) {
+    val deltaPct: Float? = if (data.size >= 2) {
         val prev = data[data.size - 2].second
         val curr = data[data.size - 1].second
-        if (prev > 0f) {
-            val pct = ((curr - prev) / prev * 100).toInt()
-            if (pct >= 0) "+$pct% vs prev. week" else "$pct% vs prev. week"
-        } else null
+        if (prev > 0f) (curr - prev) / prev * 100f else null
     } else null
+    val deltaText = deltaPct?.let { stringResource(R.string.progress_weekly_km_delta, it) }
 
     SurfaceCard(modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -409,7 +407,7 @@ fun WeeklyKmChart(data: List<Pair<String, Float>>, goalKm: Float) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    stringResource(R.string.weekly_progress),
+                    stringResource(R.string.progress_weekly_km_chart),
                     style = MaterialTheme.typography.labelMedium,
                     color = TextMuted
                 )
