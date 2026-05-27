@@ -11,3 +11,4 @@ local.properties
 graphify-out/cache/
 graphify-out/cost.json
 
+/app/release/app-release.aab
