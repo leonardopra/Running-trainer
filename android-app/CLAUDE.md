@@ -59,7 +59,7 @@ The Claude integration lives in `domain/service/`, split across `ClaudeService` 
 - `enrichPlan(...)` — enriches plan weeks; on an auth error it stops and returns the remaining weeks un-enriched, other errors skip silently keeping the original week.
 - `generatePostWorkoutCoaching(...)` — blocking, returns `String?`.
 - `streamPostWorkoutCoaching(...)` — SSE streaming `Flow<String>` (emits an auth-error sentinel on auth failure); used by `WorkoutLogViewModel` for live coaching.
-- Transport: `https://api.anthropic.com/v1/messages` via `HttpURLConnection` with the `x-api-key` header. Model constant lives in `ClaudeHttpClient.kt` (currently `claude-opus-4-7`).
+- Transport: `https://api.anthropic.com/v1/messages` via `HttpURLConnection` with the `x-api-key` header. Model constant lives in `ClaudeHttpClient.kt` (`claude-sonnet-4-6` — aligned with the frozen Flutter reference; see RUN-45). Sonnet is chosen over Opus because post-workout coaching runs on every logged workout, where Opus's higher cost/latency isn't justified for a short 2–3 sentence output.
 
 ## Notifications
 
