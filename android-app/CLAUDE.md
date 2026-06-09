@@ -7,72 +7,85 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 ./gradlew assembleDebug                                          # Build debug APK
 ./gradlew test                                                   # Run all JVM unit tests
-./gradlew :app:testDebugUnitTest --tests "*.PlanGeneratorFixtureTest"  # Run a single test class
+./gradlew :app:testDebugUnitTest --tests "*.PlanGeneratorSmokeTest" # Run a single test class
 ./gradlew connectedAndroidTest                                   # Run instrumented tests (requires device/emulator)
 ./gradlew lint                                                   # Run lint checks
 ```
 
-> Minimum SDK 26, target SDK 35, Java 17, Kotlin 2.0.21, Compose BOM 2024.09.03.
+> Min SDK 26, target/compile SDK 35, Java 17, Kotlin 2.0.21, Compose BOM 2024.09.03. App ID / namespace `com.leopra.runningtrainer`.
 
 ## Architecture
 
-**Single-activity, single-ViewModel.** `MainViewModel` holds the entire app state (`MainUiState`) as a single `StateFlow`, combining flows from repositories with in-memory onboarding form state. Navigation is driven by `currentDestination: MutableStateFlow<AppDestination>` — there is no Jetpack Navigation back stack; all screen transitions are ViewModel-controlled.
+**Single-activity, multiple ViewModels.** App state is split across five `@HiltViewModel` classes, all obtained in `MainActivity` via `by viewModels()`:
 
-**`MainActivity` extends `AppCompatActivity`** (not `ComponentActivity`) — required so that `AppCompatDelegate.setApplicationLocales()` applies correctly on Android < 13 via the AppCompat `attachBaseContext()` path.
+- `MainViewModel` — `MainUiState` (bootstrap, `currentDestination`, `isPreRunStretching`, onboarding mirror, plan generation flags, preferences, active plan). Owns navigation.
+- `OnboardingViewModel` — onboarding form state + plan generation; schedules notifications after generating a plan.
+- `PlanViewModel` — selected workout, progress stats, insights, pace zones, and AI plan enrichment (`isEnrichingPlan`, `enrichmentError`).
+- `SettingsViewModel` — saves settings and goal time; re-schedules notifications on save.
+- `WorkoutLogViewModel` — streaming post-workout coaching (`streamingCoaching`, `isStreaming`, `coachingAuthError`).
 
-**Dependency injection:** Manual DI via `AppContainer` (created in `RunningTrainerApplication`). No Hilt/Koin. `MainViewModel` is wired via `ViewModelProvider.Factory` in `MainActivity`.
+Sub-ViewModels publish navigation intents on a `navigationEvent: Channel<AppDestination>`; `MainActivity` collects them (inside `repeatOnLifecycle`) and forwards to `MainViewModel.navigateTo`, and likewise mirrors `OnboardingViewModel.uiState` into `MainViewModel`.
 
-**Package layout:**
-- `domain/model/` — pure Kotlin data models (`TrainingPlan`, `Workout`, enums, `UserPreferencesDto`)
-- `domain/contracts/` — request/result types for plan generation (`PlanGenerationRequest`, `PlanGenerationResult`)
-- `domain/service/` — pure business logic: `PlanGenerator`, `InsightsService`, `PaceCalculatorService`, `ProgressStatsCalculator`
-- `data/local/` — Room (`AppDatabase`, `TrainingPlanEntity`, `TrainingPlanDao`) + DataStore (`LocalSettingsStore`)
-- `data/repository/` — repository interfaces + `LocalTrainingPlanRepository`, `LocalSettingsRepository`
-- `data/serialization/` — `@Serializable` mirror models used for JSON storage in Room (`payloadJson` column)
-- `ui/screens/` — one Composable file per screen, all receiving `MainUiState` + lambdas. `HomeScreen.kt` also exports shared `@Composable` helpers used by other screens: `workoutTypeColor`, `WorkoutType.typeLabel()`, `WorkoutType.zoneDescription()`, `SurfaceCard`
-- `ui/navigation/` — `AppDestination` enum only (Goal, RaceConfig, Fitness, Days, Profile, Generating, Home, WorkoutDetail, Progress, RunHistory, **PaceCalc**, Settings, Stretching, Privacy)
+**Navigation** is ViewModel-driven via `currentDestination: MutableStateFlow<AppDestination>` — there is no Jetpack Navigation back stack. `RunningTrainerApp.kt` renders the matching screen with a `when(dest)` inside a `Scaffold` with a 4-tab bottom nav (Home / Progress / PaceCalc / Settings). `navigation-compose` is on the classpath but is **not** used.
+
+**`MainActivity` extends `AppCompatActivity`** (not `ComponentActivity`) — required so `AppCompatDelegate.setApplicationLocales()` applies the stored locale (`en`/`it`/`de`, see `res/xml/locales_config.xml`) correctly, including on Android < 13. The stored locale is applied in `onCreate`.
+
+**Dependency injection: Hilt is the sole composition root.**
+- `RunningTrainerApplication` is annotated `@HiltAndroidApp`; `MainActivity` is `@AndroidEntryPoint` (with an `@Inject` `SettingsRepository`).
+- A single module, `app/di/AppModule.kt` (`@InstallIn(SingletonComponent::class)`), provides `AppDatabase`, `Json`, `TrainingPlanRepository`, `SettingsRepository`, `PaceCalculatorService`, `InsightsService`, `ClaudeService`, and `NotificationService`.
+- ViewModels are `@HiltViewModel` with `@Inject` constructors. There is no manual factory and no `AppContainer`.
+
+**Package layout (`com.leopra.runningtrainer`):**
+- `MainActivity.kt` — at the package root.
+- `app/` — `RunningTrainerApplication`, `di/AppModule.kt`.
+- `domain/model/` — pure Kotlin data models (`TrainingPlan`, `Workout`, enums, `UserPreferencesDto`, `StretchData`/`StretchExercise`).
+- `domain/contracts/` — request/result types (`PlanGenerationRequest`, `PlanGenerationResult`).
+- `domain/service/` — `PlanGenerator`, `InsightsService`, `PaceCalculatorService`, `ProgressStatsCalculator`, and the Claude stack (`ClaudeService`, `ClaudeHttpClient`, `ClaudePromptBuilder`, `ClaudeResponseParser`).
+- `data/local/` — Room (`AppDatabase`, `TrainingPlanEntity`, `TrainingPlanDao`) + DataStore (`LocalSettingsStore`).
+- `data/repository/` — repository interfaces + `LocalTrainingPlanRepository`, `LocalSettingsRepository`.
+- `data/serialization/` — `@Serializable` mirror models used for JSON storage in Room (`payloadJson` column).
+- `notifications/` — `NotificationService`, `WorkoutAlarmReceiver`.
+- `ui/screens/` — one Composable file per screen. `HomeScreen.kt` exports shared helpers: `workoutTypeColor`, `WorkoutType.typeLabel()`, `WorkoutType.zoneDescription()`, `SurfaceCard`.
+- `ui/navigation/` — `AppDestination` enum (Goal, RaceConfig, Fitness, Days, Profile, Generating, Home, WorkoutDetail, Progress, RunHistory, PaceCalc, Settings, Stretching, Privacy).
+- `ui/` root — the five ViewModels + `RunningTrainerApp.kt`.
 
 **Persistence:**
 - `TrainingPlan` is stored as a single JSON blob (`payloadJson`) in a Room `training_plans` table. Only the active plan is used; `LocalTrainingPlanRepository` queries the most recent row.
 - User preferences are stored via DataStore (unencrypted `preferences_pb`). The Claude API key is stored here in plaintext — no keychain.
 
-**Plan generation** mirrors the Flutter rule engine:
-- `PlanGenerator.generatePlan(PlanGenerationRequest)` is pure/deterministic (no coroutines, no I/O).
-- Age-aware progression: under-50 = +9%/week, every 4th week recovery; 50+ = +7%/week, every 3rd week recovery.
-- 3-week taper for race goals.
+## AI coaching
 
-**AI features** (`ClaudeService`):
-- `enrichPlan()` — called after plan generation if an API key is set; enriches each week with descriptions and coaching tips per workout.
-- `generatePostWorkoutCoaching()` — called after saving a workout log; returns 2-3 sentences of feedback stored in `workout.postWorkoutCoaching`.
-- Both results are displayed in `WorkoutDetailScreen`: enrichment fields above the log form, post-workout coaching below the action buttons.
-- 401 → auth error surfaced to UI; 429 → exponential backoff (3 retries); other errors → silent skip.
+The Claude integration lives in `domain/service/`, split across `ClaudeService` (orchestration), `ClaudeHttpClient` (transport), `ClaudePromptBuilder`, and `ClaudeResponseParser`:
+- `enrichPlan(...)` — enriches plan weeks; on an auth error it stops and returns the remaining weeks un-enriched, other errors skip silently keeping the original week.
+- `generatePostWorkoutCoaching(...)` — blocking, returns `String?`.
+- `streamPostWorkoutCoaching(...)` — SSE streaming `Flow<String>` (emits an auth-error sentinel on auth failure); used by `WorkoutLogViewModel` for live coaching.
+- Transport: `https://api.anthropic.com/v1/messages` via `HttpURLConnection` with the `x-api-key` header. Model constant lives in `ClaudeHttpClient.kt` (currently `claude-opus-4-7`).
 
-**Pace calculator** (`PaceCalculatorService`):
-- `calculate(goal, goalTimeSeconds)` returns VDOT-based `PaceZone` list for the 4 run types.
-- `distanceKm(goal)` is public — used by `PaceCalculatorScreen` to display the distance label.
-- `goalTimeSeconds` is persisted in DataStore via `MainViewModel.saveGoalTime()` and pre-fills the pace screen on re-entry.
-- Bottom nav has **4 tabs**: Home / Progress / Pace / Settings. `PaceCalc` is the dedicated pace calculator screen.
+## Notifications
 
-**Localization** (`res/values`, `res/values-it`, `res/values-de`):
-- Language is switched at runtime via `AppCompatDelegate.setApplicationLocales()` in `SettingsScreen` on Save.
-- On cold start, `MainActivity.onCreate` re-applies the stored locale if `getApplicationLocales()` is empty.
-- All UI strings use `stringResource()`. Workout-type labels and pace-zone descriptions are resolved at the Composable layer via `WorkoutType.typeLabel()` / `WorkoutType.zoneDescription()` — never from hardcoded Kotlin strings in domain models.
+`NotificationService.scheduleForPlan(plan, hour, minute)` cancels existing alarms then schedules an exact `AlarmManager` alarm for each future, non-rest, non-completed workout (alarm id `weekIndex * 7 + dayOfWeek`, matching Flutter). It uses `setExactAndAllowWhileIdle`, falling back to `setAndAllowWhileIdle` when `canScheduleExactAlarms()` is false on Android 12+. `WorkoutAlarmReceiver` posts the reminder on the `workout_reminders` channel. Required permissions: `INTERNET`, `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`. Scheduling is invoked from `OnboardingViewModel` (after generation) and `SettingsViewModel` (on save).
 
-**Tests** are JVM-only (no Robolectric). `PlanGeneratorFixtureTest` loads JSON fixtures from `product-spec/fixtures/` (relative path from the test classpath root) and validates plan output against expected snapshots. Add fixture files there when adding new plan generation test cases.
+## Testing
+
+- **JVM unit tests** (`app/src/test`): `PlanGeneratorSmokeTest`, `PlanGeneratorFixtureTest` (the parity contract against `product-spec/fixtures`), `ProgressStatsCalculatorTest`, `ClaudePromptBuilderTest`, `ClaudeResponseParserTest`, `SSEParserTest`, and `ClaudeServiceTest` (MockK + `kotlinx-coroutines-test`).
+- **Instrumented tests** (`app/src/androidTest`): `OnboardingScreensTest`, `WorkoutDetailScreenTest` (Compose UI).
+
+Add fixture files alongside `PlanGeneratorFixtureTest` when adding new plan-generation test cases.
 
 ## Key constraints
 
 - This is the **native Android pilot** for migrating away from Flutter. All rule-engine behavior must remain in parity with `product-spec/fixtures` — fixture tests are the contract.
-- Do not add a DI framework; keep `AppContainer` as the composition root.
-- Room stores the plan as a JSON blob (not normalized rows) — this is intentional to keep schema migrations simple during the pilot phase.
+- **Hilt is the composition root.** Add new dependencies through `app/di/AppModule.kt` (or appropriate Hilt modules); do not reintroduce a manual `AppContainer`.
+- Room stores the plan as a JSON blob (not normalized rows) — intentional to keep schema migrations simple during the pilot phase.
 - Do not re-add `hive_generator` or add Robolectric — see root-level memory for dependency constraints.
 - `PaceZone.label` and `PaceZone.description` are domain-level English strings kept for serialization/testing. Always resolve display labels through `WorkoutType.typeLabel()` / `WorkoutType.zoneDescription()` in the UI layer, never directly.
+- Plan progression is age-aware (50+ uses ~7% / 3-week recovery vs <50 ~9% / 4-week) — keep in parity with the fixtures.
 
 ## graphify
 
-This project has a graphify knowledge graph at graphify-out/.
+This project has a graphify knowledge graph at `graphify-out/`.
 
 Rules:
-- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
-- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
-- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
+- Before answering architecture or codebase questions, read `graphify-out/GRAPH_REPORT.md` for god nodes and community structure.
+- If `graphify-out/wiki/index.md` exists, navigate it instead of reading raw files.
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost). The current graph predates the `com.leopra.runningtrainer` rename and is stale — regenerate it.

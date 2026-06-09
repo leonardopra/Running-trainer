@@ -4,18 +4,30 @@ Native Android implementation of Running Trainer, built with Kotlin + Jetpack Co
 
 ## Stack
 
-- Kotlin 2.0.21, Java 17
+- Kotlin 2.0.21, Java 17, AGP 8.5.2
 - Jetpack Compose (BOM 2024.09.03) + Material3
-- Room 2.6.1 (plan storage as JSON blob)
+- Hilt 2.52 (DI) + KSP 2.0.21-1.0.27
+- Room 2.6.1 (plan storage as JSON blob) — Room compiler via KSP
 - DataStore Preferences (user settings)
 - kotlinx-serialization-json 1.7.3
 - kotlinx-datetime 0.6.1
 - AppCompat 1.7.0 (locale switching)
-- Min SDK 26, target SDK 35
+- navigation-compose 2.8.0 (on the classpath; routing is ViewModel-driven, NavHost not used)
+- Tests: JUnit 4, MockK 1.13.10, kotlinx-coroutines-test, Compose UI test
+- Min SDK 26, target/compile SDK 35
+- App ID / namespace `com.leopra.runningtrainer`, version `0.1.0` (versionCode 1)
 
 ## Status
 
-Full Day 1 parity with the Flutter reference. All P0 and P1 features are implemented.
+Core feature set implemented (rule-based plan generation, Claude enrichment + streaming
+post-workout coaching, insights engine, VDOT pace calculator, onboarding, scheduled
+notifications, EN/IT/DE localization, stretching, privacy). Android-only — Web/macOS/iOS
+are paused (see `docs/adr/0001-single-native-android-app.md`).
+
+Not yet production-ready:
+- Rule-engine parity with `product-spec/fixtures` still being broadened (RUN-16).
+- Claude API key is stored in plaintext in DataStore — no encryption (RUN-48).
+- No R8/minification or signing config; current build is debug `0.1.0`.
 
 ## Screens
 
