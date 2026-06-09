@@ -1,6 +1,6 @@
 # Android App
 
-Native Android implementation of Running Trainer, built with Kotlin + Jetpack Compose. This is the pilot platform for the Flutter → native migration.
+Native Android implementation of Running Trainer, built with Kotlin + Jetpack Compose. This is the product and the sole supported platform; the former Flutter multiplatform app (macOS/Android/Web) is frozen — see ADR 0001.
 
 ## Stack
 
