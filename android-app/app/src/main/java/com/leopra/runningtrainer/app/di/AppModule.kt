@@ -2,6 +2,7 @@ package com.leopra.runningtrainer.app.di
 
 import android.content.Context
 import androidx.room.Room
+import com.leopra.runningtrainer.data.local.ApiKeyCipher
 import com.leopra.runningtrainer.data.local.AppDatabase
 import com.leopra.runningtrainer.data.local.LocalSettingsStore
 import com.leopra.runningtrainer.data.repository.LocalSettingsRepository
@@ -36,8 +37,13 @@ object AppModule {
     }
 
     @Provides @Singleton
-    fun provideLocalSettingsStore(@ApplicationContext context: Context): LocalSettingsStore =
-        LocalSettingsStore(context)
+    fun provideApiKeyCipher(): ApiKeyCipher = ApiKeyCipher()
+
+    @Provides @Singleton
+    fun provideLocalSettingsStore(
+        @ApplicationContext context: Context,
+        apiKeyCipher: ApiKeyCipher
+    ): LocalSettingsStore = LocalSettingsStore(context, apiKeyCipher)
 
     @Provides @Singleton
     fun provideSettingsRepository(store: LocalSettingsStore): SettingsRepository =

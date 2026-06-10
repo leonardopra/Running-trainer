@@ -51,7 +51,7 @@ Sub-ViewModels publish navigation intents on a `navigationEvent: Channel<AppDest
 
 **Persistence:**
 - `TrainingPlan` is stored as a single JSON blob (`payloadJson`) in a Room `training_plans` table. Only the active plan is used; `LocalTrainingPlanRepository` queries the most recent row.
-- User preferences are stored via DataStore (unencrypted `preferences_pb`). The Claude API key is stored here in plaintext — no keychain.
+- User preferences are stored via DataStore (`preferences_pb`). The Claude API key is encrypted at rest with an AES-256-GCM key in the Android Keystore (`ApiKeyCipher`, RUN-48); a legacy plaintext slot is read as fallback and migrated to the encrypted slot on the next save. The `datastore/` directory is excluded from auto backup and device-to-device transfer (`res/xml/backup_rules.xml`, `res/xml/data_extraction_rules.xml`).
 
 ## AI coaching
 

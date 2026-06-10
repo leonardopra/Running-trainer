@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-06-10)
 
 ## Corpus Check
-- 57 files · ~30,138 words
+- 58 files · ~30,600 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 359 nodes · 302 edges · 61 communities detected
+- 365 nodes · 307 edges · 62 communities detected
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
@@ -71,14 +71,15 @@
 - [[_COMMUNITY_Community 58|Community 58]]
 - [[_COMMUNITY_Community 59|Community 59]]
 - [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `PlanGenerator` - 15 edges
 2. `WorkoutDetailScreenTest` - 13 edges
 3. `LocalTrainingPlanRepository` - 12 edges
 4. `OnboardingViewModel` - 11 edges
-5. `OnboardingScreensTest` - 10 edges
-6. `AppModule` - 10 edges
+5. `AppModule` - 11 edges
+6. `OnboardingScreensTest` - 10 edges
 7. `TrainingPlanRepository` - 10 edges
 8. `MainViewModel` - 9 edges
 9. `ClaudePromptBuilderTest` - 8 edges
@@ -143,20 +144,20 @@ Cohesion: 0.15
 Nodes (0): 
 
 ### Community 9 - "Community 9"
-Cohesion: 0.18
-Nodes (1): OnboardingScreensTest
+Cohesion: 0.17
+Nodes (1): AppModule
 
 ### Community 10 - "Community 10"
 Cohesion: 0.18
-Nodes (5): FixedIdProvider, FixtureExpected, FixtureRequest, PlanFixture, PlanGeneratorFixtureTest
+Nodes (1): OnboardingScreensTest
 
 ### Community 11 - "Community 11"
 Cohesion: 0.18
-Nodes (3): MainUiState, MainViewModel, Rationale: Room stores plan as JSON blob (not normalized rows)
+Nodes (5): FixedIdProvider, FixtureExpected, FixtureRequest, PlanFixture, PlanGeneratorFixtureTest
 
 ### Community 12 - "Community 12"
 Cohesion: 0.18
-Nodes (1): AppModule
+Nodes (3): MainUiState, MainViewModel, Rationale: Room stores plan as JSON blob (not normalized rows)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.22
@@ -224,15 +225,15 @@ Nodes (0):
 
 ### Community 29 - "Community 29"
 Cohesion: 0.4
-Nodes (1): EnrichmentResult
+Nodes (1): ApiKeyCipher
 
 ### Community 30 - "Community 30"
-Cohesion: 0.5
-Nodes (1): SettingsViewModel
+Cohesion: 0.4
+Nodes (1): EnrichmentResult
 
 ### Community 31 - "Community 31"
 Cohesion: 0.5
-Nodes (0): 
+Nodes (1): SettingsViewModel
 
 ### Community 32 - "Community 32"
 Cohesion: 0.5
@@ -240,75 +241,75 @@ Nodes (0):
 
 ### Community 33 - "Community 33"
 Cohesion: 0.5
-Nodes (3): PlanGenerationMetadata, PlanGenerationRequest, PlanGenerationResult
+Nodes (0): 
 
 ### Community 34 - "Community 34"
 Cohesion: 0.5
-Nodes (1): ClaudeResponseParser
+Nodes (3): PlanGenerationMetadata, PlanGenerationRequest, PlanGenerationResult
 
 ### Community 35 - "Community 35"
 Cohesion: 0.5
-Nodes (1): ClaudePromptBuilder
+Nodes (1): ClaudeResponseParser
 
 ### Community 36 - "Community 36"
 Cohesion: 0.5
-Nodes (1): WorkoutAlarmReceiver
+Nodes (1): ClaudePromptBuilder
 
 ### Community 37 - "Community 37"
+Cohesion: 0.5
+Nodes (1): WorkoutAlarmReceiver
+
+### Community 38 - "Community 38"
 Cohesion: 0.83
 Nodes (4): Launcher Background Layer — solid deep navy / dark blue fill, App Launcher Icon (composite adaptive), Launcher Foreground Layer — running figure silhouette with bar-chart progress bars (navy + coral/red), symbolising training progress, App Launcher Icon Round (composite adaptive)
 
-### Community 38 - "Community 38"
+### Community 39 - "Community 39"
 Cohesion: 0.67
 Nodes (1): MainActivity
 
-### Community 39 - "Community 39"
-Cohesion: 0.67
-Nodes (0): 
-
 ### Community 40 - "Community 40"
 Cohesion: 0.67
-Nodes (1): AppDatabase
+Nodes (0): 
 
 ### Community 41 - "Community 41"
 Cohesion: 0.67
-Nodes (1): BootCompletedReceiver
+Nodes (1): AppDatabase
 
 ### Community 42 - "Community 42"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (1): BootCompletedReceiver
 
 ### Community 43 - "Community 43"
 Cohesion: 1.0
-Nodes (1): WorkoutLogUiState
+Nodes (0): 
 
 ### Community 44 - "Community 44"
 Cohesion: 1.0
-Nodes (1): AppDestination
+Nodes (1): WorkoutLogUiState
 
 ### Community 45 - "Community 45"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): AppDestination
 
 ### Community 46 - "Community 46"
 Cohesion: 1.0
-Nodes (1): RunningTrainerApplication
+Nodes (0): 
 
 ### Community 47 - "Community 47"
 Cohesion: 1.0
-Nodes (1): TrainingPlanEntity
+Nodes (1): RunningTrainerApplication
 
 ### Community 48 - "Community 48"
 Cohesion: 1.0
-Nodes (1): StretchExercise
+Nodes (1): TrainingPlanEntity
 
 ### Community 49 - "Community 49"
 Cohesion: 1.0
-Nodes (1): build.gradle.kts (root)
+Nodes (1): StretchExercise
 
 ### Community 50 - "Community 50"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): build.gradle.kts (root)
 
 ### Community 51 - "Community 51"
 Cohesion: 1.0
@@ -328,68 +329,72 @@ Nodes (0):
 
 ### Community 55 - "Community 55"
 Cohesion: 1.0
-Nodes (1): product-spec/fixtures JSON files
+Nodes (0): 
 
 ### Community 56 - "Community 56"
 Cohesion: 1.0
-Nodes (1): Android App README
+Nodes (1): product-spec/fixtures JSON files
 
 ### Community 57 - "Community 57"
 Cohesion: 1.0
-Nodes (1): app/README.md — Package Layout
+Nodes (1): Android App README
 
 ### Community 58 - "Community 58"
 Cohesion: 1.0
-Nodes (1): Rationale: MainActivity extends AppCompatActivity for locale switching on Android < 13
+Nodes (1): app/README.md — Package Layout
 
 ### Community 59 - "Community 59"
 Cohesion: 1.0
-Nodes (1): Rationale: no DI framework, manual AppContainer
+Nodes (1): Rationale: MainActivity extends AppCompatActivity for locale switching on Android < 13
 
 ### Community 60 - "Community 60"
+Cohesion: 1.0
+Nodes (1): Rationale: no DI framework, manual AppContainer
+
+### Community 61 - "Community 61"
 Cohesion: 1.0
 Nodes (1): Rationale: PaceZone.label kept as domain English strings for serialization/testing only
 
 ## Knowledge Gaps
 - **46 isolated node(s):** `build.gradle.kts (root)`, `PlanFixture`, `FixtureExpected`, `MainUiState`, `PlanUiState` (+41 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 42`** (2 nodes): `RunningTrainerApp.kt`, `RunningTrainerApp()`
+- **Thin community `Community 43`** (2 nodes): `RunningTrainerApp.kt`, `RunningTrainerApp()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 43`** (2 nodes): `WorkoutLogViewModel.kt`, `WorkoutLogUiState`
+- **Thin community `Community 44`** (2 nodes): `WorkoutLogViewModel.kt`, `WorkoutLogUiState`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 44`** (2 nodes): `AppDestination.kt`, `AppDestination`
+- **Thin community `Community 45`** (2 nodes): `AppDestination.kt`, `AppDestination`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 45`** (2 nodes): `Theme.kt`, `RunningTrainerTheme()`
+- **Thin community `Community 46`** (2 nodes): `Theme.kt`, `RunningTrainerTheme()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 46`** (2 nodes): `RunningTrainerApplication.kt`, `RunningTrainerApplication`
+- **Thin community `Community 47`** (2 nodes): `RunningTrainerApplication.kt`, `RunningTrainerApplication`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 47`** (2 nodes): `TrainingPlanEntity.kt`, `TrainingPlanEntity`
+- **Thin community `Community 48`** (2 nodes): `TrainingPlanEntity.kt`, `TrainingPlanEntity`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 48`** (2 nodes): `StretchExercise.kt`, `StretchExercise`
+- **Thin community `Community 49`** (2 nodes): `StretchExercise.kt`, `StretchExercise`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 49`** (1 nodes): `build.gradle.kts (root)`
+- **Thin community `Community 50`** (1 nodes): `build.gradle.kts (root)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 50`** (1 nodes): `settings.gradle.kts`
+- **Thin community `Community 51`** (1 nodes): `settings.gradle.kts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 51`** (1 nodes): `build.gradle.kts`
+- **Thin community `Community 52`** (1 nodes): `build.gradle.kts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 52`** (1 nodes): `Color.kt`
+- **Thin community `Community 53`** (1 nodes): `Color.kt`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 53`** (1 nodes): `Type.kt`
+- **Thin community `Community 54`** (1 nodes): `Type.kt`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 54`** (1 nodes): `StretchData.kt`
+- **Thin community `Community 55`** (1 nodes): `StretchData.kt`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 55`** (1 nodes): `product-spec/fixtures JSON files`
+- **Thin community `Community 56`** (1 nodes): `product-spec/fixtures JSON files`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 56`** (1 nodes): `Android App README`
+- **Thin community `Community 57`** (1 nodes): `Android App README`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 57`** (1 nodes): `app/README.md — Package Layout`
+- **Thin community `Community 58`** (1 nodes): `app/README.md — Package Layout`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 58`** (1 nodes): `Rationale: MainActivity extends AppCompatActivity for locale switching on Android < 13`
+- **Thin community `Community 59`** (1 nodes): `Rationale: MainActivity extends AppCompatActivity for locale switching on Android < 13`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 59`** (1 nodes): `Rationale: no DI framework, manual AppContainer`
+- **Thin community `Community 60`** (1 nodes): `Rationale: no DI framework, manual AppContainer`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 60`** (1 nodes): `Rationale: PaceZone.label kept as domain English strings for serialization/testing only`
+- **Thin community `Community 61`** (1 nodes): `Rationale: PaceZone.label kept as domain English strings for serialization/testing only`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions

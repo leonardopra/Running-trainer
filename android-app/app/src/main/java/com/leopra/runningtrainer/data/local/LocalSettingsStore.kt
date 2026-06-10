@@ -13,14 +13,20 @@ import com.leopra.runningtrainer.domain.model.UserPreferencesDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class LocalSettingsStore(context: Context) {
+class LocalSettingsStore(
+    context: Context,
+    private val apiKeyCipher: ApiKeyCipher
+) {
     private val dataStore = PreferenceDataStoreFactory.create(
         produceFile = { context.preferencesDataStoreFile("running_trainer_settings.preferences_pb") }
     )
 
     val preferences: Flow<UserPreferencesDto> = dataStore.data.map { prefs ->
         UserPreferencesDto(
-            claudeApiKey = prefs[Keys.CLAUDE_API_KEY],
+            // Encrypted slot first; fall back to the legacy plaintext slot (pre-RUN-48),
+            // which is migrated to the encrypted slot on the next save.
+            claudeApiKey = prefs[Keys.CLAUDE_API_KEY_ENCRYPTED]?.let(apiKeyCipher::decrypt)
+                ?: prefs[Keys.CLAUDE_API_KEY],
             useKilometers = prefs[Keys.USE_KILOMETERS] ?: true,
             hasCompletedOnboarding = prefs[Keys.HAS_COMPLETED_ONBOARDING] ?: false,
             name = prefs[Keys.NAME],
@@ -47,7 +53,8 @@ class LocalSettingsStore(context: Context) {
             prefs[Keys.NOTIFICATION_MINUTE] = preferences.notificationMinute
             prefs[Keys.LOCALE_CODE] = preferences.localeCode
 
-            writeOptional(prefs, Keys.CLAUDE_API_KEY, preferences.claudeApiKey)
+            writeOptional(prefs, Keys.CLAUDE_API_KEY_ENCRYPTED, preferences.claudeApiKey?.let(apiKeyCipher::encrypt))
+            prefs.remove(Keys.CLAUDE_API_KEY)
             writeOptional(prefs, Keys.NAME, preferences.name)
             writeOptional(prefs, Keys.AGE, preferences.age)
             writeOptional(prefs, Keys.WEIGHT_KG, preferences.weightKg)
@@ -73,7 +80,9 @@ class LocalSettingsStore(context: Context) {
     }
 
     private object Keys {
+        /** Legacy plaintext slot (pre-RUN-48); read-only fallback, removed on save. */
         val CLAUDE_API_KEY = stringPreferencesKey("claude_api_key")
+        val CLAUDE_API_KEY_ENCRYPTED = stringPreferencesKey("claude_api_key_enc")
         val USE_KILOMETERS = booleanPreferencesKey("use_kilometers")
         val HAS_COMPLETED_ONBOARDING = booleanPreferencesKey("has_completed_onboarding")
         val NAME = stringPreferencesKey("name")

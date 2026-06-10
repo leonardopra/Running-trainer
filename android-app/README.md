@@ -26,7 +26,7 @@ are paused (see `docs/adr/0001-single-native-android-app.md`).
 
 Not yet production-ready:
 - Rule-engine parity with `product-spec/fixtures` still being broadened (RUN-16).
-- Claude API key is stored in plaintext in DataStore — no encryption (RUN-48).
+- ~~Claude API key is stored in plaintext in DataStore — no encryption (RUN-48)~~ Fixed: key is encrypted via Android Keystore (AES-256-GCM) and the DataStore dir is excluded from backups.
 - No R8/minification or signing config; current build is debug `0.1.0`.
 
 ## Screens
