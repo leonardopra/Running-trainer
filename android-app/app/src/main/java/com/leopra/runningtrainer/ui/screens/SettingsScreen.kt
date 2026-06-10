@@ -1,5 +1,12 @@
 package com.leopra.runningtrainer.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -71,6 +78,11 @@ fun SettingsScreen(
     var localeCode by rememberSaveable { mutableStateOf(preferences.localeCode) }
     var showNewPlanDialog by rememberSaveable { mutableStateOf(false) }
     var resetConfirmVisible by rememberSaveable { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* Alarms are scheduled regardless; the grant only controls whether they are shown. */ }
 
     if (showNewPlanDialog) {
         AlertDialog(
@@ -215,7 +227,16 @@ fun SettingsScreen(
                     Text(stringResource(R.string.workout_reminders), style = MaterialTheme.typography.bodyLarge)
                     Switch(
                         checked = notificationsEnabled,
-                        onCheckedChange = { notificationsEnabled = it },
+                        onCheckedChange = { enabled ->
+                            notificationsEnabled = enabled
+                            if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                ContextCompat.checkSelfPermission(
+                                    context, Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colorScheme.background,
                             checkedTrackColor = MaterialTheme.colorScheme.primary

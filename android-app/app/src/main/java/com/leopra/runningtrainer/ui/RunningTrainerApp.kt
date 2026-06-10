@@ -1,5 +1,6 @@
 package com.leopra.runningtrainer.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -75,6 +76,28 @@ fun RunningTrainerApp(
     val dest = uiState.currentDestination
     val isOnboarding = dest in onboardingDestinations
     val isMainNav = dest in mainNavDestinations
+
+    // There is no Jetpack Navigation back stack: system back maps each destination
+    // to its logical parent. Home, Goal and Generating fall through and exit the app.
+    val backTarget = when (dest) {
+        AppDestination.WorkoutDetail,
+        AppDestination.Stretching,
+        AppDestination.Progress,
+        AppDestination.PaceCalc,
+        AppDestination.Settings -> AppDestination.Home
+        AppDestination.RunHistory -> AppDestination.Progress
+        AppDestination.Privacy -> AppDestination.Settings
+        AppDestination.RaceConfig -> AppDestination.Goal
+        AppDestination.Fitness -> AppDestination.RaceConfig
+        AppDestination.Days -> AppDestination.Fitness
+        AppDestination.Profile -> AppDestination.Days
+        AppDestination.Home,
+        AppDestination.Goal,
+        AppDestination.Generating -> null
+    }
+    BackHandler(enabled = backTarget != null) {
+        backTarget?.let(viewModel::navigateTo)
+    }
 
     Scaffold(
         topBar = {

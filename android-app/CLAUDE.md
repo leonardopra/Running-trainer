@@ -26,7 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Sub-ViewModels publish navigation intents on a `navigationEvent: Channel<AppDestination>`; `MainActivity` collects them (inside `repeatOnLifecycle`) and forwards to `MainViewModel.navigateTo`, and likewise mirrors `OnboardingViewModel.uiState` into `MainViewModel`.
 
-**Navigation** is ViewModel-driven via `currentDestination: MutableStateFlow<AppDestination>` — there is no Jetpack Navigation back stack. `RunningTrainerApp.kt` renders the matching screen with a `when(dest)` inside a `Scaffold` with a 4-tab bottom nav (Home / Progress / PaceCalc / Settings). `navigation-compose` is on the classpath but is **not** used.
+**Navigation** is ViewModel-driven via `currentDestination: MutableStateFlow<AppDestination>` — there is no Jetpack Navigation back stack. `RunningTrainerApp.kt` renders the matching screen with a `when(dest)` inside a `Scaffold` with a 4-tab bottom nav (Home / Progress / PaceCalc / Settings). System back is handled by a `BackHandler` in `RunningTrainerApp.kt` that maps each destination to its logical parent (tabs → Home, onboarding steps in reverse); Home/Goal/Generating exit the app. `navigation-compose` is on the classpath but is **not** used.
 
 **`MainActivity` extends `AppCompatActivity`** (not `ComponentActivity`) — required so `AppCompatDelegate.setApplicationLocales()` applies the stored locale (`en`/`it`/`de`, see `res/xml/locales_config.xml`) correctly, including on Android < 13. The stored locale is applied in `onCreate`.
 
@@ -44,7 +44,7 @@ Sub-ViewModels publish navigation intents on a `navigationEvent: Channel<AppDest
 - `data/local/` — Room (`AppDatabase`, `TrainingPlanEntity`, `TrainingPlanDao`) + DataStore (`LocalSettingsStore`).
 - `data/repository/` — repository interfaces + `LocalTrainingPlanRepository`, `LocalSettingsRepository`.
 - `data/serialization/` — `@Serializable` mirror models used for JSON storage in Room (`payloadJson` column).
-- `notifications/` — `NotificationService`, `WorkoutAlarmReceiver`.
+- `notifications/` — `NotificationService`, `WorkoutAlarmReceiver`, `BootCompletedReceiver`.
 - `ui/screens/` — one Composable file per screen. `HomeScreen.kt` exports shared helpers: `workoutTypeColor`, `WorkoutType.typeLabel()`, `WorkoutType.zoneDescription()`, `SurfaceCard`.
 - `ui/navigation/` — `AppDestination` enum (Goal, RaceConfig, Fitness, Days, Profile, Generating, Home, WorkoutDetail, Progress, RunHistory, PaceCalc, Settings, Stretching, Privacy).
 - `ui/` root — the five ViewModels + `RunningTrainerApp.kt`.
@@ -63,7 +63,7 @@ The Claude integration lives in `domain/service/`, split across `ClaudeService` 
 
 ## Notifications
 
-`NotificationService.scheduleForPlan(plan, hour, minute)` cancels existing alarms then schedules an exact `AlarmManager` alarm for each future, non-rest, non-completed workout (alarm id `weekIndex * 7 + dayOfWeek`, matching Flutter). It uses `setExactAndAllowWhileIdle`, falling back to `setAndAllowWhileIdle` when `canScheduleExactAlarms()` is false on Android 12+. `WorkoutAlarmReceiver` posts the reminder on the `workout_reminders` channel. Required permissions: `INTERNET`, `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`. Scheduling is invoked from `OnboardingViewModel` (after generation) and `SettingsViewModel` (on save).
+`NotificationService.scheduleForPlan(plan, hour, minute)` cancels existing alarms then schedules an exact `AlarmManager` alarm for each future, non-rest, non-completed workout (alarm id `weekIndex * 7 + dayOfWeek`, matching Flutter). It uses `setExactAndAllowWhileIdle`, falling back to `setAndAllowWhileIdle` when `canScheduleExactAlarms()` is false on Android 12+. `WorkoutAlarmReceiver` posts the reminder on the `workout_reminders` channel. `BootCompletedReceiver` (Hilt `@AndroidEntryPoint`) re-schedules all alarms from the active plan on `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED`, since `AlarmManager` alarms don't survive reboots or app updates. Required permissions: `INTERNET`, `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `RECEIVE_BOOT_COMPLETED`. The `POST_NOTIFICATIONS` runtime permission is requested in `SettingsScreen` when the user enables the notifications toggle (Android 13+). Scheduling is invoked from `OnboardingViewModel` (after generation) and `SettingsViewModel` (on save).
 
 ## Testing
 
