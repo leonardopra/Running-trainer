@@ -4,6 +4,8 @@ A cross-platform running training app (iOS, Android, Web) that generates persona
 
 All data stays on-device — no account, no backend, no subscription.
 
+> **⚠️ The native Android app has moved.** Active development continues in the standalone repo [leonardopra/running-trainer-android](https://github.com/leonardopra/running-trainer-android) (extracted June 2026, see `docs/adr/0001-single-native-android-app.md` in that repo). The `android-app/` folder here is kept for history only.
+
 ---
 
 ## Repository structure
@@ -11,7 +13,7 @@ All data stays on-device — no account, no backend, no subscription.
 | Folder | Description |
 |---|---|
 | *(root)* | Flutter app — golden reference during migration |
-| `android-app/` | Native Android (Kotlin + Jetpack Compose) — full P0+P1 |
+| `android-app/` | Native Android (Kotlin + Jetpack Compose) — **moved to [running-trainer-android](https://github.com/leonardopra/running-trainer-android)**, kept here for history |
 | `ios-app/` | Native iOS (Swift + SwiftUI) — full P0+P1 |
 | `web-app/` | Web frontend |
 | `backend-services/` | Backend services |
